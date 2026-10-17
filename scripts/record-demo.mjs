@@ -33,17 +33,17 @@ const pay = (action) => {
 
 // Fresh company with no agent hired yet, and warm the server
 await fetch(`${base}/api/reset?full=1`, { method: "POST" });
-for (const p of ["/", "/login", "/app", "/app/facturas", "/app/reglas", "/app/aprobaciones", "/app/reportes"]) await fetch(base + p, { headers: { cookie: "orbit_session=demo" } }).catch(() => {});
+for (const p of ["/", "/login", "/deck", "/app", "/app/facturas", "/app/reglas", "/app/aprobaciones", "/app/reportes"]) await fetch(base + p, { headers: { cookie: "orbit_session=demo" } }).catch(() => {});
 
-// 0. The problem, then the team: landing, scrolled slowly through "Cómo funciona"
-await go("/", "text=Actúa con autonomía");
-await pause(9000);
-await page.mouse.wheel(0, 450);
-await pause(5000);
-await page.mouse.wheel(0, 450);
+// 0. Title and the problem (deck), then the team (deck)
+await go("/deck?s=0", "text=Reto Blinka");
 await pause(6000);
-await page.mouse.wheel(0, 500);
-await pause(6000);
+await go("/deck?s=1", "text=El problema");
+await pause(12000);
+await go("/deck?s=2", "text=El equipo");
+await pause(18000);
+await go("/deck?s=3", "text=Qué construimos");
+await pause(8000);
 
 // 1. You are in your account: login, then the Panel with the invoices to pay
 await go("/login", "text=Iniciar sesión");
@@ -101,11 +101,13 @@ await pause(3000);
 await page.click("text=Aprobar pago >> nth=0").catch(() => {});
 await pause(2500);
 
-// 7. Reports, then back to the Panel
+// 8. Reports, then results and what's next (deck)
 await go("/app/reportes", "text=Autonomía");
-await pause(4500);
-await go("/app", "text=Resumen ejecutivo");
-await pause(3500);
+await pause(5000);
+await go("/deck?s=4", "text=Resultados");
+await pause(7000);
+await go("/deck?s=5", "text=Qué sigue");
+await pause(7000);
 
 await ctx.close();
 await browser.close();

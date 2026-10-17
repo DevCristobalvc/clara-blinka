@@ -4,13 +4,13 @@ Narración en español para ElevenLabs (voz de William). Cada bloque indica lo q
 
 ---
 
-## 0. El problema [0:00–0:18] · pantalla: landing
+## 0. El problema [0:00–0:18] · pantalla: deck, portada y "El problema"
 
 Imagina que llevas las finanzas de una empresa en Estados Unidos con equipo y proveedores en Latinoamérica. Cada mes llegan facturas por correo, PDF o chat. Las comparas con lo acordado, persigues al que cobró de más, pides aprobación y pagas a mano, en otra moneda, hacia otro país. Es manual, se repite, y depende de ti.
 
 ORBIT es la plataforma donde tus agentes de IA cobran y pagan por tu empresa. Actúan con autonomía. Nunca sin límites.
 
-## 1. El equipo [0:18–0:36] · pantalla: landing, sección "Cómo funciona"
+## 1. El equipo [0:18–0:36] · pantalla: deck, "El equipo" con fotos y LinkedIn; luego "Qué construimos"
 
 Somos Cristobal Valencia y William Martínez, de Ekinoxis. Construimos productos de pagos y agentes para empresas en Latinoamérica, y este fin de semana, en el hackathon de 30X, construimos ORBIT para el reto de Blinka: un agente que paga por la empresa, dentro de sus reglas, y que pide permiso cuando algo se sale de ellas.
 
@@ -42,7 +42,7 @@ Una corrección solo puede acercarse al contrato. Nunca una cuenta nueva, nunca 
 
 A ti te llega únicamente lo que las reglas reservan para una persona: un pago legítimo por encima de tu umbral, un proveedor nuevo, un presupuesto agotado. Apruebas o rechazas con toda la conversación y los motivos a la vista.
 
-## 8. Confianza que se puede verificar [2:42–2:58] · pantalla: Reportes; cierre en el Panel
+## 8. Confianza que se puede verificar [2:42–3:00] · pantalla: Reportes; deck "Resultados" y "Qué sigue"
 
 Veintiún facturas, doce trampas, tres proveedores comprometidos. Cien por ciento de precisión. Cero pagos fuera de las reglas, antes y después de negociar. Cada decisión firmada con las reglas vigentes, verificable por cualquiera.
 
