@@ -33,6 +33,7 @@
 | T18 | MCP server (`/api/mcp`: `review_invoice`, `check_category_budget`, `request_human_approval`) | agy | todo · P2 |
 | T19 | Inbound email ingestion (invoice arrives by email → case) | — | todo · P2 |
 | T20 | Cobrador screens: collection cases with the rules inverted (`Case.role: collector`) | — | todo · next version |
+| T21 | README as a short hook (punchline + Mermaid diagram); architecture, API, setup and dataset moved to `docs/` | claude | done |
 
 Dropped: extraction with OpenAI (the Anthropic key works), Neon (Supabase chosen), x402 per case / ERC-8004 / wallets that move vendor money (out of the brief), dataset renamed to the mockup's vendors.
 

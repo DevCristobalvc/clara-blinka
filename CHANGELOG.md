@@ -4,6 +4,9 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 
 ## [Unreleased]
 
+### Docs
+- README rewritten as a short hook: punchline, a Mermaid diagram of how ORBIT works, results, how to try it. The detail moved to `docs/architecture.md`, `docs/api.md`, `docs/setup.md` and `docs/dataset.md`.
+
 - Demo video: core footage recorded with `scripts/record-demo.mjs` (2:27); narration and the activation clip pending. HackRadar submission.
 - Cobrador screens (collection cases with the rules inverted).
 
