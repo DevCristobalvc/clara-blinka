@@ -155,3 +155,49 @@ Owners: **claude** (`30x1`), **agy** (`30agy`), **cristobal** (human-only steps:
 - **Acceptance criteria:** The HackRadar project shows as submitted.
 - **Tests:** n/a
 - **Comments:**
+
+---
+
+## Clara v2 (Oct 17, after ideation): "Agentes de IA que cobran y pagan por tu empresa"
+
+One setup (rules, vendors, contracts), then a **link per payment**. The vendor's cobrador opens it, submits the invoice, and Clara (pagador) decides and negotiates corrections in that thread. Signed webhooks report every state change. Plan: `~/.claude/plans/frolicking-wondering-canyon.md`.
+
+## T16: Vendor negotiation loop
+- **Description:** `lib/engine/negotiate.ts` (pure): on a HOLD whose reasons are all negotiable (`CONTRACT_MISMATCH`, `CURRENCY_NOT_ALLOWED`, `DUPLICATE`, `DUE_TOO_FAR`, concept-only `LOW_CONFIDENCE`) Clara asks the vendor for a correction, max 2 rounds. Corrected invoices are built in code from structured fields, pass `validateCorrection` (same vendor, registered account, amount ≤ original and ≤ contract, allowed currency) and re-run the unchanged `decide()`. Outcomes: `auto_resolved | scheduled | closed | human`. `lib/engine/cobrador.ts`: the vendor-side agent, rule-driven (`data/cobradores.json`), with compromised configs for adversarial cases. Prose: templates always, Claude optional (`vendor-prose.ts`), fed only `ProseFacts` (no limits).
+- **Owner:** claude
+- **Status:** done
+- **Acceptance criteria:** 0 unsafe payments before and after negotiation. Never negotiates bank changes, pressure, unknown vendors, limits, budget or past-due. 3 adversarial cobradores (new account, injection, raised amount) end in `human`. Outgoing messages never contain tolerance, budget, limits or thresholds.
+- **Tests:** `negotiate.test.ts`: whitelist, `validateCorrection`, happy paths, round cap, adversarial, leak test, 500-case property test (`auto_resolved ⇔ PAY ∧ no failing rule ∧ guardrail ok`). Dataset eval reports a resolution rate.
+- **Comments:** Done Oct 17. Eval: 21/21, 76% autonomy, 0 unsafe before and after negotiation, resolution 3/10 HOLDs. Budget not tuned (option A): #08 and #10 also hit `BUDGET_EXCEEDED`, so they go to a person. #14 (EUR) → reissue in USD → PAY; #07 → closed; #16 → scheduled; #19–21 (compromised cobradores) → human. Claude prose via `vendor-prose.ts` (haiku), templates as fallback.
+
+## T17: Cases, store and webhooks
+- **Description:** `Case {id, role: payer|collector, status, invoice, decision, thread, review, settlement, receipt}` in Supabase (`db/schema.sql`: `policies`, `cases`, `case_events` append-only; RLS on, server-only via service role) behind `CaseStore` with a `MemoryStore` for tests/dev. Routes: `POST/GET /api/cases`, `GET /api/cases/[id]` (`view=public`, `since`), `POST /api/cases/[id]/invoice|messages|review`, `GET/PUT /api/policy`, `/api/reset`, `/api/health`, `/api/keys`. Public page `/c/[id]` (upload, thread, reply actions, receipt). Dashboard reads from the server. Webhooks signed with `X-Clara-Signature` (HMAC-SHA256), sent via `after()`, logged as events. `MockExecutor` settlement ("would settle via Blinka rails"). `role: collector` returns 501 (roadmap).
+- **Owner:** claude (code), cristobal (Supabase keys and `CLARA_SIGNING_KEY` in Vercel)
+- **Status:** in-progress
+- **Acceptance criteria:** A case link works end to end in a private window; a HOLD/`needs_human` case can never be approved from the UI; one payment per case; webhook HMAC verifies.
+- **Tests:** `cases.test.ts` with `MemoryStore` (flow, 409 on second invoice, 403 approve on needs_human, stale update → 409, derived ledger, webhook HMAC).
+- **Comments:** Oct 17: Supabase project `clara` created and `db/schema.sql` applied; store, service, routes and `/c/[id]` page done and smoke-tested on the memory store. Pending: `SUPABASE_SERVICE_ROLE_KEY` in `.env.local`/Vercel (human), dashboard integration (`/app`), reconcile with `todo1.md` T5/T6 (Neon vs Supabase, `/api/invoices` vs `/api/cases`).
+
+## T18: Trust primitives
+- **Description:** `lib/engine/receipt.ts`: Ed25519-signed decision receipts carrying `policyHash` (sha256 of policy + beneficiaries + contracts), verifiable against `GET /api/keys`; replay is the proof (rules are pure). Registered-account check on corrections (T16 guardrail). No-leak test on outgoing prose. Roadmap in README: company-side cobrador link, x402 so any cobrador agent can call Clara, ZK/FHE for negotiating without revealing either side's limits.
+- **Owner:** claude
+- **Status:** in-progress
+- **Acceptance criteria:** Tampered receipt fails verification; `policyHash` changes when a rule changes and is stable under key order.
+- **Tests:** `receipt.test.ts`.
+- **Comments:** Oct 17: receipts, `policyHash`, `GET /api/keys`, registered-account check and no-leak test done. README roadmap section pending.
+
+## T19: Single workspace on the mockup shell
+- **Description:** `/app` rebuilt as the mockup's sidebar shell (Panel, Facturas, Reglas, Aprobaciones, Reportes, Configuración), every section reading the server (`/api/cases`, `/api/policy`). Deleted the browser-store workspace (Bandeja, OrbitApp, localStorage) and `/app/casos`. Facturas opens cases by vendor + contract (optionally with the invoice already received); Aprobaciones is the human queue; Reportes computes the eval from the cases; Configuración holds agents, beneficiaries, contracts, webhook, API keys and the demo reset.
+- **Owner:** claude
+- **Status:** done
+- **Acceptance criteria:** One story in the UI; a judge can run the demo from Panel → Facturas → Aprobaciones → Reportes without seeing two models. `npm run build` green.
+- **Tests:** Existing suites; manual run of the demo set through the UI.
+- **Comments:** Oct 17 evening. Supersedes todo1.md T4 and T7–T12.
+
+## T20: Hire the agents with USDC (x402 + Privy)
+- **Description:** `POST /api/agents/{pagador,cobrador}/activate` protected with `withX402` (`@x402/next`, facilitator `x402.org`, Base Sepolia USDC, `ORBIT_PAY_TO`). Login with Privy (`/login`, embedded wallet on Base Sepolia); `AgentsCard` in Configuración pays the 402 with the wallet (`@x402/fetch` + `@x402/evm`) and shows payer, tx and balance. Activations stored on the company (`Company.agents`), kept across demo resets. `ORBIT_ACTIVATION_FREE=1` activates without payment; `ORBIT_REQUIRE_ACTIVATION=1` blocks new cases until the pagador is active.
+- **Owner:** claude (code), wmb/cristobal (`NEXT_PUBLIC_PRIVY_APP_ID`, `ORBIT_PAY_TO`, testnet USDC)
+- **Status:** in-progress
+- **Acceptance criteria:** From a fresh login, paying 0.10 USDC on Base Sepolia activates the pagador and the transaction is linked from Configuración.
+- **Tests:** Build green; end-to-end payment verified by hand once the Privy app id and treasury address exist.
+- **Comments:** Code complete; untested against the live facilitator until the env vars are set.

@@ -1,5 +1,5 @@
 import type { Action, ReasonCode } from "@/lib/engine/types";
-import { ACTION_LABEL, REASON_LABEL } from "@/lib/client/store";
+import { ACTION_LABEL, REASON_LABEL } from "@/lib/engine/labels";
 
 export const ACTION_STYLE: Record<Action, { badge: string; column: string; dot: string }> = {
   PAY: { badge: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30", column: "border-emerald-500/25 bg-emerald-500/[0.04]", dot: "bg-emerald-500" },
