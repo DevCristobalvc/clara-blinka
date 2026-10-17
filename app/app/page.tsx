@@ -1,9 +1,7 @@
-import { OrbitApp } from "@/components/OrbitApp";
-import { loadDataset } from "@/lib/dataset";
+import { PanelView } from "@/components/app/PanelView";
 
 export const metadata = { title: "Panel · ORBIT" };
 
-export default async function AppPage() {
-  const { company, samples, today } = await loadDataset();
-  return <OrbitApp company={company} samples={samples} today={today} />;
+export default function PanelPage() {
+  return <PanelView />;
 }

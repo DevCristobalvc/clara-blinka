@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -46,3 +47,9 @@ next-env.d.ts
 /public/invoices
 
 .vercel
+
+# demo recordings (published on YouTube/Loom, not in git)
+/docs/demo/*.webm
+/docs/demo/*.mp4
+/docs/demo/voice/
+/docs/design/screens/

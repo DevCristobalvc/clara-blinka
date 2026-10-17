@@ -1,3 +1,5 @@
+> **Histórico (17 de octubre, mañana).** Propuesta de Antigravity antes de cerrar la ideación. Lo que se construyó está en `README.md`, `todo.md` y `CHANGELOG.md`; de esta propuesta quedaron x402 (para contratar y fondear a los agentes) y la hoja de ruta. ERC-8004 y el MCP server no se construyeron.
+
 # ORBIT Protocol: A2A Treasury & Governance with x402 and ERC-8004
 
 > **Documento de Visión y Propuesta Estratégica · 30X Hackathon (Blinka Track)**  

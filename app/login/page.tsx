@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { OrbitLogo } from "@/components/brand/OrbitLogo";
 import { LoginForm } from "@/components/LoginForm";
+import { PrivyLogin } from "@/components/PrivyLogin";
 
 export const metadata = { title: "Iniciar sesión · ORBIT" };
+
+const privy = Boolean(process.env.NEXT_PUBLIC_PRIVY_APP_ID);
 
 export default function LoginPage() {
   return (
@@ -14,11 +17,21 @@ export default function LoginPage() {
         </Link>
         <div className="rounded-2xl border border-line bg-panel/90 p-7 backdrop-blur">
           <h1 className="text-2xl font-bold tracking-tight">Iniciar sesión</h1>
-          <p className="mt-1 text-sm text-zinc-400">Entra al espacio de trabajo de tu agente.</p>
-          <LoginForm />
+          <p className="mt-1 text-sm text-zinc-400">Entra al espacio de trabajo de tus agentes.</p>
+          {privy ? (
+            <>
+              <PrivyLogin />
+              <details className="mt-5 text-xs text-zinc-500">
+                <summary className="cursor-pointer hover:text-zinc-300">Acceso de demo sin wallet</summary>
+                <LoginForm />
+              </details>
+            </>
+          ) : (
+            <LoginForm />
+          )}
         </div>
         <p className="mt-4 text-center text-xs text-zinc-500">
-          Demo del hackathon · usuario <span className="font-mono text-zinc-300">123</span> · contraseña <span className="font-mono text-zinc-300">123</span>
+          {privy ? "En producción el acceso vive dentro de Blinka; aquí Privy da a la empresa una wallet para activar agentes." : <>Demo del hackathon · usuario <span className="font-mono text-zinc-300">123</span> · contraseña <span className="font-mono text-zinc-300">123</span></>}
         </p>
       </div>
     </main>

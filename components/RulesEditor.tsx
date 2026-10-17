@@ -1,17 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import { fmtMoney } from "@/lib/client/format";
+import { REASON_LABEL } from "@/lib/engine/labels";
 import { DEFAULT_SEVERITY } from "@/lib/engine/severity";
 import { DEFAULT_JEV_THRESHOLDS } from "@/lib/engine/thresholds";
-import { REASON_CODES, type Beneficiary, type Company, type Policy, type ReasonCode, type Severity } from "@/lib/engine/types";
-import { REASON_LABEL, fmtMoney } from "@/lib/client/store";
+import { NEGOTIABLE_CODES, REASON_CODES, type Beneficiary, type Company, type Policy, type ReasonCode, type Severity } from "@/lib/engine/types";
 import { Button, Card } from "./ui";
 
+/** The rules the agent lives by: limits, budgets, what each reason does, JEV thresholds and negotiation. */
 export function RulesEditor({ company, onChange }: { company: Company; onChange: (c: Company) => void }) {
   const p = company.policy;
   const setPolicy = (patch: Partial<Policy>) => onChange({ ...company, policy: { ...p, ...patch } });
   const severity = { ...DEFAULT_SEVERITY, ...p.severity };
   const jev = { ...DEFAULT_JEV_THRESHOLDS, ...p.jev };
+  const negotiation = { enabled: true, maxRounds: 2, ...p.negotiation };
+  const negotiable = new Set<string>(NEGOTIABLE_CODES);
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
@@ -45,11 +49,14 @@ export function RulesEditor({ company, onChange }: { company: Company; onChange:
 
       <Card>
         <h3 className="font-semibold text-white">Qué hacer ante cada motivo</h3>
-        <p className="text-xs text-zinc-500">Frenar = no se paga. Escalar = una persona decide. Si hay varios motivos, gana el más estricto.</p>
+        <p className="text-xs text-zinc-500">Frenar = no se paga. Escalar = una persona decide. Si hay varios motivos, gana el más estricto. Solo los motivos marcados se negocian con el proveedor.</p>
         <ul className="mt-3 divide-y divide-line">
           {REASON_CODES.map((code) => (
             <li key={code} className="flex items-center justify-between py-1.5 text-sm">
-              <span className="text-zinc-300">{REASON_LABEL[code]}</span>
+              <span className="text-zinc-200">
+                {REASON_LABEL[code]}
+                {negotiable.has(code) ? <span className="ml-2 rounded-md bg-orbit/15 px-1.5 py-0.5 text-[10px] font-medium text-orbit">se negocia</span> : <span className="ml-2 text-[10px] text-zinc-500">nunca se negocia</span>}
+              </span>
               <select
                 className="rounded-md border border-line px-2 py-1 text-sm"
                 value={severity[code]}
@@ -63,45 +70,32 @@ export function RulesEditor({ company, onChange }: { company: Company; onChange:
         </ul>
       </Card>
 
-      <Card>
-        <h3 className="font-semibold text-white">Umbrales de JEV</h3>
-        <p className="text-xs text-zinc-500">JEV responde preguntas tipadas con probabilidad calibrada. Por debajo de estos umbrales, el agente no paga solo.</p>
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <NumberField label="Mínima prob. de que el concepto cuadre" step={0.05} value={jev.minConceptMatch} onChange={(v) => setPolicy({ jev: { ...p.jev, minConceptMatch: v } })} />
-          <NumberField label="Máxima prob. de presión / cambio de cuenta" step={0.05} value={jev.maxSocialEngineering} onChange={(v) => setPolicy({ jev: { ...p.jev, maxSocialEngineering: v } })} />
-        </div>
-      </Card>
-
-      <BeneficiariesCard company={company} onChange={onChange} />
-
-      <Card>
-        <h3 className="font-semibold text-white">Contratos</h3>
-        <table className="mt-3 w-full text-left text-sm">
-          <thead className="text-xs text-zinc-500">
-            <tr>
-              <th className="py-1">Beneficiario</th>
-              <th>Concepto</th>
-              <th className="text-right">Monto</th>
-              <th className="pl-4 text-right">Tolerancia</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-line">
-            {company.contracts.map((c) => (
-              <tr key={c.id}>
-                <td className="py-1.5">{company.beneficiaries.find((b) => b.id === c.beneficiaryId)?.name ?? c.beneficiaryId}</td>
-                <td className="text-zinc-400">{c.concept}</td>
-                <td className="whitespace-nowrap pl-4 text-right font-mono text-xs">{fmtMoney(c.amount, c.currency)}</td>
-                <td className="text-right font-mono text-xs">{c.tolerancePct}%</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+      <div className="space-y-4">
+        <Card>
+          <h3 className="font-semibold text-white">Negociación con proveedores</h3>
+          <p className="text-xs text-zinc-500">Cuando una factura se frena solo por motivos negociables, ORBIT pide la corrección al proveedor. La corregida pasa por las mismas reglas; una corrección solo puede acercarse al contrato y nunca cambia la cuenta registrada.</p>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <label className="flex items-center gap-2 text-sm text-zinc-200">
+              <input type="checkbox" checked={negotiation.enabled} onChange={(e) => setPolicy({ negotiation: { ...negotiation, enabled: e.target.checked } })} />
+              Permitir negociar
+            </label>
+            <NumberField label="Rondas máximas" value={negotiation.maxRounds} onChange={(v) => setPolicy({ negotiation: { ...negotiation, maxRounds: Math.max(1, Math.min(3, v)) } })} />
+          </div>
+        </Card>
+        <Card>
+          <h3 className="font-semibold text-white">Umbrales de JEV</h3>
+          <p className="text-xs text-zinc-500">JEV responde preguntas tipadas con probabilidad calibrada. Por debajo de estos umbrales, el agente no paga solo.</p>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <NumberField label="Mínima prob. de que el concepto cuadre" step={0.05} value={jev.minConceptMatch} onChange={(v) => setPolicy({ jev: { ...p.jev, minConceptMatch: v } })} />
+            <NumberField label="Máxima prob. de presión / cambio de cuenta" step={0.05} value={jev.maxSocialEngineering} onChange={(v) => setPolicy({ jev: { ...p.jev, maxSocialEngineering: v } })} />
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }
 
-function BeneficiariesCard({ company, onChange }: { company: Company; onChange: (c: Company) => void }) {
+export function BeneficiariesCard({ company, onChange }: { company: Company; onChange: (c: Company) => void }) {
   const [draft, setDraft] = useState({ name: "", account: "", category: "contractor_services", country: "CO", currency: "USD" });
   const remove = (id: string) => onChange({ ...company, beneficiaries: company.beneficiaries.filter((b) => b.id !== id) });
   const add = () => {
@@ -120,6 +114,7 @@ function BeneficiariesCard({ company, onChange }: { company: Company; onChange: 
   return (
     <Card className="lg:col-span-2">
       <h3 className="font-semibold text-white">Beneficiarios permitidos</h3>
+      <p className="text-xs text-zinc-500">La cuenta registrada es la única a la que se paga. Un cambio de cuenta en una factura o en una negociación nunca se acepta por este canal.</p>
       <table className="mt-3 w-full text-left text-sm">
         <thead className="text-xs text-zinc-500">
           <tr>
@@ -157,6 +152,35 @@ function BeneficiariesCard({ company, onChange }: { company: Company; onChange: 
         </select>
         <Button variant="secondary" onClick={add}>Agregar</Button>
       </div>
+    </Card>
+  );
+}
+
+export function ContractsCard({ company }: { company: Company }) {
+  return (
+    <Card className="lg:col-span-2">
+      <h3 className="font-semibold text-white">Contratos</h3>
+      <p className="text-xs text-zinc-500">Lo acordado con cada proveedor. Una factura que se desvía más que la tolerancia se frena y se negocia hacia este valor.</p>
+      <table className="mt-3 w-full text-left text-sm">
+        <thead className="text-xs text-zinc-500">
+          <tr>
+            <th className="py-1">Beneficiario</th>
+            <th>Concepto</th>
+            <th className="text-right">Monto</th>
+            <th className="pl-4 text-right">Tolerancia</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-line">
+          {company.contracts.map((c) => (
+            <tr key={c.id}>
+              <td className="py-1.5">{company.beneficiaries.find((b) => b.id === c.beneficiaryId)?.name ?? c.beneficiaryId}</td>
+              <td className="text-zinc-400">{c.concept}</td>
+              <td className="whitespace-nowrap pl-4 text-right font-mono text-xs">{fmtMoney(c.amount, c.currency)}</td>
+              <td className="text-right font-mono text-xs">{c.tolerancePct}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </Card>
   );
 }

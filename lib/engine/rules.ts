@@ -195,14 +195,12 @@ const periodBudget: Rule = ({ amountUSD, company, category, today, history }) =>
     : { rule: "period_budget", pass: true, detail: `Presupuesto de "${category}": ${usd(after)} de ${usd(budget)} tras este pago.` };
 };
 
-const duplicate: Rule = ({ invoice, match, history, company, today }) => {
-  const b = match.beneficiary;
-  if (!b) return { rule: "duplicate", pass: true, detail: "Sin beneficiario conocido para buscar duplicados." };
+/** The paid record an invoice duplicates (same number, or same amount issued within the window), if any. */
+export function findDuplicate(invoice: Invoice, beneficiaryId: string, history: PaymentRecord[], windowDays: number, today: Date): PaymentRecord | undefined {
   const number = normalizeInvoiceNumber(invoice.invoiceNumber);
   const ref = parseDate(invoice.issueDate) ?? today;
-  const window = company.policy.duplicateWindowDays;
-  const hit = history.find((h) => {
-    if (h.beneficiaryId !== b.id) return false;
+  return history.find((h) => {
+    if (h.beneficiaryId !== beneficiaryId) return false;
     if (number && normalizeInvoiceNumber(h.invoiceNumber) === number) return true;
     // Recurring fixed fees repeat the amount every month, so compare invoice issue dates, not payment dates.
     const prev = parseDate(h.issueDate ?? h.paidAt);
@@ -210,9 +208,15 @@ const duplicate: Rule = ({ invoice, match, history, company, today }) => {
       h.amount === invoice.amount &&
       h.currency.toUpperCase() === invoice.currency.toUpperCase() &&
       prev !== undefined &&
-      Math.abs(days(prev, ref)) <= window
+      Math.abs(days(prev, ref)) <= windowDays
     );
   });
+}
+
+const duplicate: Rule = ({ invoice, match, history, company, today }) => {
+  const b = match.beneficiary;
+  if (!b) return { rule: "duplicate", pass: true, detail: "Sin beneficiario conocido para buscar duplicados." };
+  const hit = findDuplicate(invoice, b.id, history, company.policy.duplicateWindowDays, today);
   return hit
     ? {
         rule: "duplicate",

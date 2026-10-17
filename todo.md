@@ -1,157 +1,61 @@
-# ORBIT: AP agent with guardrails (todo)
+# ORBIT · plan (the only one)
 
-**30X Hackathon, Blinka challenge** ("Agents that pay for the company"). Deadline **Sun Oct 18, 12:00 COT**. Uses **JEV (TypeSafe)** as the fast decision layer. (The PayBox Chapter 1 submission was cancelled on Oct 17.)
+**30X Hackathon · Blinka challenge** ("Agents that pay for the company"). Submission closes **Sun Oct 18, 12:00 COT**; Demo Day Oct 19–20. This file replaces `todo1.md` (merged Oct 17 evening). History in `CHANGELOG.md`; the pitch in `docs/pitch.md`.
 
-**Pitch:** ORBIT reads a company's invoices and decides, for each one, whether to **PAY**, **HOLD** or **ESCALATE** to a human, inside rules the company defines. It never approves a payment outside the rules without a human, and it explains every decision in plain language.
+**Product in one line:** ORBIT is where a company's AI agents collect and pay for it. The **pagador** reads each invoice, checks it against the rules the company set once, negotiates corrections with the vendor on a per-payment link, and pays, holds or escalates, with a signed receipt per decision. The company hires and funds its agents paying in USDC (x402). The **cobrador** is the same engine with the rules inverted (next version).
 
-## Architecture
+**Team:** cristobal (decisions, Vercel, keys, HackRadar, pitch voice) · wmb (product, Supabase/data layer, pitch, video) · claude sessions (code) · agy (illustration, MCP, docs). Work on branches, PR to `main`, `git pull --rebase` often, announce new dependencies.
 
-```
-invoice (PDF / image / email / chat)
-   -> extract   (LLM via Vercel AI Gateway)     -> Invoice {payee, amount, currency, due, ...}
-   -> rules     (deterministic TS: limits, budget, allowlist, duplicates, contract match, dates)
-   -> judgments (JEV typed questions: concept matches contract? category? risk?) + confidence thresholds
-   -> decide    PAY | HOLD | ESCALATE + reason codes
-   -> explain   (human-readable log entry; LLM optional)
-   -> audit log (persisted)
-   -> human approval queue for ESCALATE (approve / reject, counts against budget)
-```
+**Safety invariant (never weakened):** hard limits live in code; JEV/Claude can only make a decision stricter; corrections only move toward the contract; `decide()` throws on PAY with a failing check; eval must stay at 0 unsafe payments before and after negotiation.
 
-The core rule: **hard limits live in code, JEV only answers fuzzy questions, and any rule failure or low confidence means the payment is not made autonomously.**
+## Status
 
-Repo layout: Next.js app at the root (`app/`, `lib/engine/`), plus `data/` (mock dataset) and `docs/`.
+| # | Task | Owner | Status |
+|---|---|---|---|
+| T0 | Repo, scaffold, Vercel | claude | done |
+| T1 | Demo dataset: Andes Labs Inc., 21 invoices (6 clean, 12 traps, 3 negotiation traps), `expected.json` | claude | done |
+| T2 | Deterministic rules engine | claude | done |
+| T3 | JEV judgments + offline fallback; live eval (`docs/eval-live.md`) | claude | done |
+| T4 | Invoice extraction (Claude structured output, PDF/image/email/chat) | claude | done |
+| T5 | Decision + explanation + safety invariant | claude | done |
+| T6 | Eval harness (`npm run eval`): accuracy, autonomy, safety before/after negotiation, resolution | claude | done |
+| T7 | Rebrand to ORBIT, landing `/`, mock login, `/app` | claude (30x1) | done |
+| T8 | Vendor negotiation loop + simulated vendors + guardrails | claude | done |
+| T9 | Cases on Supabase, public link `/c/[id]`, API, signed webhooks | claude | done |
+| T10 | Signed receipts + `policyHash` + `/api/keys` | claude | done |
+| T11 | Single workspace on the mockup shell (Panel, Facturas, Reglas, Aprobaciones, Reportes, Configuración) | claude | done |
+| T12 | Hire the agents with USDC over x402 (activate → ORBIT treasury; fund → agent wallet), Privy login | claude | done (live payments verified Oct 17 20:47 COT) |
+| T13 | Deploy with env vars on Vercel (`orbit` project) | cristobal | **todo** |
+| T14 | Demo video: footage recorded (`docs/demo/orbit-demo.mp4`, 2:27, production build); narration (ElevenLabs, `docs/pitch.md`) and the activation clip pending | wmb, claude | **in-progress** |
+| T15 | HackRadar: team, project form, links; submit before Sun 12:00 COT | cristobal (confirms), claude (text) | **todo** |
+| T16 | Hero illustration on the landing | agy | in-progress |
+| T17 | JEV playbook (30X bonus, `docs/jev-playbook.md`) | agy (draft), claude (review) | todo · P2 |
+| T18 | MCP server (`/api/mcp`: `review_invoice`, `check_category_budget`, `request_human_approval`) | agy | todo · P2 |
+| T19 | Inbound email ingestion (invoice arrives by email → case) | — | todo · P2 |
+| T20 | Cobrador screens: collection cases with the rules inverted (`Case.role: collector`) | — | todo · next version |
 
-Owners: **claude** (`30x1`), **agy** (`30agy`), **cristobal** (human-only steps: accounts, API keys, submissions, video voice).
+Dropped: extraction with OpenAI (the Anthropic key works), Neon (Supabase chosen), x402 per case / ERC-8004 / wallets that move vendor money (out of the brief), dataset renamed to the mockup's vendors.
 
----
+## Open tasks (detail)
 
-## T0: Repo + scaffold
-- **Description:** git repo (personal identity), Next.js + TS + Tailwind at the root, folders `lib/engine`, `data`, `docs`. `.comms/` and `.env*` git-ignored. Private GitHub repo `DevCristobalvc/clara`, made public before the 30X submission.
-- **Owner:** claude
-- **Status:** done
-- **Acceptance criteria:** `npm run dev` serves a page. Repo pushed. No secrets committed.
-- **Tests:** `npm run build` passes.
-- **Comments:** Public repo https://github.com/DevCristobalvc/orbit. Commits as DevCristobalvc.
+### T12: Hire the agents with USDC (x402 + Privy)
+- **Description:** `POST /api/agents/{pagador,cobrador}/activate` (fee → `ORBIT_PAY_TO`) and `/fund` (→ the agent's per-company wallet, derived from the server secret) protected with `withX402` (`@x402/next`, facilitator `x402.org`, USDC on Base Sepolia). Privy login (`/login`) gives the company an embedded wallet; `AgentsCard` in Configuración pays the 402 with it and shows wallet, balance, payer and tx. `scripts/x402-pay.mjs` pays with a plain test wallet to verify the server path.
+- **Acceptance criteria:** From a fresh Privy login, paying 0.10 USDC activates the pagador and 1 USDC lands in its wallet; both show in Configuración with the BaseScan tx. The script succeeds against the local server.
+- **Tests:** Build green. Manual: fund the test payer and the Privy wallet at https://faucet.circle.com (Base Sepolia), run `node --env-file=.env.local scripts/x402-pay.mjs activate pagador`, then the UI.
+- **Comments:** Verified live Oct 17 20:47 COT with `scripts/x402-pay.mjs`: activate 0.10 USDC (tx 0x28c7fb74…9059) and fund 1.00 USDC (tx 0x0ab9fa56…cacc) settled on Base Sepolia; treasury and agent wallet balances match. The UI path (Privy wallet) uses the same client code; tx hashes are attached via `POST /api/agents/:kind/tx`. Env vars in `.env.local`: `NEXT_PUBLIC_PRIVY_APP_ID`, `ORBIT_PAY_TO` (treasury), `ORBIT_TREASURY_PRIVATE_KEY` (sweep only), `ORBIT_TEST_PAYER_PRIVATE_KEY`. Fallback for the video: `ORBIT_ACTIVATION_FREE=1`.
 
-## T1: Mock dataset (fictitious company)
-- **Description:** A fictitious US company operating in LATAM (e.g. "Andes Labs Inc."). Includes `data/company.json` (policy: per-payment limit, monthly budget per category, human-approval threshold, allowlisted beneficiaries with wallet/bank, contracts with agreed amounts and tolerance), and 16–20 invoices in mixed formats in `data/invoices/` (PDF, PNG, `.eml`, chat `.txt`) in USD/COP/MXN/BRL. Trap cases required: duplicate charge, new non-allowlisted beneficiary, amount not matching the contract, over limit (needs human), insufficient period budget, plus a few subtle ones (changed bank details, wrong currency, past-due date, vague concept). `data/expected.json` holds the ground-truth action and reason per invoice.
-- **Owner:** agy
-- **Status:** done
-- **Acceptance criteria:** Every trap case listed in the Blinka brief is present. Each invoice has an expected action. No real people or companies.
-- **Tests:** The engine eval (T7) runs over the full set.
-- **Comments:** Owner changed to claude to unblock. 18 invoices (6 PAY, 12 traps) in `data/invoices.json` + rendered PDF/PNG/EML/TXT via `scripts/render-invoices.mjs`.
+### T13: Deploy
+- **Description:** Merge PR #1 (`wmb/orbit-v2`) to `main`. In Vercel project `orbit` set: `ANTHROPIC_API_KEY`, `TYPESAFE_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ORBIT_SIGNING_KEY` (`node scripts/gen-signing-key.mjs`), `NEXT_PUBLIC_PRIVY_APP_ID`, `ORBIT_PAY_TO`; optionally `ORBIT_ACTIVATION_FREE=1`. Add `orbit.devcristobalvc.com` and `*.vercel.app` to the Privy app's allowed domains.
+- **Acceptance criteria:** `/api/health` on prod reports `store: supabase`, extraction and JEV true; a case link works from another device; `/api/extract` no longer 503.
+- **Tests:** Smoke on prod: run the demo set, open a vendor link, approve one escalation.
 
-## T2: Deterministic rules engine
-- **Description:** `lib/engine/rules.ts`, a set of pure functions over `(invoice, policy, history)`: `allowlist`, `per_payment_limit`, `human_threshold`, `period_budget`, `duplicate` (same payee + amount + invoice number, or the same amount within N days), `contract_match` (amount within tolerance), `bank_details_changed`, `currency_allowed`, `due_date` (past-due or too far out). Each returns `{rule, pass, severity: block|escalate|info, detail}`. FX conversion to USD uses static rates.
-- **Owner:** claude
-- **Status:** done
-- **Acceptance criteria:** Pure and deterministic. All arithmetic and dates happen here, never in the LLM or JEV.
-- **Tests:** vitest with one test per rule (pass and fail).
-- **Comments:** 18 unit tests incl. randomized safety invariant. Duplicates by amount compare issue dates (recurring fees).
+### T14: Demo video
+- **Description:** `scripts/record-demo.mjs` records the core flow (landing → Reglas → Configuración → Nuevo caso → vendor link → demo set → Lucía's thread → vendor view → Aprobaciones → Reportes → Panel) as `docs/demo/orbit-demo.webm`. The activation/funding clip is screen-recorded by hand (Privy OTP + wallet signature). Narration from `docs/pitch.md` with ElevenLabs; edit in CapCut/iMovie; upload (YouTube/Loom); link in README and HackRadar.
+- **Acceptance criteria:** 2–3 minutes, shows the three criteria (autonomy, safety, explainability) and the activation payment.
 
-## T3: JEV judgments
-- **Description:** `lib/engine/jev.ts`, a client for `POST https://api.typesafe.ai/v1/systemone` (model `jev-latest`). It runs one batched call per invoice:
-  - `concept_matches_contract` (noul)
-  - `expense_category` (choice + "other")
-  - `risk_level` (score: low/medium/high)
-  - `looks_like_social_engineering` (noul: urgency, changed bank details, pressure)
+### T15: HackRadar submission
+- **Description:** Create the team, fill in name, challenge (Blinka), description and links (repo, demo, video). Text ready in `docs/pitch.md`. Cristobal confirms before submit.
+- **Acceptance criteria:** HackRadar shows the project as submitted before Sun 12:00 COT.
 
-  Configurable thresholds. With no API key it falls back to an offline heuristic marked `source: "offline"`, so the demo never breaks.
-- **Owner:** claude
-- **Status:** in-progress
-- **Acceptance criteria:** Under 1 s per invoice. Answers carry probabilities. A confidence below the threshold yields ESCALATE, never PAY.
-- **Tests:** Unit tests with a mocked fetch. One live smoke test when the key exists.
-- **Comments:** Client + offline fallback done. Live JEV smoke test pending `TYPESAFE_API_KEY`.
-
-## T4: Invoice extraction
-- **Description:** `lib/engine/extract.ts`. PDF, image, email or chat text goes to an LLM with structured output (AI SDK `generateObject` with a zod `Invoice`), through Vercel AI Gateway. Fields: payee name, payee account/wallet, invoice number, issue date, due date, currency, amount, line items, concept, and the source channel.
-- **Owner:** claude
-- **Status:** in-progress
-- **Acceptance criteria:** All dataset invoices are extracted correctly. Extraction and decision are separate steps, and the LLM never decides payment.
-- **Tests:** Snapshot over the dataset, with the expected fields in `data/expected.json`.
-- **Comments:** Uses the Anthropic SDK (`claude-opus-5-5`, structured outputs, `fallbacks: "default"`). Pending `ANTHROPIC_API_KEY` (local + Vercel). Demo set uses ground-truth fields from `data/invoices.json`.
-
-## T5: Decision + explanation + audit log
-- **Description:** `lib/engine/decide.ts` combines rules and JEV into `PAY | HOLD | ESCALATE`, with precedence `block` > `escalate` > JEV low confidence > PAY. It returns reason codes and a plain-language explanation built from a template, with an optional LLM rewrite. Each decision is persisted with its inputs, rule results, JEV answers and policy version.
-- **Owner:** claude
-- **Status:** done
-- **Acceptance criteria:** **No PAY is possible if any rule fails** (safety invariant). Every decision is explainable without reading code.
-- **Tests:** A property test: random invoices and policies never produce PAY while a blocking or escalating rule fails.
-- **Comments:** Template explanation in Spanish; invariant enforced in `decide()`.
-
-## T6: Persistence + API
-- **Description:** Upstash Redis (Vercel Marketplace) with an in-memory fallback. Routes:
-  - `POST /api/invoices` (upload, extract, decide)
-  - `GET /api/decisions`
-  - `POST /api/decisions/:id/approve|reject` (the human)
-  - `GET/PUT /api/policy`
-  - `POST /api/v1/check` (public JSON check, so other agents can call ORBIT as a guardrail, < 2 s)
-  - `POST /api/reset` (demo reset)
-- **Owner:** claude
-- **Status:** done
-- **Acceptance criteria:** Approved escalations count against the budget. Duplicates are detected against history.
-- **Tests:** Route tests with the in-memory store.
-- **Comments:** Changed: stateless `POST /api/decide` + client ledger in localStorage (no DB needed). `POST /api/extract` for uploads.
-
-## T7: Eval harness
-- **Description:** `npm run eval` runs the engine over `data/` and reports autonomy (% decided correctly without a human), safety (number of unsafe PAYs, which must be 0) and explainability (every decision has reasons). The results are shown in the UI.
-- **Owner:** claude
-- **Status:** done
-- **Acceptance criteria:** Safety = 0 unsafe PAYs. Results are printed and saved to `docs/eval.md`.
-- **Tests:** Runs in CI or locally.
-- **Comments:** `npm run eval`: 18/18 correct, 72% autonomy, 0 unsafe payments (offline judge). Report in `docs/eval.md`.
-
-## T8: UI
-- **Description:** A simple, clean interface:
-  - **Rules** screen: edit limits, budget, threshold and allowlist.
-  - **Inbox**: upload or paste an invoice, or load the dataset.
-  - **Board**: Paid / Held / Pending approval columns, with counts and spend vs budget.
-  - **Decision detail**: extracted fields, rule checklist, JEV answers with probabilities, explanation, approve/reject.
-  - **Audit log.**
-
-  UI copy in Spanish for the 30X demo (code in English).
-- **Owner:** claude (layout + API wiring); agy can take styling and polish after T6 contracts are frozen
-- **Status:** done
-- **Acceptance criteria:** An end-to-end demo of the dataset fits in about 2 minutes.
-- **Tests:** Manual run plus a Playwright smoke test.
-- **Comments:** Board, decision detail with approve/reject, rules editor, audit log (CSV/JSON export), eval tab. Verified headless E2E.
-
-## T9: Deploy
-- **Description:** Vercel project `orbit`, with env vars `TYPESAFE_API_KEY` and AI Gateway configured.
-- **Owner:** claude (CLI), cristobal (any secret entry)
-- **Status:** in-progress
-- **Acceptance criteria:** A public URL works end to end.
-- **Tests:** Smoke test against prod.
-- **Comments:** Live at https://orbit.devcristobalvc.com. Pending env vars `TYPESAFE_API_KEY`, `ANTHROPIC_API_KEY` in Vercel.
-
-## T10: Demo video (30X)
-- **Description:** A 2–3 min pitch + demo video. The board processes the dataset: clean invoices get paid; the duplicate, new beneficiary and contract mismatch are held; the over-limit one is escalated and a human approves it. Then the audit log explains each decision, and the eval shows 0 unsafe payments.
-- **Owner:** claude (script + automated screen recording), cristobal (voice)
-- **Status:** todo
-- **Acceptance criteria:** Uploaded (YouTube/Loom) and linked in the README and HackRadar.
-- **Tests:** n/a
-- **Comments:**
-
-## T13: JEV playbook (30X bonus)
-- **Description:** `docs/jev-playbook.md`, at most 5 pages: the decisions JEV makes in ORBIT, the typed question schema, thresholds, when it hands off to a human or an LLM, who operates it, and how success is measured.
-- **Owner:** agy (draft), claude (review)
-- **Status:** todo
-- **Acceptance criteria:** Matches the real questions and thresholds in `lib/engine/jev.ts`.
-- **Tests:** n/a
-- **Comments:**
-
-## T14: README + pitch
-- **Description:** README covering the problem, demo link, architecture, safety invariant, eval results, how to run, and what was built during the hackathon window. Plus a pitch script (2–3 min) and a 30X demo video.
-- **Owner:** agy (draft), claude (final), cristobal (voice)
-- **Status:** todo
-- **Acceptance criteria:** A judge understands the project in 60 s.
-- **Tests:** n/a
-- **Comments:**
-
-## T15: 30X submission (HackRadar)
-- **Description:** Create a solo team, fill in the project (name, challenge = Blinka, description, links: repo, demo, video), and make the repo public. Submit before **Sun 12:00 COT**.
-- **Owner:** cristobal (confirm each submit), claude (fill in the form)
-- **Status:** todo
-- **Acceptance criteria:** The HackRadar project shows as submitted.
-- **Tests:** n/a
-- **Comments:**
+### T16–T20
+See the table. T17/T18 are bonus; T19/T20 are the roadmap after the hackathon (also in README).

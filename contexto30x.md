@@ -1,6 +1,8 @@
 # 30X Hackathon context (agent handoff)
 
-> Last updated: **Sat Oct 17, 2026, ~12:35 COT (UTC-5)**. Owner: Cristobal Valencia (`DevCristobalvc`). Team: Cristobal + **wmb**.
+> Last updated: **Sat Oct 17, 2026, ~19:30 COT (UTC-5)**. Owner: Cristobal Valencia (`DevCristobalvc`). Team: Cristobal + **wmb**.
+>
+> **Current state lives in `README.md`, `todo.md` and `CHANGELOG.md`.** Sections 8–11 below describe the morning prototype ("Clara") and are kept as history; the product is now ORBIT v2 (see the note at the end of this file).
 > Purpose: everything another agent needs to pick up this project. No secrets live here. API keys exist only in local `.env.local` files and in Vercel.
 
 ---
@@ -334,3 +336,5 @@ Today these are handled by hand or with fixed rules that don't adapt when the pe
 3. Create the **team** in HackRadar (solo is allowed) and fill in the project: name, challenge, description and links. Confirm with Cristobal before submitting.
 4. Add the keys in Vercel and record the demo/pitch video. (The repo is already public.)
 5. Deadline: **Sun Oct 18, 12:00 COT**.
+
+> **Oct 17, ~18:30 COT (wmb + Claude):** `todo1.md` merged into `todo.md` (one plan). Product is now ORBIT v2: negotiation with vendors, cases on Supabase with a public link per payment, the workspace rebuilt on the mockup shell, agents hired and funded in USDC over x402 with Privy login. See `README.md`, `CHANGELOG.md`, PR https://github.com/DevCristobalvc/orbit/pull/1.
