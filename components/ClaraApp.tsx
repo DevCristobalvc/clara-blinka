@@ -105,7 +105,7 @@ export function ClaraApp({ company, samples, today }: { company: Company; sample
             </p>
           </div>
           <div className="flex items-center gap-6 text-sm">
-            <Stat label="Pagado este mes" value={fmtUSD(paidUSD)} />
+            <Stat label="Pagado por Clara" value={fmtUSD(paidUSD)} />
             <Stat label="Pendientes de aprobación" value={String(pendingApproval)} highlight={pendingApproval > 0} />
             <Stat label="Procesadas" value={String(items.length)} />
             <Button

@@ -9,7 +9,7 @@ const HEADLINE = {
 /** Plain-language log entry; anyone should understand the decision without reading code. */
 export function explain(d: Decision): string {
   const inv = d.invoice;
-  const amount = `${inv.amount.toLocaleString("en-US")} ${inv.currency}${inv.currency !== "USD" ? ` (≈ USD ${d.amountUSD.toLocaleString("en-US")})` : ""}`;
+  const amount = `${inv.amount.toLocaleString("es-CO")} ${inv.currency}${inv.currency !== "USD" ? ` (≈ USD ${d.amountUSD.toLocaleString("es-CO")})` : ""}`;
   const failed = d.rules.filter((r) => !r.pass);
   const lines = [`${HEADLINE[d.action]}`, `Factura ${inv.invoiceNumber} de "${inv.payeeName}" por ${amount}: ${inv.concept}.`];
   if (failed.length) {

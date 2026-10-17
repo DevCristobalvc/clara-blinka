@@ -32,7 +32,7 @@ function parseDate(value?: string): Date | undefined {
   return Number.isNaN(d.getTime()) ? undefined : d;
 }
 
-const usd = (n: number) => `USD ${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+const usd = (n: number) => `USD ${n.toLocaleString("es-CO", { maximumFractionDigits: 2 })}`;
 
 export interface BeneficiaryMatch {
   beneficiary?: Beneficiary;
@@ -145,7 +145,7 @@ const contractMatch: Rule = ({ invoice, contract }) => {
       rule: "contract",
       pass: false,
       code: "CONTRACT_MISMATCH",
-      detail: `El monto (${invoice.amount.toLocaleString("en-US")} ${invoice.currency}) se desvía ${(deviation * 100).toFixed(1)}% de lo pactado (${contract.amount.toLocaleString("en-US")} ${contract.currency}); la tolerancia es ${contract.tolerancePct}%.`,
+      detail: `El monto (${invoice.amount.toLocaleString("es-CO")} ${invoice.currency}) se desvía ${(deviation * 100).toFixed(1)}% de lo pactado (${contract.amount.toLocaleString("es-CO")} ${contract.currency}); la tolerancia es ${contract.tolerancePct}%.`,
     };
   }
   return {
@@ -218,7 +218,7 @@ const duplicate: Rule = ({ invoice, match, history, company, today }) => {
         rule: "duplicate",
         pass: false,
         code: "DUPLICATE",
-        detail: `Posible cobro duplicado: ya se pagó la factura ${hit.invoiceNumber} a "${b.name}" por ${hit.amount.toLocaleString("en-US")} ${hit.currency} el ${hit.paidAt.slice(0, 10)}.`,
+        detail: `Posible cobro duplicado: ya se pagó la factura ${hit.invoiceNumber} a "${b.name}" por ${hit.amount.toLocaleString("es-CO")} ${hit.currency} el ${hit.paidAt.slice(0, 10)}.`,
       }
     : { rule: "duplicate", pass: true, detail: "No hay pagos previos que coincidan (número de factura o mismo monto reciente)." };
 };
