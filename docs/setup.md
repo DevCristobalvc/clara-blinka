@@ -39,4 +39,4 @@ Copy [`.env.example`](../.env.example) to `.env.local`. Every value is optional;
 
 ## Deploy
 
-The Vercel project is `orbit` (team `devcristobalvc`) on `orbit.devcristobalvc.com`. Set the variables above in Vercel for Production and Preview. Add the production domain and `*.vercel.app` to the Privy app's allowed origins.
+The Vercel project is `orbit` (team `devcristobalvc`) on `orbit.devcristobalvc.com`, connected to GitHub: **every push to `main` deploys to production**, and every PR gets a preview URL. Set the variables above in Vercel for Production and Preview. Add the production domain and `*.vercel.app` to the Privy app's allowed origins.

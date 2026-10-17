@@ -4,6 +4,9 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 
 ## [Unreleased]
 
+### Ops
+- Vercel project `orbit` connected to GitHub: every push to `main` deploys to production (orbit.devcristobalvc.com); PR branches get preview URLs. `ORBIT_SIGNING_KEY` set in Vercel.
+
 ### Docs
 - README rewritten as a short hook: punchline, a Mermaid diagram of how ORBIT works, results, how to try it. The detail moved to `docs/architecture.md`, `docs/api.md`, `docs/setup.md` and `docs/dataset.md`.
 
