@@ -24,7 +24,8 @@ export function Wizard() {
   const pagador = agents?.activations.pagador;
   const hired = Boolean(pagador?.active);
   const funds = Number(agents?.wallets.pagador?.balance ?? 0);
-  const funded = hired && funds > 0;
+  // "Funded" means the company loaded funds in this setup (the wallet may carry a balance from before).
+  const funded = hired && (pagador?.funding?.length ?? 0) > 0;
   const step = !hired ? 0 : !funded ? 1 : !rulesSeen ? 2 : 3;
   const onLog = (m: string) => setLog((l) => [...l.slice(-4), m]);
   const after = (label: string) => run(label, async () => { await refresh(); });
