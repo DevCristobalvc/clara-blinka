@@ -1,6 +1,6 @@
 "use client";
 
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useCreateWallet, usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { PRIVY_APP_ID } from "@/app/providers";
 import { fmtUSD } from "@/lib/client/format";
@@ -157,30 +157,62 @@ function PayButton({ label, demoLabel, path, free, busy, variant = "primary", on
 function WalletStatus() {
   const privy = usePrivySafe();
   const [balance, setBalance] = useState<string>();
-  const address = privy?.wallet?.address;
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState<string>();
+  const address = privy?.wallet?.address ?? privy?.userWallet;
   useEffect(() => {
     if (!address) return;
     usdcBalance(address as `0x${string}`).then(setBalance).catch(() => setBalance(undefined));
   }, [address]);
   if (!PRIVY_APP_ID) return <p className="mt-4 text-xs text-zinc-500">Sin `NEXT_PUBLIC_PRIVY_APP_ID`: no hay wallet de empresa en este despliegue. Los pagos usan el modo demo si `ORBIT_ACTIVATION_FREE=1`.</p>;
   if (!privy?.authenticated) return <p className="mt-4 text-xs text-zinc-500">Entra con Privy (email, Google o passkey) para tener la wallet de la empresa.</p>;
+
+  async function create() {
+    setCreating(true);
+    setError(undefined);
+    try {
+      await privy!.createWallet();
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setCreating(false);
+    }
+  }
+
   return (
-    <p className="mt-4 text-xs text-zinc-400">
-      Wallet de la empresa (quien paga): <span className="font-mono text-zinc-200">{address ?? "creándose…"}</span>
-      {balance !== undefined ? <> · saldo <b className="text-zinc-200">{balance} USDC</b> (Base Sepolia)</> : null}
-      {" · "}
-      <a className="underline" href="https://faucet.circle.com" target="_blank" rel="noreferrer">USDC de prueba</a>
-      {" · "}
-      <button className="underline" onClick={privy.logout}>salir</button>
-    </p>
+    <div className="mt-4 text-xs text-zinc-400">
+      <p>
+        Wallet de la empresa (quien paga):{" "}
+        {address ? (
+          <span className="font-mono text-zinc-200">{address}</span>
+        ) : privy.walletsReady ? (
+          <>
+            <span className="text-amber-300">sin wallet todavía</span> ·{" "}
+            <button className="underline" disabled={creating} onClick={create}>{creating ? "creando…" : "crear la wallet de la empresa"}</button>
+          </>
+        ) : (
+          "cargando…"
+        )}
+        {address && !privy.wallet ? <span className="text-zinc-500"> · conectando la wallet para firmar…</span> : null}
+        {balance !== undefined ? <> · saldo <b className="text-zinc-200">{balance} USDC</b> (Base Sepolia)</> : null}
+        {" · "}
+        <a className="underline" href="https://faucet.circle.com" target="_blank" rel="noreferrer">USDC de prueba</a>
+        {" · "}
+        <button className="underline" onClick={privy.logout}>salir</button>
+      </p>
+      {error ? <p className="mt-1 text-rose-300">{error}</p> : null}
+    </div>
   );
 }
 
 /** usePrivy throws without a provider; without an app id we render the no-wallet path. */
 function usePrivySafe() {
-  const { ready, authenticated, login, logout } = usePrivy();
-  const { wallets } = useWallets();
+  const { ready, authenticated, login, logout, user } = usePrivy();
+  const { wallets, ready: walletsReady } = useWallets();
+  const { createWallet } = useCreateWallet();
   if (!PRIVY_APP_ID) return undefined;
+  // The embedded wallet, once Privy's iframe has it ready to sign; the user object knows the address earlier.
   const wallet = wallets.find((w) => w.walletClientType === "privy") ?? wallets[0];
-  return { ready, authenticated, login, logout, wallet };
+  const userWallet = user?.wallet?.address ?? user?.linkedAccounts?.find((a) => a.type === "wallet" && "address" in a)?.address;
+  return { ready, authenticated, login, logout, wallet, walletsReady, userWallet, createWallet };
 }
