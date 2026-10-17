@@ -31,7 +31,7 @@ Owners: **claude** (`30x1`), **agy** (`30agy`), **cristobal** (human-only steps:
 - **Status:** done
 - **Acceptance criteria:** `npm run dev` serves a page. Repo pushed. No secrets committed.
 - **Tests:** `npm run build` passes.
-- **Comments:** Private repo https://github.com/DevCristobalvc/clara (make public before submitting). Commits as DevCristobalvc.
+- **Comments:** Public repo https://github.com/DevCristobalvc/clara-blinka. Commits as DevCristobalvc.
 
 ## T1: Mock dataset (fictitious company)
 - **Description:** A fictitious US company operating in LATAM (e.g. "Andes Labs Inc."). Includes `data/company.json` (policy: per-payment limit, monthly budget per category, human-approval threshold, allowlisted beneficiaries with wallet/bank, contracts with agreed amounts and tolerance), and 16–20 invoices in mixed formats in `data/invoices/` (PDF, PNG, `.eml`, chat `.txt`) in USD/COP/MXN/BRL. Trap cases required: duplicate charge, new non-allowlisted beneficiary, amount not matching the contract, over limit (needs human), insufficient period budget, plus a few subtle ones (changed bank details, wrong currency, past-due date, vague concept). `data/expected.json` holds the ground-truth action and reason per invoice.
@@ -122,7 +122,7 @@ Owners: **claude** (`30x1`), **agy** (`30agy`), **cristobal** (human-only steps:
 - **Status:** in-progress
 - **Acceptance criteria:** A public URL works end to end.
 - **Tests:** Smoke test against prod.
-- **Comments:** Live at https://clara-kohl.vercel.app. Pending env vars `TYPESAFE_API_KEY`, `ANTHROPIC_API_KEY` in Vercel.
+- **Comments:** Live at https://blinka.devcristobalvc.com (alias https://clara-kohl.vercel.app). Pending env vars `TYPESAFE_API_KEY`, `ANTHROPIC_API_KEY` in Vercel.
 
 ## T10: Demo video (30X)
 - **Description:** A 2–3 min pitch + demo video. The board processes the dataset: clean invoices get paid; the duplicate, new beneficiary and contract mismatch are held; the over-limit one is escalated and a human approves it. Then the audit log explains each decision, and the eval shows 0 unsafe payments.
