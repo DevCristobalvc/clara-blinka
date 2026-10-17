@@ -44,3 +44,5 @@ next-env.d.ts
 .comms/
 /data/_gen/node_modules
 /public/invoices
+
+.vercel
