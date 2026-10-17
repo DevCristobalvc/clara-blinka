@@ -1,6 +1,6 @@
 # ORBIT: Actúa con autonomía. Nunca sin límites.
 
-**30X Hackathon · Blinka challenge ("Agents that pay for the company")** · [how it works end to end](docs/how-it-works.md) · [plan](todo.md) · [changelog](CHANGELOG.md) · [pitch](docs/pitch.md) · design: [`docs/design/orbit-mockup.png`](docs/design/orbit-mockup.png)
+**30X Hackathon · Blinka challenge ("Agents that pay for the company")** · [plan](todo.md) · [changelog](CHANGELOG.md) · [pitch](docs/pitch.md) · design: [`docs/design/orbit-mockup.png`](docs/design/orbit-mockup.png)
 
 **ORBIT is where a company's AI agents collect and pay on its behalf.** The **pagador** (payer) agent reads an invoice, checks it against the company's rules, and **pays, holds or escalates** it. When something doesn't add up, it doesn't just stop: it opens a thread with the vendor's **cobrador** (collection agent), asks for the correction, runs the corrected invoice through the same rules, and only then pays. Every decision is explained in plain language and comes with a signed receipt. A person is asked whenever the rules say so, and only then.
 
@@ -94,6 +94,17 @@ Nothing on the public page reveals the company's limits; only what the vendor ne
 - pressure to skip approval (caught by JEV)
 
 Three more are **negotiation traps**, played by compromised cobradores (`data/cobradores.json`): a "corrected" invoice that carries a new bank account, a reply that embeds an instruction to the agent, and a reissue for a higher amount. Every vendor is a rule-driven cobrador (`lib/engine/cobrador.ts`), so the eval is reproducible. Expected outcomes, including the expected resolution, live in `data/expected.json`. All names, accounts and amounts are made up.
+
+## What is real and what is simulated
+
+| Real | Simulated / out of scope |
+|---|---|
+| Rules engine, JEV judgments (live key), Claude extraction and message wording | Vendor replies in the demo set (rule-driven per vendor; a real vendor answers on the link) |
+| Supabase cases and audit trail, signed receipts, signed webhooks | Moving the vendor's money: payments are **recorded** in the ledger; Blinka's rails in production |
+| Privy login and the company's wallet; USDC payments over x402 on Base Sepolia (testnet) to hire and fund the agents | Blinka's own login (Privy stands in for it); mainnet money |
+| One wallet per company per agent (derived on the server, real balances) | The cobrador's screens (next version) |
+
+Money goes three ways: the **activation fee** to ORBIT's treasury (`ORBIT_PAY_TO`), **funds** into the agent's own wallet (what it pays from), and **vendor payments**, which ORBIT decides and records but does not execute.
 
 ## Run it
 

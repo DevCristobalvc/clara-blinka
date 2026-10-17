@@ -19,7 +19,7 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 - **Workspace rebuilt on the mockup shell**: Panel, Facturas (open a case by vendor + contract, upload, run the demo set), Reglas (saved to the server), Aprobaciones (only escalations can be approved), Reportes (eval from the cases, CSV/JSON export), Configuración.
 - **Hire the agents with USDC over x402**: `POST /api/agents/{pagador,cobrador}/activate` (fee to ORBIT's treasury) and `/fund` (into the agent's own per-company wallet), protected with `withX402` on Base Sepolia; Privy login gives the company an embedded wallet that pays the 402. `ORBIT_ACTIVATION_FREE=1` for previews without a wallet.
 - Claude writes the negotiation messages (`lib/engine/vendor-prose.ts`, templates as fallback).
-- `docs/how-it-works.md`, `docs/pitch.md`, `scripts/record-demo.mjs`, `scripts/x402-pay.mjs`, `scripts/gen-signing-key.mjs`.
+- `docs/pitch.md`, `scripts/record-demo.mjs`, `scripts/x402-pay.mjs`, `scripts/gen-signing-key.mjs`.
 
 ### Changed
 - Eval now reports safety **before and after negotiation** and a resolution rate: 21/21, 0 · 0 unsafe, 76% autonomy, 3/10 resolved.

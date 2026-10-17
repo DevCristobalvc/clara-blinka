@@ -1,6 +1,6 @@
 # ORBIT · plan (the only one)
 
-**30X Hackathon · Blinka challenge** ("Agents that pay for the company"). Submission closes **Sun Oct 18, 12:00 COT**; Demo Day Oct 19–20. This file replaces `todo1.md` (merged Oct 17 evening). History in `CHANGELOG.md`; how the product works in `docs/how-it-works.md`; the pitch in `docs/pitch.md`.
+**30X Hackathon · Blinka challenge** ("Agents that pay for the company"). Submission closes **Sun Oct 18, 12:00 COT**; Demo Day Oct 19–20. This file replaces `todo1.md` (merged Oct 17 evening). History in `CHANGELOG.md`; the pitch in `docs/pitch.md`.
 
 **Product in one line:** ORBIT is where a company's AI agents collect and pay for it. The **pagador** reads each invoice, checks it against the rules the company set once, negotiates corrections with the vendor on a per-payment link, and pays, holds or escalates, with a signed receipt per decision. The company hires and funds its agents paying in USDC (x402). The **cobrador** is the same engine with the rules inverted (next version).
 
