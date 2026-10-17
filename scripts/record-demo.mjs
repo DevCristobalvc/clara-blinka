@@ -77,10 +77,12 @@ await pause(2500);
 await go("/app", "text=Pon a ORBIT a trabajar");
 await pause(1500);
 await page.click("text=Pon a ORBIT a trabajar");
-await pause(5000);
-await go("/app/facturas", "text=Facturas");
-await page.waitForSelector("text=Set de demo completo", { timeout: 300000 });
-await pause(2000);
+// The invoices are processed by the browser; stay on the Panel while the counters move, then navigate
+// client-side (sidebar link) so the loop keeps running, and watch the board fill.
+await pause(16000);
+await page.click("aside >> text=Facturas");
+await page.waitForSelector("text=Set de demo completo", { timeout: 420000 });
+await pause(2500);
 
 // 5. Lucía's negotiation, then the vendor's view
 await page.click("text=Lucía Fernández >> nth=0");
