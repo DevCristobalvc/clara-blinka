@@ -24,7 +24,7 @@
 | T9 | Cases on Supabase, public link `/c/[id]`, API, signed webhooks | claude | done |
 | T10 | Signed receipts + `policyHash` + `/api/keys` | claude | done |
 | T11 | Single workspace on the mockup shell (Panel, Facturas, Reglas, Aprobaciones, Reportes, Configuración) | claude | done |
-| T12 | Hire the agents with USDC over x402 (activate → ORBIT treasury; fund → agent wallet), Privy login | claude | **in-progress** (code done; live payment unverified) |
+| T12 | Hire the agents with USDC over x402 (activate → ORBIT treasury; fund → agent wallet), Privy login | claude | done (live payments verified Oct 17 20:47 COT) |
 | T13 | Deploy with env vars on Vercel (`orbit` project) | cristobal | **todo** |
 | T14 | Demo video (`scripts/record-demo.mjs` + ElevenLabs narration from `docs/pitch.md`) + activation clip by hand | wmb, claude | **in-progress** |
 | T15 | HackRadar: team, project form, links; submit before Sun 12:00 COT | cristobal (confirms), claude (text) | **todo** |
@@ -42,7 +42,7 @@ Dropped: extraction with OpenAI (the Anthropic key works), Neon (Supabase chosen
 - **Description:** `POST /api/agents/{pagador,cobrador}/activate` (fee → `ORBIT_PAY_TO`) and `/fund` (→ the agent's per-company wallet, derived from the server secret) protected with `withX402` (`@x402/next`, facilitator `x402.org`, USDC on Base Sepolia). Privy login (`/login`) gives the company an embedded wallet; `AgentsCard` in Configuración pays the 402 with it and shows wallet, balance, payer and tx. `scripts/x402-pay.mjs` pays with a plain test wallet to verify the server path.
 - **Acceptance criteria:** From a fresh Privy login, paying 0.10 USDC activates the pagador and 1 USDC lands in its wallet; both show in Configuración with the BaseScan tx. The script succeeds against the local server.
 - **Tests:** Build green. Manual: fund the test payer and the Privy wallet at https://faucet.circle.com (Base Sepolia), run `node --env-file=.env.local scripts/x402-pay.mjs activate pagador`, then the UI.
-- **Comments:** Env vars in `.env.local`: `NEXT_PUBLIC_PRIVY_APP_ID`, `ORBIT_PAY_TO` (treasury), `ORBIT_TREASURY_PRIVATE_KEY` (sweep only), `ORBIT_TEST_PAYER_PRIVATE_KEY`. Fallback for the video: `ORBIT_ACTIVATION_FREE=1`.
+- **Comments:** Verified live Oct 17 20:47 COT with `scripts/x402-pay.mjs`: activate 0.10 USDC (tx 0x28c7fb74…9059) and fund 1.00 USDC (tx 0x0ab9fa56…cacc) settled on Base Sepolia; treasury and agent wallet balances match. The UI path (Privy wallet) uses the same client code; tx hashes are attached via `POST /api/agents/:kind/tx`. Env vars in `.env.local`: `NEXT_PUBLIC_PRIVY_APP_ID`, `ORBIT_PAY_TO` (treasury), `ORBIT_TREASURY_PRIVATE_KEY` (sweep only), `ORBIT_TEST_PAYER_PRIVATE_KEY`. Fallback for the video: `ORBIT_ACTIVATION_FREE=1`.
 
 ### T13: Deploy
 - **Description:** Merge PR #1 (`wmb/orbit-v2`) to `main`. In Vercel project `orbit` set: `ANTHROPIC_API_KEY`, `TYPESAFE_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CLARA_SIGNING_KEY` (`node scripts/gen-signing-key.mjs`), `NEXT_PUBLIC_PRIVY_APP_ID`, `ORBIT_PAY_TO`; optionally `ORBIT_ACTIVATION_FREE=1`. Add `orbit.devcristobalvc.com` and `*.vercel.app` to the Privy app's allowed domains.
