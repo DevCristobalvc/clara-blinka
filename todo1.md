@@ -21,9 +21,9 @@ Tagline (from the mockup): **"Actúa con autonomía. Nunca sin límites."**
 | D1 | Challenge | Blinka, with JEV inside as the judgment layer | proposed |
 | D2 | Concept | Control tower + autonomous ingestion + vendor follow-up loop + MCP server | proposed |
 | D3 | Agent language | TypeScript (reuse the tested engine, one codebase) | proposed |
-| D4 | Extraction LLM | OpenAI (credits available; reads PDF and images). DeepSeek is text-only. No Anthropic key | proposed |
+| D4 | Extraction LLM | Claude (`ANTHROPIC_API_KEY` provided Oct 17; works in prod). OpenAI as fallback | proposed |
 | D5 | Inbound email | Provider with an inbound webhook (pick in T14) | open |
-| D6 | Hosting | Vercel (app, API, agent endpoints) + Neon Postgres (via the Vercel integration). Neon Functions only if a >5 min agent loop appears | proposed |
+| D6 | Hosting / DB | Vercel (app, API, agent endpoints). DB: **open**. Supabase keys were provided (William) and Neon is also linked; pick one | open |
 | D7 | Brand / domain | Rebrand ORBIT → **ORBIT**. Keep `orbit.devcristobalvc.com`. Repo name stays `orbit` unless renamed | proposed |
 | D8 | Auth | Mock login at `/login` (user `123`, password `123`); cookie gate on `/app` via `proxy.ts`. Not real auth | confirmed (Oct 17) |
 | D9 | Out of scope | x402, ERC-8004, real money movement, identity verification (excluded by the Blinka brief) | proposed |
@@ -220,10 +220,10 @@ Priority: **P1** = must ship for the demo, **P2** = ship if time allows.
 - **Description:** Replace the extraction provider with the OpenAI SDK (structured output with a zod schema), taking PDF and image input. Keep the same `Invoice` type and keep extraction separate from the decision (the LLM never decides payment).
 - **Owner:** claude
 - **Priority:** P1
-- **Status:** todo
+- **Status:** in-progress
 - **Acceptance criteria:** All 18 dataset documents extract to the ground truth in `data/invoices.json` (amount, currency, payee, account, number, dates).
 - **Tests:** An extraction eval script with a per-field accuracy report.
-- **Comments:** Needs `OPENAI_API_KEY` in `.env.local` and Vercel (cristobal). Budget about USD 5: run the eval once.
+- **Comments:** `ANTHROPIC_API_KEY` now available (local + Vercel), so extraction runs on Claude in prod (verified on a dataset PDF). Switching to OpenAI is no longer needed unless we decide otherwise (D4).
 
 ## T14: Inbound email ingestion
 - **Description:** A dedicated inbox address (for example `facturas@…`) via a provider with an inbound webhook → `POST /api/inbound/email` (signature-verified). It parses the body and attachments into the pipeline and replies with an acknowledgement.
@@ -265,10 +265,10 @@ Priority: **P1** = must ship for the demo, **P2** = ship if time allows.
 - **Description:** Use the real `TYPESAFE_API_KEY` locally and in Vercel. Tune thresholds on the dataset, run `CLARA_EVAL_LIVE=1 npm run eval`, and show the JEV source and latency in the decision detail.
 - **Owner:** cristobal (key), claude (tuning)
 - **Priority:** P1
-- **Status:** todo
+- **Status:** done
 - **Acceptance criteria:** Live eval: 0 unsafe pays and ≥ the offline accuracy.
 - **Tests:** `docs/eval-live.md`.
-- **Comments:**
+- **Comments:** Oct 17: `TYPESAFE_API_KEY` set in `.env.local` and Vercel (prod + preview). Live eval: 18/18 correct, 0 unsafe, JEV ~90 ms (`docs/eval-live.md`).
 
 ## T19: Dataset aligned with the mockup
 - **Description:** Keep the 18 trap cases and add or rename vendors so the Panel reads like the mockup ("Acme Solutions" USD 2,500 → Pagada; "Global Tech Ltd" USD 8,700 → Pendiente "Monto > límite"; "Servicios LATAM" COP 12,000,000 → Pagada "Proveedor permitido"; "Factura #1032"). Re-render the documents and update `expected.json`.

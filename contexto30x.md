@@ -48,7 +48,7 @@ We are competing in the **30X Hackathon** (online, LATAM). Submission closes **S
 |---|---|
 | Repo (**public**) | https://github.com/DevCristobalvc/orbit |
 | Production (custom domain) | **https://orbit.devcristobalvc.com** |
-| Vercel project | `orbit` (team `devcristobalvc`); `orbit.devcristobalvc.com` is assigned to it, so every prod deploy lands there |
+| Vercel project | `orbit` (team `devcristobalvc`); domains `orbit.devcristobalvc.com` and `orbit-devcristobalvc.vercel.app` |
 
 ---
 
@@ -299,7 +299,7 @@ Today these are handled by hand or with fixed rules that don't adapt when the pe
 
 - **PayBox / MoonPay hackathon (https://developer.paybox.sh/):** **CANCELLED** by Cristobal on Oct 17. Don't resume it unless he asks.
 - **API keys:**
-  - `TYPESAFE_API_KEY` and `ANTHROPIC_API_KEY` are still pending.
+  - `TYPESAFE_API_KEY`, `ANTHROPIC_API_KEY`, `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set in `.env.local` (git-ignored) and in Vercel (prod + preview, sensitive) since Oct 17. The service-role key is server-only: never expose it with `NEXT_PUBLIC_`.
   - Cristobal also has OpenAI and DeepSeek credits. Ask him for the keys.
   - Keys go only in `.env.local` and in Vercel env vars, **never in the repo**.
   - Switching extraction to another provider is a planning decision.
