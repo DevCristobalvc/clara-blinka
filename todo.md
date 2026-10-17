@@ -34,6 +34,7 @@
 | T19 | Inbound email ingestion (invoice arrives by email → case) | — | todo · P2 |
 | T20 | Cobrador screens: collection cases with the rules inverted (`Case.role: collector`) | — | todo · next version |
 | T21 | README as a short hook (punchline + Mermaid diagram); architecture, API, setup and dataset moved to `docs/` | claude | done |
+| T22 | Vendor payouts on-chain from the agent wallet, gas sponsored by Privy (EIP-3009 + Privy relayer wallet) | claude | code done · waiting for Base Sepolia enabled in Privy Fee sponsorship |
 
 Dropped: extraction with OpenAI (the Anthropic key works), Neon (Supabase chosen), x402 per case / ERC-8004 / wallets that move vendor money (out of the brief), dataset renamed to the mockup's vendors.
 
@@ -60,3 +61,9 @@ Dropped: extraction with OpenAI (the Anthropic key works), Neon (Supabase chosen
 
 ### T16–T20
 See the table. T17/T18 are bonus; T19/T20 are the roadmap after the hackathon (also in README).
+
+### T22: Vendor payouts on-chain, gas sponsored by Privy
+- **Description:** `WalletExecutor` (`ORBIT_PAYOUTS=onchain`) pays approved invoices from the agent's wallet in testnet USDC on Base Sepolia, `ORBIT_PAYOUT_SCALE=1000` (1 USDC = 1,000 USD). The agent wallet holds only USDC: it signs an EIP-3009 `transferWithAuthorization` and a Privy server wallet per company (`lib/server/privy.ts`, `external_id` `orbit-relayer-<company>`, created on first use) submits it with `sponsor: true`. No wallet needs ETH. Errors leave the settlement `pending` with the reason.
+- **Acceptance criteria:** A PAY case ends with `settlement.status = "sent"` and a BaseScan tx; the vendor wallet receives the USDC; the agent wallet has 0 ETH throughout. The vendor page says "Pago enviado … a través de Blinka".
+- **Tests:** `npm test` green (56). Live smoke: `npx tsx --tsconfig tsconfig.json --env-file=.env --env-file=.env.local <script>` running `WalletExecutor.execute` once for 10 USD (0.01 USDC).
+- **Comments:** Oct 17 17:55 COT: relayer wallet `0xeBa3CB2a4113567bB47447Fe17B995269F3837bC` created for `andes`; Privy answered `Gas sponsorship is not configured for chain eip155:84532`. Pending on the Privy dashboard: Fee sponsorship → Supported chains → Base Sepolia. Agent wallet `0x309ceaC4DD5fdCCEA810c352b44bF92F3902C7CC` holds 207 USDC.

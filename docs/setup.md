@@ -25,6 +25,10 @@ Copy [`.env.example`](../.env.example) to `.env.local`. Every value is optional;
 | `ORBIT_SIGNING_KEY` | Receipt signing key (`node scripts/gen-signing-key.mjs`) | Ephemeral key per process |
 | `ORBIT_ADMIN_TOKEN` | Required as `X-Orbit-Admin` on `PUT /api/policy` | Policy editable without a token |
 | `NEXT_PUBLIC_PRIVY_APP_ID` | Privy login and the company's embedded wallet | Demo login `123` / `123` only |
+| `PRIVY_SECRET` (or `PRIVY_APP_SECRET`) | Privy server wallets: one relayer per company submits the agent's vendor payouts with gas sponsorship. In the Privy dashboard turn on **Fee sponsorship** and add **Base Sepolia** under Supported chains | Payouts try a direct transfer, which needs ETH in the agent wallet |
+| `ORBIT_PAYOUTS=onchain` | Pay approved invoices from the agent wallet in testnet USDC (`ORBIT_PAYOUT_SCALE`, default 1000: 1 USDC = 1,000 USD) | Payments are recorded in the ledger only |
+| `ORBIT_WALLET_SEED` | Secret the per-company agent wallets are derived from (falls back to `ORBIT_SIGNING_KEY`) | Random per process: the deposit address changes on restart |
+| `RESEND_API_KEY` | Email the case link to the vendor | Invite recorded on the case, not sent |
 | `ORBIT_PAY_TO` | ORBIT's treasury on Base Sepolia (activation USDC lands here) | Placeholder address, demo only |
 | `ORBIT_ACTIVATION_FREE=1` | Activate agents without paying (previews without a wallet) | x402 payment required |
 | `ORBIT_REQUIRE_ACTIVATION=1` | Refuse to open cases until the pagador is active | Cases open without activation |

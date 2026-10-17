@@ -4,6 +4,11 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 
 ## [Unreleased]
 
+### Added
+- **Vendor payouts on-chain, gas sponsored by Privy** (`lib/server/payout.ts`, `lib/server/privy.ts`): with `ORBIT_PAYOUTS=onchain` the pagador pays each approved invoice from its wallet in testnet USDC on Base Sepolia (1 USDC = 1,000 USD of invoice). The agent wallet signs an EIP-3009 authorization and a Privy server wallet per company (the relayer) submits it with `sponsor: true`, so no wallet needs ETH. Settlements carry the tx hash; the board shows the BaseScan link and the vendor page "Pago enviado … a través de Blinka". Requires `PRIVY_SECRET` and Fee sponsorship with Base Sepolia enabled in the Privy dashboard.
+- **Depositar** modal in the account bar: QR (`ethereum:<wallet>@84532`), copy address, faucet link.
+- Top bar shows the real signed-in Privy user; logout ends the Privy session and the workspace cookie.
+
 ### Ops
 - Vercel project `orbit` connected to GitHub: every push to `main` deploys to production (orbit.devcristobalvc.com); PR branches get preview URLs. `ORBIT_SIGNING_KEY` set in Vercel.
 
