@@ -10,7 +10,7 @@ import type { CaseStore } from "./store";
 export const X402_NETWORK = "eip155:84532"; // Base Sepolia
 export const X402_FACILITATOR = process.env.X402_FACILITATOR_URL ?? "https://x402.org/facilitator";
 /** ORBIT's treasury on Base Sepolia. Set ORBIT_PAY_TO; the fallback is a placeholder that only works for a demo. */
-export const PAY_TO = (process.env.ORBIT_PAY_TO ?? "0x000000000000000000000000000000000000dEaD") as `0x${string}`;
+export const PAY_TO = (process.env.ORBIT_PAY_TO ?? process.env.ORBIT_PAYTO ?? process.env.ORBIT_PAY ?? process.env.X402_PAY_TO ?? process.env.PAY_TO ?? "0x000000000000000000000000000000000000dEaD") as `0x${string}`;
 export const ACTIVATION_FREE = process.env.ORBIT_ACTIVATION_FREE === "1";
 export const REQUIRE_ACTIVATION = process.env.ORBIT_REQUIRE_ACTIVATION === "1";
 

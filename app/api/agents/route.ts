@@ -11,6 +11,8 @@ export async function GET() {
       plans: Object.values(AGENT_PLANS),
       activations: company.agents ?? {},
       payment: { network: X402_NETWORK, payTo: PAY_TO, facilitator: X402_FACILITATOR, asset: "USDC", free: ACTIVATION_FREE, required: REQUIRE_ACTIVATION },
+      // Names only, never values: lets the UI (and us) see which switches this deployment has.
+      env: Object.keys(process.env).filter((k) => /ORBIT|PAY|PRIVY|X402|SUPABASE|TYPESAFE|ANTHROPIC|SIGNING/i.test(k)).sort(),
     });
   });
 }
