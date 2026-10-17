@@ -182,10 +182,14 @@ function Outcome({ c }: { c: PublicCase }) {
   );
   switch (c.status) {
     case "paid":
-      return box(
-        "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
-        "Pago aprobado",
-        `${c.settlement?.note ?? "Liquidación registrada."}${c.settlement ? ` Referencia ${c.settlement.ref}.` : ""}`,
+      return (
+        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-emerald-200">
+          <p className="text-sm font-semibold">{c.settlement?.status === "sent" ? "Pago enviado: lo recibes en tu cuenta bancaria a través de Blinka" : c.settlement?.status ? "Pago aprobado · ejecución pendiente" : "Pago aprobado"}</p>
+          <p className="mt-1 text-sm opacity-90">
+            {c.settlement?.note ?? "Liquidación registrada."}{c.settlement ? ` Referencia ${c.settlement.ref}.` : ""}
+            {c.settlement?.transaction ? <> <a className="font-mono underline" target="_blank" rel="noreferrer" href={`https://sepolia.basescan.org/tx/${c.settlement.transaction}`}>ver transacción</a></> : null}
+          </p>
+        </div>
       );
     case "scheduled":
       return box("border-sky-500/30 bg-sky-500/10 text-sky-200", "Pago programado", `Se pagará el ${c.thread?.scheduledFor ?? "la fecha acordada"}.`);

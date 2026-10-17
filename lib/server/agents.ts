@@ -39,8 +39,8 @@ export const AGENT_PLANS: Record<AgentKind, AgentPlan> = {
     name: "Pagador",
     tagline: "Revisa lo que debes, decide, negocia con el proveedor y registra el pago.",
     activationPrice: "$0.10",
-    fundingPrice: "$1.00",
-    billing: "Activación de demo. En producción: por caso resuelto, cobrado por x402 o por los rieles de Blinka.",
+    fundingPrice: "$10.00",
+    billing: "Activación de demo. En producción: por caso resuelto, cobrado por x402 o por los rieles de Blinka. Los pagos a proveedores salen de la wallet del agente (1 USDC = 1.000 USD de factura en la demo).",
     available: true,
   },
   cobrador: {
@@ -81,8 +81,13 @@ function walletSeed(): string {
  * a production version keeps per-agent keys in a KMS. The demo never sends from these wallets.
  */
 export function agentWallet(companyId: string, kind: AgentKind): Address {
+  return agentAccount(companyId, kind).address;
+}
+
+/** The agent's signing account. Server-only; used by the on-chain executor to pay vendors from the agent's wallet. */
+export function agentAccount(companyId: string, kind: AgentKind) {
   const pk = `0x${createHmac("sha256", walletSeed()).update(`${companyId}:${kind}`).digest("hex")}` as `0x${string}`;
-  return privateKeyToAccount(pk).address;
+  return privateKeyToAccount(pk);
 }
 
 const publicClient = createPublicClient({ chain: baseSepolia, transport: http(process.env.BASE_SEPOLIA_RPC_URL ?? process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL) });

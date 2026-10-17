@@ -1,5 +1,6 @@
 import { after } from "next/server";
 import { LedgerExecutor } from "@/lib/engine/executor";
+import { PAYOUTS_ONCHAIN, WalletExecutor } from "./payout";
 import { templateProse } from "@/lib/engine/negotiate";
 import { claudeProse } from "@/lib/engine/vendor-prose";
 import type { Case, CaseStatus, Company } from "@/lib/engine/types";
@@ -13,7 +14,8 @@ export const COMPANY_ID = DEMO_COMPANY_ID;
 
 export function serverDeps(): CaseDeps {
   const prose = process.env.ANTHROPIC_API_KEY && process.env.ORBIT_PROSE !== "template" ? claudeProse() : templateProse;
-  return { store: getStore(), today: demoToday(), prose, executor: new LedgerExecutor() };
+  // ORBIT_PAYOUTS=onchain: the pagador pays approved invoices in testnet USDC from its wallet; otherwise it records them.
+  return { store: getStore(), today: demoToday(), prose, executor: PAYOUTS_ONCHAIN ? new WalletExecutor() : new LedgerExecutor() };
 }
 
 export async function companyForRequest(): Promise<Company> {

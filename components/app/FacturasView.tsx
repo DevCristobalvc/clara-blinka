@@ -148,6 +148,7 @@ export function FacturasView() {
                           <div className="mt-2 flex flex-wrap items-center gap-1">
                             <StatusChip status={c.status} />
                             {c.status === "awaiting_invoice" && c.invite ? <span className="rounded-md bg-panel-2 px-1.5 py-0.5 text-[11px] text-zinc-300">enlace enviado a {c.invite.email}</span> : null}
+                            {c.settlement?.transaction ? <a className="rounded-md bg-emerald-500/15 px-1.5 py-0.5 font-mono text-[11px] text-emerald-300" target="_blank" rel="noreferrer" href={`https://sepolia.basescan.org/tx/${c.settlement.transaction}`} onClick={(e) => e.stopPropagation()}>{c.settlement.amountUSDC} USDC · tx</a> : c.settlement?.status === "pending" ? <span className="rounded-md bg-amber-500/15 px-1.5 py-0.5 text-[11px] text-amber-300">ejecución pendiente</span> : null}
                             {c.thread?.outcome ? <span className="rounded-md bg-panel-2 px-1.5 py-0.5 text-[11px] text-zinc-300">{OUTCOME_LABEL[c.thread.outcome]}</span> : null}
                             {c.status === "negotiating" ? <span className="rounded-md bg-orbit/15 px-1.5 py-0.5 text-[11px] text-orbit">ronda {c.thread?.rounds ?? 0}/{c.thread?.maxRounds ?? 2}</span> : null}
                             {c.decision?.reasons.map((r) => <ReasonChip key={r} code={r} />)}

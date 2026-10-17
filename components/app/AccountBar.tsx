@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Copy, Download, Wallet } from "lucide-react";
+import { ArrowUpRight, Copy, Download, Wallet, X } from "lucide-react";
+import QRCode from "qrcode";
 import { PRIVY_APP_ID } from "@/app/providers";
 import { usdcBalance } from "@/lib/client/x402";
 import { Button } from "../ui";
@@ -16,7 +17,13 @@ export function AccountBar() {
   const { company, pending, cases } = useWorkspace();
   const privy = usePrivySafe();
   const [balance, setBalance] = useState<string>();
+  const [deposit, setDeposit] = useState(false);
+  const [qr, setQr] = useState<string>();
   const address = privy?.wallet?.address ?? privy?.userWallet;
+  useEffect(() => {
+    if (!deposit || !address) return;
+    QRCode.toDataURL(`ethereum:${address}@84532`, { width: 220, margin: 1, color: { dark: "#000000", light: "#f5e400" } }).then(setQr).catch(() => setQr(undefined));
+  }, [deposit, address]);
 
   useEffect(() => {
     if (!address) return;
@@ -66,12 +73,39 @@ export function AccountBar() {
 
       <div className="flex gap-2">
         {address ? (
-          <a href="https://faucet.circle.com" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-orbit px-4 py-1.5 text-sm font-semibold text-black hover:brightness-95"><Download className="h-4 w-4" /> Depositar</a>
+          <button type="button" onClick={() => setDeposit(true)} className="inline-flex items-center gap-1.5 rounded-full bg-orbit px-4 py-1.5 text-sm font-semibold text-black hover:brightness-95"><Download className="h-4 w-4" /> Depositar</button>
         ) : privy && !privy.authenticated && PRIVY_APP_ID ? (
           <Button onClick={privy.login}>Entrar con Privy</Button>
         ) : null}
         <button type="button" disabled className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium text-zinc-400 ring-1 ring-inset ring-zinc-600 disabled:opacity-60" title="Los envíos los hace ORBIT por ti; envío manual próximamente"><ArrowUpRight className="h-4 w-4" /> Enviar</button>
       </div>
+
+      {deposit && address ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={() => setDeposit(false)}>
+          <div className="w-full max-w-md rounded-2xl border border-line bg-panel p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-white">Depositar USDC</h3>
+                <p className="text-xs text-zinc-500">Red Base Sepolia · solo USDC. Es la cuenta de la empresa; de aquí contratas y fondeas a tus agentes.</p>
+              </div>
+              <button aria-label="Cerrar" className="text-zinc-500 hover:text-white" onClick={() => setDeposit(false)}><X className="h-5 w-5" /></button>
+            </div>
+            <div className="mt-5 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+              {/* eslint-disable-next-line @next/next/no-img-element -- generated data URL */}
+              {qr ? <img src={qr} alt="QR de la dirección" width={176} height={176} className="rounded-xl" /> : <div className="h-44 w-44 animate-pulse rounded-xl bg-panel-2" />}
+              <div className="min-w-0 flex-1">
+                <p className="text-xs uppercase tracking-wide text-zinc-500">Dirección</p>
+                <p className="mt-1 break-all font-mono text-sm text-zinc-100">{address}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button onClick={() => void navigator.clipboard.writeText(address)}>Copiar dirección</Button>
+                  <a href="https://faucet.circle.com" target="_blank" rel="noreferrer" className="rounded-full px-4 py-1.5 text-sm text-zinc-300 ring-1 ring-inset ring-zinc-600 hover:ring-white">USDC de prueba</a>
+                </div>
+                <p className="mt-3 text-xs text-zinc-500">Saldo actual: <b className="text-zinc-200">{balance ?? "—"} USDC</b>. Se actualiza solo.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
