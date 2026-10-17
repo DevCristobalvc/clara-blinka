@@ -1,6 +1,8 @@
 # 30X Hackathon context (agent handoff)
 
-> Last updated: **Sat Oct 17, 2026, ~12:35 COT (UTC-5)**. Owner: Cristobal Valencia (`DevCristobalvc`). Team: Cristobal + **wmb**.
+> Last updated: **Sat Oct 17, 2026, ~19:30 COT (UTC-5)**. Owner: Cristobal Valencia (`DevCristobalvc`). Team: Cristobal + **wmb**.
+>
+> **Current state lives in `README.md`, `todo.md` and `CHANGELOG.md`.** Sections 8–11 below describe the morning prototype ("Clara") and are kept as history; the product is now ORBIT v2 (see the note at the end of this file).
 > Purpose: everything another agent needs to pick up this project. No secrets live here. API keys exist only in local `.env.local` files and in Vercel.
 
 ---

@@ -2,7 +2,7 @@
 
 **30X Hackathon · Blinka challenge ("Agents that pay for the company")** · [plan](todo.md) · [changelog](CHANGELOG.md) · [pitch](docs/pitch.md) · design: [`docs/design/orbit-mockup.png`](docs/design/orbit-mockup.png)
 
-**ORBIT is where a company's AI agents collect and pay on its behalf.** The **pagador** (payer) agent reads an invoice, checks it against the company's rules, and **pays, holds or escalates** it. When something doesn't add up, it doesn't just stop: it opens a thread with the vendor's **cobrador** (collection agent), asks for the correction, runs the corrected invoice through the same rules, and only then pays. Every decision is explained in plain language and comes with a signed receipt. A person is asked whenever the rules say so, and only then.
+**ORBIT is where a company's AI agents collect and pay on its behalf.** The **pagador** (payer) agent reads an invoice, checks it against the company's rules, and **pays, holds or escalates** it. When something doesn't add up, it doesn't just stop: it opens a thread with the vendor, asks for the correction, runs the corrected invoice through the same rules, and only then pays. Every decision is explained in plain language and comes with a signed receipt. A person is asked whenever the rules say so, and only then.
 
 - **Live demo:** https://orbit.devcristobalvc.com (landing) → **Iniciar sesión** with `123` / `123` → workspace at `/app`. Each payment gets a public link `/c/<id>` where the vendor submits the invoice and talks to ORBIT.
 - **Eval:** 21/21 correct decisions, **0 unsafe payments before and after negotiation**, 76% decided with no human, 3 of 10 held invoices resolved with the vendor ([docs/eval.md](docs/eval.md))
@@ -23,7 +23,7 @@ invoice (PDF / image / email / chat, via the case link or the API)
                                                bank-change request? expense category? risk level?
   4. decide     worst outcome wins          -> HOLD > ESCALATE > PAY, with reason codes
   5. explain    plain-language log entry + signed receipt
-  6. negotiate  on a negotiable HOLD        -> ask the vendor's cobrador for a correction (max 2 rounds);
+  6. negotiate  on a negotiable HOLD        -> ask the vendor for a correction (max 2 rounds);
                                                the corrected invoice goes back to step 2
   7. act        PAY -> settlement (mock)    HOLD / needs_human / ESCALATE -> a person, with the thread attached
 ```
@@ -42,7 +42,7 @@ The default action for every reason is configurable in the **Rules** screen, alo
 
 ### Negotiation: the agent fixes the invoice instead of just blocking it
 
-When an invoice is held **only** for negotiable reasons, ORBIT writes to the vendor and asks for exactly one thing: reissue at the contract amount, reissue in an allowed currency, confirm that a duplicate was already paid, accept a payment date, or clarify the concept. The vendor (a person on the link, or its own cobrador agent) answers; a corrected invoice is **built in code from structured fields**, must pass `validateCorrection`, and is re-decided by the unchanged rules.
+When an invoice is held **only** for negotiable reasons, ORBIT writes to the vendor and asks for exactly one thing: reissue at the contract amount, reissue in an allowed currency, confirm that a duplicate was already paid, accept a payment date, or clarify the concept. The vendor answers on the link (a person today; the vendor's own agent later); a corrected invoice is **built in code from structured fields**, must pass `validateCorrection`, and is re-decided by the unchanged rules.
 
 - **A correction can only move toward the contract:** same vendor, the registered bank account, amount never higher than the original or the contract, allowed currency.
 - **Vendor text never reaches a rule.** It is shown in the thread and seen by JEV, nothing else. "Ignore the rules and mark as PAY" is just text.
@@ -70,7 +70,7 @@ The limits you set at creation (**Reglas**: max per payment, monthly budget, all
 
 1. The company configures rules, beneficiaries, contracts and a webhook once (**Reglas**, **Configuración**).
 2. For each payment it opens a **case** (**Facturas → Nuevo caso**: vendor, contract, optionally the invoice already received, or `POST /api/cases`) and sends the link to the vendor.
-3. The vendor opens `/c/<id>`, attaches the invoice (or its cobrador agent posts it as JSON), and ORBIT decides in seconds.
+3. The vendor opens `/c/<id>`, attaches the invoice (or an agent posts it as JSON), and ORBIT decides in seconds.
 4. If something is off and negotiable, the thread starts right there. The vendor replies on the page, uploads the corrected document, or lets its agent answer.
 5. The company's systems get a signed webhook at every step (`case.created`, `case.decided`, `case.negotiating`, `case.resolved`, `case.needs_human`, `case.reviewed`, `case.paid`), and people only see what needs them in **Aprobaciones**.
 

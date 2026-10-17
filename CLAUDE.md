@@ -2,7 +2,7 @@
 
 # ORBIT (formerly Clara): AI agents that collect and pay for your company (30X Hackathon)
 
-ORBIT's **pagador** agent reads invoices (PDF, image, email, chat), decides **PAY / HOLD / ESCALATE** inside company-defined rules, **negotiates corrections with the vendor's cobrador** on a shareable case link, and explains every decision. Built for the 30X Hackathon Blinka challenge, with JEV (TypeSafe) as the fast judgment layer.
+ORBIT's **pagador** agent reads invoices (PDF, image, email, chat), decides **PAY / HOLD / ESCALATE** inside company-defined rules, **negotiates corrections with the vendor** on a shareable case link, and explains every decision. Built for the 30X Hackathon Blinka challenge, with JEV (TypeSafe) as the fast judgment layer.
 
 - **Deadline:** Sun Oct 18 2026, 12:00 COT. Demo Day Oct 19–20.
 - **Read first:** `README.md` (what it does, what is real vs simulated). **Plan:** `todo.md`, the only one (`todo1.md` was merged into it). **History:** `CHANGELOG.md`: add an entry for every user-visible change. **Context:** `contexto30x.md` (briefs, URLs). **Pitch:** `docs/pitch.md`.
@@ -31,7 +31,7 @@ CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node 
 
 ## Layout
 
-- `lib/engine/` (pure, offline-testable): `types` → `extract` (Claude structured output) → `rules` → `jev` → `decide` → `explain`; `negotiate` (loop, guardrails, templates), `cobrador` (rule-driven vendor agent), `receipt` (Ed25519 receipts + `policyHash`), `executor` (`MockExecutor`), `ledger` (`ledgerFor`, `effectiveDecision`), `labels`, `fx`, `severity`, `thresholds`. `vendor-prose` is server-only (Claude writes the words).
+- `lib/engine/` (pure, offline-testable): `types` → `extract` (Claude structured output) → `rules` → `jev` → `decide` → `explain`; `negotiate` (loop, guardrails, templates), `cobrador` (rule-driven simulated vendor replies for the demo set), `receipt` (Ed25519 receipts + `policyHash`), `executor` (`LedgerExecutor`: payments are recorded, never executed), `ledger` (`ledgerFor`, `effectiveDecision`), `labels`, `fx`, `severity`, `thresholds`. `vendor-prose` is server-only (Claude writes the words).
 - `lib/server/`: `store` (`CaseStore`: `SupabaseStore` + `MemoryStore`), `cases` (service: create → submit → negotiate → review, `publicCase`), `webhooks` (signed `X-Orbit-Signature`), `http` (route helpers, `notify` via `after()`), `seed`.
 - `app/api/`: `cases`, `cases/[id]`, `cases/[id]/{invoice,messages,review}`, `policy`, `reset`, `health`, `keys`, plus the stateless `decide` and `extract`. `app/c/[id]`: public case page (`components/CasePage.tsx`).
 - `db/schema.sql`: `policies`, `cases`, `case_events` (append-only audit). Applied to Supabase project `clara` (org Ekinoxis labs). RLS on, no policies: server-only.

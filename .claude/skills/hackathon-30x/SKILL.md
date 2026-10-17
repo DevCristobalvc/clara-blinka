@@ -27,7 +27,7 @@ The submission form takes **one** challenge. Only the team decides which.
 
 ## Hard rules
 
-- The repo must be public (https://github.com/DevCristobalvc/clara-blinka). No real customer data.
+- The repo must be public (https://github.com/DevCristobalvc/orbit). No real customer data.
 - The project must be functional at the deadline.
 - HackRadar submission (team, name, challenge, description, links) is a human step: draft the text, but **never submit without explicit confirmation**.
 
