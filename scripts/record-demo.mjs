@@ -30,7 +30,8 @@ await ctx.addInitScript(() => {
   dot.id = "__orbit_cursor";
   dot.style.cssText = "position:fixed;z-index:2147483647;width:18px;height:18px;border-radius:50%;background:#f5e400;box-shadow:0 0 0 3px rgba(0,0,0,.6),0 0 14px rgba(245,228,0,.9);pointer-events:none;transform:translate(-50%,-50%);left:-50px;top:-50px;transition:transform .08s";
   const mount = () => document.body && document.body.appendChild(dot);
-  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", mount) : mount();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
+  else mount();
   window.addEventListener("mousemove", (e) => { dot.style.left = `${e.clientX}px`; dot.style.top = `${e.clientY}px`; }, true);
   window.addEventListener("mousedown", () => { dot.style.transform = "translate(-50%,-50%) scale(.7)"; }, true);
   window.addEventListener("mouseup", () => { dot.style.transform = "translate(-50%,-50%) scale(1)"; }, true);

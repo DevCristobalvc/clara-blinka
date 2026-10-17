@@ -11,6 +11,7 @@ export function PrivyLogin() {
   const { ready, authenticated, login, user } = usePrivy();
   const router = useRouter();
 
+  // Only move into the workspace when the user actually has a session; after a logout, stay on the login page.
   useEffect(() => {
     if (ready && authenticated) {
       document.cookie = `${SESSION_COOKIE}=privy; path=/; max-age=86400; samesite=lax`;

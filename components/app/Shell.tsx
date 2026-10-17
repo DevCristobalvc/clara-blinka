@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { BarChart3, Bell, ChevronDown, FileText, LayoutGrid, LogOut, Scale, Search, Settings, UserCheck } from "lucide-react";
-import { SESSION_COOKIE } from "@/lib/session";
+import { usePathname } from "next/navigation";
+import { BarChart3, Bell, FileText, LayoutGrid, Scale, Search, Settings, UserCheck } from "lucide-react";
 import { OrbitLogo } from "../brand/OrbitLogo";
+import { UserMenu } from "./UserMenu";
 import { needsPerson, useWorkspace } from "./Workspace";
 
 const NAV = [
@@ -19,7 +19,6 @@ const NAV = [
 /** The workspace frame from the mockup: sidebar, topbar with search, bell and the demo user. */
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const { cases, query, setQuery, error, setError, info, busy, pagadorActive, agents } = useWorkspace();
   const pending = cases.filter(needsPerson).length;
 
@@ -62,19 +61,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               <Bell className="h-5 w-5" />
               {pending ? <span className="absolute -right-2 -top-2 rounded-full bg-orbit px-1.5 text-[10px] font-bold text-black">{pending}</span> : null}
             </Link>
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-orbit text-[11px] font-bold text-black">CV</span>
-            <span className="hidden lg:inline">Cristobal Valencia</span>
-            <ChevronDown className="hidden h-4 w-4 lg:inline" />
-            <button
-              aria-label="Cerrar sesión"
-              className="text-zinc-500 hover:text-white"
-              onClick={() => {
-                document.cookie = `${SESSION_COOKIE}=; path=/; max-age=0`;
-                router.push("/");
-              }}
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
+            <UserMenu />
           </div>
         </header>
 
