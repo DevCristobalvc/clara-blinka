@@ -1,11 +1,36 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-jakarta);
   --font-mono: var(--font-geist-mono);
 }
 
+/* ORBIT palette, taken from docs/design/orbit-mockup.png */
+@theme {
+  --color-ink: #050505;
+  --color-panel: #0e0e0e;
+  --color-panel-2: #161616;
+  --color-line: #262626;
+  --color-orbit: #f5e400;
+}
+
+:root {
+  color-scheme: dark;
+}
+
 body {
-  background: #fafafa;
-  color: #18181b;
+  background: var(--color-ink);
+  color: #fafafa;
+}
+
+input,
+select,
+textarea {
+  background: var(--color-panel-2);
+  color: #fafafa;
+}
+
+::selection {
+  background: var(--color-orbit);
+  color: #000;
 }

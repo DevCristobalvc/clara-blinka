@@ -10,7 +10,7 @@ interface DecideBody {
 
 /**
  * Stateless decision endpoint: the caller sends the invoice plus the company's rules and ledger,
- * Clara answers PAY | HOLD | ESCALATE with reasons. Other agents can use it as a payment guardrail.
+ * ORBIT answers PAY | HOLD | ESCALATE with reasons. Other agents can use it as a payment guardrail.
  */
 export async function POST(request: Request) {
   let body: DecideBody;

@@ -68,7 +68,7 @@ export async function requestDecision(state: AppState, invoice: Invoice): Promis
   return data as Decision;
 }
 
-const KEY = "clara-state-v1";
+const KEY = "orbit-state-v1";
 
 export function loadState(): AppState | undefined {
   try {

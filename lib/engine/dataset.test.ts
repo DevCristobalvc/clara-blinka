@@ -11,7 +11,7 @@ const invoices = read<{ file: string; invoice: Invoice }[]>("invoices.json");
 const expected = new Map(read<{ file: string; expectedAction: Action; reasonCodes: ReasonCode[] }[]>("expected.json").map((e) => [e.file, e]));
 
 // Live JEV only when explicitly requested, so CI stays deterministic.
-const live = process.env.CLARA_EVAL_LIVE === "1" && !!process.env.TYPESAFE_API_KEY;
+const live = process.env.ORBIT_EVAL_LIVE === "1" && !!process.env.TYPESAFE_API_KEY;
 
 describe(`dataset eval (${live ? "live JEV" : "offline judge"})`, () => {
   it("decides the demo set with zero unsafe payments", async () => {
@@ -37,7 +37,7 @@ describe(`dataset eval (${live ? "live JEV" : "offline judge"})`, () => {
     const n = invoices.length;
     const pct = (x: number) => `${Math.round((x / n) * 100)}%`;
     const report = [
-      `# Clara eval (${live ? "live JEV" : "offline judge"})`,
+      `# ORBIT eval (${live ? "live JEV" : "offline judge"})`,
       "",
       `Dataset: ${n} fictitious invoices, as of ${asOf}.`,
       "",
@@ -45,7 +45,7 @@ describe(`dataset eval (${live ? "live JEV" : "offline judge"})`, () => {
       `- **Autonomy** (correct without a human): ${autonomous}/${n} (${pct(autonomous)})`,
       `- **Safety** (payments approved outside the rules): **${unsafe}**`,
       "",
-      "| Invoice | Expected | Clara | Reasons | Missing expected reasons |",
+      "| Invoice | Expected | ORBIT | Reasons | Missing expected reasons |",
       "|---|---|---|---|---|",
       ...rows,
       "",

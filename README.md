@@ -1,8 +1,8 @@
-# Clara: the AP agent that only pays what it should
+# ORBIT: Actúa con autonomía. Nunca sin límites.
 
-**30X Hackathon · Blinka challenge ("Agents that pay for the company")**
+**30X Hackathon · Blinka challenge ("Agents that pay for the company")** · design: [`docs/design/orbit-mockup.png`](docs/design/orbit-mockup.png) · plan: [`todo1.md`](todo1.md)
 
-Clara reads a company's invoices (PDF, image, email or chat) and decides, for each one, whether to **PAY**, **HOLD** or **ESCALATE** it to a person. It works inside rules the company configures, never approves a payment outside those rules without a human, and explains every decision in plain language.
+ORBIT is a platform where a company's AI agent reads its invoices (PDF, image, email or chat) and decides, for each one, whether to **PAY**, **HOLD** or **ESCALATE** it to a person. It works inside rules the company configures, never approves a payment outside those rules without a human, and explains every decision in plain language.
 
 - **Live demo:** https://blinka.devcristobalvc.com
 - **Eval:** 18/18 correct decisions, 0 unsafe payments, 72% decided with no human ([docs/eval.md](docs/eval.md))
@@ -11,7 +11,7 @@ Clara reads a company's invoices (PDF, image, email or chat) and decides, for ea
 
 Finance teams at US companies that work with contractors and vendors across LATAM do this by hand every month: read the invoice, compare it to what was agreed, look up the payee, ask for approval, create the payment and reconcile it in a spreadsheet. Companies now want agents to take over, but the open question is **trust**. The agent must pay only what it should, explain itself and never cross the limits it was given.
 
-## How Clara decides
+## How ORBIT decides
 
 ```
 invoice (PDF / image / email / chat)
@@ -38,7 +38,7 @@ The default action for every reason is configurable in the **Rules** screen, alo
 
 ### Why JEV
 
-JEV is a "System One" model: it answers typed questions (choice / score / yes-no) with calibrated probabilities in 70–500 ms, for about USD 0.042 per million input tokens. That makes it a good fit for the quick, repetitive judgments an AP agent makes thousands of times. Clara uses it for what rules can't see: an invoice whose amount fits the hosting contract but bills for a different service, or an email pushing to "pay today and skip approval". Arithmetic, dates and limits stay in code, because JEV is not built for them. Without an API key, Clara falls back to local heuristics and labels every decision with the source.
+JEV is a "System One" model: it answers typed questions (choice / score / yes-no) with calibrated probabilities in 70–500 ms, for about USD 0.042 per million input tokens. That makes it a good fit for the quick, repetitive judgments an AP agent makes thousands of times. ORBIT uses it for what rules can't see: an invoice whose amount fits the hosting contract but bills for a different service, or an email pushing to "pay today and skip approval". Arithmetic, dates and limits stay in code, because JEV is not built for them. Without an API key, ORBIT falls back to local heuristics and labels every decision with the source.
 
 ## Demo dataset
 
@@ -77,7 +77,7 @@ ANTHROPIC_API_KEY=...   # extraction of uploaded PDFs/images/emails
 
 ## API
 
-`POST /api/decide` is stateless, so other agents can call Clara as a payment guardrail:
+`POST /api/decide` is stateless, so other agents can call ORBIT as a payment guardrail:
 
 ```json
 { "invoice": { "payeeName": "...", "invoiceNumber": "...", "currency": "COP", "amount": 9200000, "concept": "...", "dueDate": "2026-10-30" },

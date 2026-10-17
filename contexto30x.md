@@ -246,7 +246,9 @@ Today these are handled by hand or with fixed rules that don't adapt when the pe
 
 ---
 
-## 8. What already exists: prototype "Clara" (Blinka challenge)
+## 8. What already exists: prototype "Clara", rebranded to **ORBIT** (Blinka challenge)
+
+> Oct 17, ~13:50 COT: rebranded to **ORBIT** following `docs/design/orbit-mockup.png` (dark + neon yellow). The new plan is `todo1.md`.
 
 > Built **before ideation was closed**. Treat it as a prototype or starting point; the final idea is decided with Cristobal.
 

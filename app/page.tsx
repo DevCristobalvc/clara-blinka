@@ -1,7 +1,7 @@
-import { ClaraApp } from "@/components/ClaraApp";
+import { OrbitApp } from "@/components/OrbitApp";
 import { loadDataset } from "@/lib/dataset";
 
 export default async function Home() {
   const { company, samples, today } = await loadDataset();
-  return <ClaraApp company={company} samples={samples} today={today} />;
+  return <OrbitApp company={company} samples={samples} today={today} />;
 }

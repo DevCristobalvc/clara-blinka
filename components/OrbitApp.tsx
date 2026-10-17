@@ -9,6 +9,7 @@ import { DecisionDetail } from "./DecisionDetail";
 import { Inbox, type Sample } from "./Inbox";
 import { AuditLog, EvalPanel } from "./Panels";
 import { RulesEditor } from "./RulesEditor";
+import { OrbitLogo } from "./brand/OrbitLogo";
 import { Button } from "./ui";
 
 const TABS = [
@@ -22,7 +23,7 @@ type Tab = (typeof TABS)[number]["id"];
 
 const REVIEWER = "Equipo de finanzas";
 
-export function ClaraApp({ company, samples, today }: { company: Company; samples: Sample[]; today: string }) {
+export function OrbitApp({ company, samples, today }: { company: Company; samples: Sample[]; today: string }) {
   const fresh = (): AppState => ({ company, items: [], today });
   const [state, setState] = useState<AppState>(fresh);
   const [tab, setTab] = useState<Tab>("inbox");
@@ -93,19 +94,19 @@ export function ClaraApp({ company, samples, today }: { company: Company; sample
   const open = items.find((i) => i.decision.id === openId);
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <header className="border-b border-zinc-200 bg-white">
+    <div className="min-h-screen bg-ink">
+      <header className="border-b border-line bg-panel">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4">
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight text-zinc-900">
-              Clara <span className="font-normal text-zinc-500">· agente de cuentas por pagar</span>
+          <div className="flex items-center gap-5">
+            <h1>
+              <OrbitLogo />
             </h1>
-            <p className="text-xs text-zinc-500">
-              {state.company.company.name} · Solo paga lo que debe, explica cada decisión y pide permiso cuando algo se sale de las reglas.
+            <p className="hidden max-w-md border-l border-line pl-5 text-xs text-zinc-500 md:block">
+              {state.company.company.name} · Actúa con autonomía. <span className="text-orbit">Nunca sin límites.</span>
             </p>
           </div>
           <div className="flex items-center gap-6 text-sm">
-            <Stat label="Pagado por Clara" value={fmtUSD(paidUSD)} />
+            <Stat label="Pagado por ORBIT" value={fmtUSD(paidUSD)} />
             <Stat label="Pendientes de aprobación" value={String(pendingApproval)} highlight={pendingApproval > 0} />
             <Stat label="Procesadas" value={String(items.length)} />
             <Button
@@ -124,10 +125,10 @@ export function ClaraApp({ company, samples, today }: { company: Company; sample
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`border-b-2 px-3 py-2 text-sm font-medium transition ${tab === t.id ? "border-zinc-900 text-zinc-900" : "border-transparent text-zinc-500 hover:text-zinc-800"}`}
+              className={`border-b-2 px-3 py-2 text-sm font-medium transition ${tab === t.id ? "border-orbit text-white" : "border-transparent text-zinc-500 hover:text-white"}`}
             >
               {t.label}
-              {t.id === "board" && pendingApproval ? <span className="ml-1.5 rounded-full bg-amber-500 px-1.5 text-xs text-white">{pendingApproval}</span> : null}
+              {t.id === "board" && pendingApproval ? <span className="ml-1.5 rounded-full bg-orbit px-1.5 text-xs font-semibold text-black">{pendingApproval}</span> : null}
             </button>
           ))}
         </nav>
@@ -135,7 +136,7 @@ export function ClaraApp({ company, samples, today }: { company: Company; sample
 
       <main className="mx-auto max-w-7xl px-4 py-6">
         {error ? (
-          <div className="mb-4 flex items-center justify-between rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-800">
+          <div className="mb-4 flex items-center justify-between rounded-lg border border-rose-500/25 bg-rose-500/10 px-4 py-2 text-sm text-rose-300">
             {error}
             <button onClick={() => setError(undefined)} className="text-xs underline">cerrar</button>
           </div>
@@ -165,7 +166,7 @@ function Stat({ label, value, highlight }: { label: string; value: string; highl
   return (
     <div className="text-right">
       <p className="text-xs text-zinc-500">{label}</p>
-      <p className={`font-semibold ${highlight ? "text-amber-600" : "text-zinc-900"}`}>{value}</p>
+      <p className={`font-semibold ${highlight ? "text-orbit" : "text-white"}`}>{value}</p>
     </div>
   );
 }
