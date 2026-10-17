@@ -57,46 +57,39 @@ await pause(12000);
 await go("/deck?s=3", "text=Qué construimos");
 await holdFor(1, 8000);
 
-// 2. You are in your account: login, then the Panel with the invoices to pay
+// 2. You are in your account: login, then the Panel (account bar + wizard step 1)
 block(2);
 await go("/login", "text=Iniciar sesión");
 await pause(3000);
 await ctx.addCookies([{ name: "orbit_session", value: "demo", url: base }]);
-await go("/app", "text=facturas por pagar");
+await go("/app", "text=Configura a ORBIT");
 await holdFor(2, 6000);
 
-// 3. Hire the pagador and fund it: real x402 payments from the test wallet while the Panel is on screen
+// 3. Hire the pagador and fund it: real x402 payments from the test wallet while the wizard is on screen
 block(3);
 if (canPay) {
   pay("activate");
   await page.reload({ waitUntil: "load" });
-  await page.waitForSelector("text=activo desde", { timeout: 60000 });
+  await page.waitForSelector("h2:has-text('Cárgale fondos')", { timeout: 60000 });
   await pause(3000);
   pay("fund");
   await page.reload({ waitUntil: "load" });
-  await page.waitForSelector("text=USDC en su wallet", { timeout: 60000 });
+  await page.waitForSelector("h2:has-text('Sus reglas')", { timeout: 60000 });
   await holdFor(3, 3000);
 } else {
-  console.warn("ORBIT_TEST_PAYER_PRIVATE_KEY not set: skipping the real activation; the Panel stays on step 1");
+  console.warn("ORBIT_TEST_PAYER_PRIVATE_KEY not set: skipping the real activation; the wizard stays on step 1");
   await holdFor(3, 4000);
 }
 
-// 4. Rules
+// 4. Rules: wizard step 3, then continue
 block(4);
-await go("/app/reglas", "text=Límites");
-await pause(5000);
-await page.mouse.wheel(0, 500);
-await holdFor(4, 4000);
-
-// 5. Put it to work: from the Panel, then watch the board
-block(5);
-await go("/app", "text=Pon a ORBIT a trabajar");
+await holdFor(4, 6000);
+await page.click("text=Continuar");
 await pause(1500);
+
+// 5. Put it to work: wizard step 4 navigates to Facturas and processes the invoices in the browser
+block(5);
 await page.click("text=Pon a ORBIT a trabajar");
-// The invoices are processed by the browser; stay on the Panel while the counters move, then navigate
-// client-side (sidebar link) so the loop keeps running, and watch the board fill.
-await pause(16000);
-await page.click("aside >> text=Facturas");
 await page.waitForSelector("text=Set de demo completo", { timeout: 420000 });
 await holdFor(5, 2500);
 

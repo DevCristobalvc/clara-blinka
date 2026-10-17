@@ -17,7 +17,7 @@ interface AgentsInfo {
   payment: { network: string; payTo: string; facilitator: string; asset: string; free: boolean; required: boolean };
 }
 
-const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
+export const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
 /** Hire the agents (fee to ORBIT) and load their funds (into the agent's own wallet), both in USDC over x402 with the company's Privy wallet. */
 export function AgentsCard() {
@@ -109,7 +109,7 @@ export function AgentsCard() {
   );
 }
 
-function PayButton({ label, demoLabel, path, free, busy, variant = "primary", onLog, onDone }: { label: string; demoLabel: string; path: string; free: boolean; busy: boolean; variant?: "primary" | "secondary"; onLog: (m: string) => void; onDone: () => void }) {
+export function PayButton({ label, demoLabel, path, free, busy, variant = "primary", onLog, onDone }: { label: string; demoLabel: string; path: string; free: boolean; busy: boolean; variant?: "primary" | "secondary"; onLog: (m: string) => void; onDone: () => void }) {
   const privy = usePrivySafe();
   const [working, setWorking] = useState(false);
 
@@ -206,7 +206,7 @@ function WalletStatus() {
 }
 
 /** usePrivy throws without a provider; without an app id we render the no-wallet path. */
-function usePrivySafe() {
+export function usePrivySafe() {
   const { ready, authenticated, login, logout, user } = usePrivy();
   const { wallets, ready: walletsReady } = useWallets();
   const { createWallet } = useCreateWallet();

@@ -16,7 +16,7 @@ Somos Cristobal Valencia y William Martínez, de Ekinoxis. Construimos productos
 
 ## 2. Estás en tu cuenta, tienes facturas por pagar [0:36–0:52] · pantalla: login y Panel con "Tienes 21 facturas por pagar"
 
-Entras a tu cuenta como siempre. Y ahí están: veintiún facturas por pagar este mes. Seis normales. Doce con algún problema. Tres de proveedores que intentan colarte algo.
+Entras a tu cuenta como siempre: tu saldo, depositar, enviar. Y ahí están: veintiún facturas por pagar este mes. Seis normales. Doce con algún problema. Tres de proveedores que intentan colarte algo.
 
 En vez de revisarlas una por una, contratas a ORBIT.
 

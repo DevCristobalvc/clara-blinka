@@ -77,14 +77,34 @@ const videoLen = dur(video);
 console.table(clips.map((c) => ({ block: c.n, planned: c.start, placed: c.at.toFixed(1), length: c.length.toFixed(1) })));
 console.log(`voice ends at ${voiceEnd.toFixed(1)} s, video is ${videoLen.toFixed(1)} s`);
 
+// 2b. Tighten the quiet stretch while the board fills (block 5): play it 3x faster from 14 s after the block
+//     starts until 1 s before block 6, and shift every later clip accordingly.
+const FAST = 3;
+const b5 = timeline[5], b6 = timeline[6];
+let fast = null;
+if (b5 !== undefined && b6 !== undefined && b6 - b5 > 30) {
+  fast = { from: b5 + 14, to: b6 - 1 };
+  const saved = (fast.to - fast.from) * (1 - 1 / FAST);
+  for (const c of clips) if (c.at >= fast.to) c.at -= saved;
+  // keep clips sequential after the shift
+  let cur = 0;
+  for (const c of clips) { c.at = Math.max(c.at, cur); cur = c.at + c.length + 0.4; }
+  console.log(`fast segment ${fast.from.toFixed(1)}–${fast.to.toFixed(1)} s at ${FAST}x, saves ${saved.toFixed(1)} s`);
+}
+
 // 3. Mix: delay each clip, sum them, then mux onto the video (pad the video with its last frame if needed).
 const inputs = clips.flatMap((c) => ["-i", c.file]);
 const delays = clips.map((c, i) => `[${i + 1}:a]adelay=${Math.round(c.at * 1000)}|${Math.round(c.at * 1000)}[a${i}]`).join(";");
 const mix = `${delays};${clips.map((_, i) => `[a${i}]`).join("")}amix=inputs=${clips.length}:normalize=0,volume=1.0,apad[voice]`;
-const pad = voiceEnd > videoLen ? `,tpad=stop_mode=clone:stop_duration=${(voiceEnd - videoLen + 0.5).toFixed(2)}` : "";
+const videoOut = fast ? videoLen - (fast.to - fast.from) * (1 - 1 / FAST) : videoLen;
+const voiceTail = Math.max(...clips.map((c) => c.at + c.length));
+const pad = voiceTail > videoOut ? `,tpad=stop_mode=clone:stop_duration=${(voiceTail - videoOut + 0.5).toFixed(2)}` : "";
+const vchain = fast
+  ? `[0:v]trim=0:${fast.from},setpts=PTS-STARTPTS[v0];[0:v]trim=${fast.from}:${fast.to},setpts=(PTS-STARTPTS)/${FAST}[v1];[0:v]trim=${fast.to},setpts=PTS-STARTPTS[v2];[v0][v1][v2]concat=n=3:v=1:a=0${pad}[v]`
+  : `[0:v]setpts=PTS-STARTPTS${pad}[v]`;
 execFileSync(
   "ffmpeg",
-  ["-v", "error", "-y", "-i", video, ...inputs, "-filter_complex", `[0:v]setpts=PTS-STARTPTS${pad}[v];${mix}`, "-map", "[v]", "-map", "[voice]", "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", out],
+  ["-v", "error", "-y", "-i", video, ...inputs, "-filter_complex", `${vchain};${mix}`, "-map", "[v]", "-map", "[voice]", "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", out],
   { stdio: "inherit" },
 );
 console.log("written", out, `${dur(out).toFixed(1)} s`);
