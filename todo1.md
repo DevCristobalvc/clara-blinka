@@ -23,7 +23,7 @@ Tagline (from the mockup): **"Actúa con autonomía. Nunca sin límites."**
 | D3 | Agent language | TypeScript (reuse the tested engine, one codebase) | proposed |
 | D4 | Extraction LLM | Claude (`ANTHROPIC_API_KEY` provided Oct 17; works in prod). OpenAI as fallback | proposed |
 | D5 | Inbound email | Provider with an inbound webhook (pick in T14) | open |
-| D6 | Hosting / DB | Vercel (app, API, agent endpoints). DB: **open**. Supabase keys were provided (William) and Neon is also linked; pick one | open |
+| D6 | Hosting / DB | Vercel (app, API, agent endpoints) + **Supabase** (Postgres; `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` server-only, set in Vercel). Neon dropped | confirmed (Oct 17) |
 | D7 | Brand / domain | **ORBIT** everywhere: repo `DevCristobalvc/orbit`, Vercel project `orbit`, domain `orbit.devcristobalvc.com` (old `blinka.` subdomain and `clara-kohl` alias removed) | confirmed (Oct 17) |
 | D8 | Auth | Mock login at `/login` (user `123`, password `123`); cookie gate on `/app` via `proxy.ts`. Not real auth | confirmed (Oct 17) |
 | D9 | Out of scope | x402, ERC-8004, real money movement, identity verification (excluded by the Blinka brief) | proposed |
@@ -39,7 +39,7 @@ Tagline (from the mockup): **"Actúa con autonomía. Nunca sin límites."**
                                 5. Explain   plain-language log entry
                                       │
                                       ▼
-                         Neon Postgres: companies, policies (versioned), beneficiaries, contracts,
+                         Supabase Postgres: companies, policies (versioned), beneficiaries, contracts,
                          invoices, decisions, reviews, payments (ledger), vendor_messages
 ```
 
@@ -62,10 +62,27 @@ Tagline (from the mockup): **"Actúa con autonomía. Nunca sin límites."**
   - **Reportes**: eval (autonomy, safety, explainability) and exports
   - **Configuración**: beneficiaries, contracts, inbound email address, MCP endpoint
 
+## Working agreement (to avoid overlapping work)
+
+William (`wmb81321`) is coding the Supabase part right now. Until we sync, these are the proposed owners:
+
+| Area | Owner | Paths |
+|---|---|---|
+| Supabase schema, migrations, data access, persistence routes | **wmb** | `supabase/**`, `lib/db/**`, `app/api/invoices/**`, `app/api/decisions/**`, `app/api/policy/**` |
+| Decision engine, dataset, eval | claude | `lib/engine/**`, `data/**`, `scripts/**` |
+| Landing, app shell and section UIs | claude | `app/page.tsx`, `app/app/**`, `app/login/**`, `components/**` |
+| Plan and docs | claude (others append) | `todo1.md`, `README.md`, `contexto30x.md` |
+
+Rules:
+- Work on a branch (`wmb/<topic>`, `claude/<topic>`), open a PR to `main`, keep commits small, and `git pull --rebase` often.
+- Announce new dependencies before touching `package.json` / `package-lock.json` (the usual conflict hotspot).
+- Contract between UI and DB: the data layer returns the types in `lib/engine/types.ts` (`Invoice`, `Decision`, `Company`, `PaymentRecord`). UI work uses those types, so it can merge with the DB layer without rewrites.
+- Secrets live only in `.env.local` and Vercel, never in git. `SUPABASE_SERVICE_ROLE_KEY` is server-only (no `NEXT_PUBLIC_`).
+
 ## Team
 
 - **cristobal:** decisions, accounts/keys, HackRadar, pitch voice.
-- **wmb:** pitch, video, QA of the demo flow (to confirm with Cristobal).
+- **wmb:** Supabase backend (schema, persistence, data access); pitch/video support.
 - **claude** (`30x1`): backend, DB, engine, app pages.
 - **agy** (`30agy`): hero illustration, landing polish, MCP server, docs.
 
@@ -133,16 +150,17 @@ Priority: **P1** = must ship for the demo, **P2** = ship if time allows.
 - **Tests:** Playwright navigation smoke test.
 - **Comments:**
 
-## T5: Neon Postgres + schema
-- **Description:** Create the Neon DB from Vercel (project `orbit` → Storage → Neon, `aws-us-east-1`) so `DATABASE_URL` is injected, then `vercel env pull` locally. Use Drizzle ORM + `@neondatabase/serverless`.
+## T5: Supabase Postgres + schema
+- **Description:** Supabase project (keys already in `.env.local` and Vercel).
   - **Tables:** `companies`, `policies` (versioned JSON + `active`), `beneficiaries`, `contracts`, `invoices` (source, raw file ref, extracted JSON, status), `decisions` (action, reasons, rules JSON, jev JSON, explanation, policy_version), `reviews`, `payments` (ledger), `vendor_messages`.
-  - Migrations plus a seed script for the demo company.
-- **Owner:** cristobal (create the DB in Vercel, 2 min), claude (schema, migrations, seed)
+  - SQL migrations in `supabase/migrations`, plus a seed script for the demo company (`data/company.json`).
+  - Server-side client only, using the service-role key.
+- **Owner:** wmb
 - **Priority:** P1
-- **Status:** todo
-- **Acceptance criteria:** `npm run db:migrate` and `npm run db:seed` work locally and in Vercel. No credentials in git.
-- **Tests:** An integration test against a Neon branch (`neon checkout test --create`).
-- **Comments:** Use a Neon dev branch for local work and keep the main branch for prod.
+- **Status:** in-progress (wmb coding, Oct 17 afternoon)
+- **Acceptance criteria:** Migrations and seed run against the Supabase project. No credentials in git. The data layer returns the `lib/engine/types.ts` types.
+- **Tests:** A smoke script that seeds and reads back the demo company.
+- **Comments:** Neon was dropped in favor of Supabase (D6).
 
 ## T6: Server-side pipeline + persistence
 - **Description:** Move state from localStorage to the DB:
@@ -153,11 +171,11 @@ Priority: **P1** = must ship for the demo, **P2** = ship if time allows.
   - `POST /api/reset` re-seeds the demo.
 
   The ledger (payments + approved escalations) is read from the DB for budget and duplicate checks.
-- **Owner:** claude
+- **Owner:** wmb (routes + persistence), claude (wiring the engine + UI)
 - **Priority:** P1
 - **Status:** todo
 - **Acceptance criteria:** Reloading or switching browsers keeps the state. Duplicates and budget are computed from the DB. Every decision stores its policy version.
-- **Tests:** Route tests on a Neon test branch. The existing engine tests stay green.
+- **Tests:** Route tests on a Supabase test schema. The existing engine tests stay green.
 - **Comments:** The engine (`lib/engine`) is reused as is.
 
 ## T7: Panel (Resumen ejecutivo + Actividad reciente)
@@ -321,7 +339,7 @@ Priority: **P1** = must ship for the demo, **P2** = ship if time allows.
 
 | When | What |
 |---|---|
-| Sat 13:30–14:00 | T0 decisions + go; Neon DB created (T5) |
+| Sat 13:30–14:00 | T0 decisions + go; Supabase chosen (T5, wmb) |
 | Sat 14:00–19:00 | T1, T4, T5, T6, T7, T13 (claude); T3 + landing polish (agy) |
 | Sat 19:00–23:00 | T2, T8–T11, T18, T19, T20 |
 | Sun 07:00–10:00 | P2 items if time allows (T14, T15, T16, T17, T12), bug bash |

@@ -303,6 +303,7 @@ Today these are handled by hand or with fixed rules that don't adapt when the pe
   - Cristobal also has OpenAI and DeepSeek credits. Ask him for the keys.
   - Keys go only in `.env.local` and in Vercel env vars, **never in the repo**.
   - Switching extraction to another provider is a planning decision.
+- **Database:** Supabase (decided Oct 17; William is building the schema and persistence). Neon was dropped.
 - **Ideation input:** `idea.md` (Antigravity's proposal: x402 + ERC-8004 + MCP). Not decided; Claude flagged that identity verification and fraud decisions are out of Blinka's scope.
 - **Agents involved:**
   - Claude Code (session `30x1`).
