@@ -334,3 +334,5 @@ Today these are handled by hand or with fixed rules that don't adapt when the pe
 3. Create the **team** in HackRadar (solo is allowed) and fill in the project: name, challenge, description and links. Confirm with Cristobal before submitting.
 4. Add the keys in Vercel and record the demo/pitch video. (The repo is already public.)
 5. Deadline: **Sun Oct 18, 12:00 COT**.
+
+> **Oct 17, ~18:30 COT (wmb + Claude):** `todo1.md` merged into `todo.md` (one plan). Product is now ORBIT v2: negotiation with vendors, cases on Supabase with a public link per payment, the workspace rebuilt on the mockup shell, agents hired and funded in USDC over x402 with Privy login. See `docs/how-it-works.md`, `CHANGELOG.md`, PR https://github.com/DevCristobalvc/orbit/pull/1.

@@ -5,7 +5,7 @@
 ORBIT's **pagador** agent reads invoices (PDF, image, email, chat), decides **PAY / HOLD / ESCALATE** inside company-defined rules, **negotiates corrections with the vendor's cobrador** on a shareable case link, and explains every decision. Built for the 30X Hackathon Blinka challenge, with JEV (TypeSafe) as the fast judgment layer.
 
 - **Deadline:** Sun Oct 18 2026, 12:00 COT. Demo Day Oct 19–20.
-- **Context:** `contexto30x.md` (briefs, URLs, status). **Plans:** `todo.md` (T16–T18: negotiation, cases, trust primitives) and `todo1.md` (Cristobal's session: rebrand, `/app` screens from `docs/design/orbit-mockup.png`). Check both before taking a task; they overlap on persistence and API.
+- **Read first:** `docs/how-it-works.md` (the service end to end, what is real vs simulated). **Plan:** `todo.md`, the only one (`todo1.md` was merged into it). **History:** `CHANGELOG.md`: add an entry for every user-visible change. **Context:** `contexto30x.md` (briefs, URLs). **Pitch:** `docs/pitch.md`.
 - **Prod:** https://orbit.devcristobalvc.com (Vercel project `clara`, team `devcristobalvc`). Landing `/`, mock login `/login` (123/123), workspace `/app`, public case link `/c/<id>`.
 
 ## Non-negotiables

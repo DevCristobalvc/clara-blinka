@@ -1,6 +1,6 @@
 ---
 name: hackathon-30x
-description: 30X Hackathon constraints for Clara — deadline, Blinka and JEV judging criteria, deliverables and the submission checklist. Use when prioritizing work, scoping a feature against the deadline, preparing the demo or pitch, or filling in the HackRadar submission.
+description: 30X Hackathon constraints for ORBIT — deadline, Blinka and JEV judging criteria, deliverables and the submission checklist. Use when prioritizing work, scoping a feature against the deadline, preparing the demo or pitch, or filling in the HackRadar submission.
 ---
 
 # 30X Hackathon

@@ -1,6 +1,6 @@
 # ORBIT: Actúa con autonomía. Nunca sin límites.
 
-**30X Hackathon · Blinka challenge ("Agents that pay for the company")** · design: [`docs/design/orbit-mockup.png`](docs/design/orbit-mockup.png) · plans: [`todo.md`](todo.md), [`todo1.md`](todo1.md)
+**30X Hackathon · Blinka challenge ("Agents that pay for the company")** · [how it works end to end](docs/how-it-works.md) · [plan](todo.md) · [changelog](CHANGELOG.md) · [pitch](docs/pitch.md) · design: [`docs/design/orbit-mockup.png`](docs/design/orbit-mockup.png)
 
 **ORBIT is where a company's AI agents collect and pay on its behalf.** The **pagador** (payer) agent reads an invoice, checks it against the company's rules, and **pays, holds or escalates** it. When something doesn't add up, it doesn't just stop: it opens a thread with the vendor's **cobrador** (collection agent), asks for the correction, runs the corrected invoice through the same rules, and only then pays. Every decision is explained in plain language and comes with a signed receipt. A person is asked whenever the rules say so, and only then.
 
