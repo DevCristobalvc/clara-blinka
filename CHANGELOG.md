@@ -10,8 +10,7 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 ### Docs
 - README rewritten as a short hook: punchline, a Mermaid diagram of how ORBIT works, results, how to try it. The detail moved to `docs/architecture.md`, `docs/api.md`, `docs/setup.md` and `docs/dataset.md`.
 
-- Demo video: core footage recorded with `scripts/record-demo.mjs` (2:27); narration and the activation clip pending. HackRadar submission.
-- Upload the demo video and link it; HackRadar submission.
+- Upload the demo video (`docs/demo/orbit-demo-voz.mp4`, 3:27) and link it; HackRadar submission.
 - Cobrador screens (collection cases with the rules inverted).
 
 ## 0.3.0 · 2026-10-17 (evening) · "Agents that collect and pay"
@@ -28,7 +27,7 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 - **Panel as the flow**: a Blinka-style account bar (company, wallet, USDC balance, Depositar / Enviar, invoices to pay) and a one-step-at-a-time setup wizard: contract the pagador (pay), load its funds (pay), its rules, put it to work; every payment shows its BaseScan confirmation.
 - **Vendor invites**: opening a case sends the link to the vendor (Resend email when `RESEND_API_KEY` is set, recorded otherwise) and the case shows who received it. Cards show the live conversation while a case is negotiating; the vendor's page ends with a payment summary (original → corrected, rounds, registry reference).
 - Live x402 payments verified on Base Sepolia (activate 0.10 USDC, fund 1.00 USDC); settlement tx hashes attached to the activation (`POST /api/agents/:kind/tx`) and linked from Configuración. Malformed case ids return 404.
-- **Pitch deck** at `/deck` (title, problem, team, what we built, results, next) and the **demo video** `docs/demo/orbit-demo-voz.mp4` (4:21): `scripts/record-demo.mjs` records the flow with the real x402 payments on camera and writes a timeline; `scripts/narrate.mjs` generates the ElevenLabs narration from `docs/pitch.md` and syncs it. Also `scripts/x402-pay.mjs`, `scripts/gen-signing-key.mjs`.
+- **Pitch deck** at `/deck` (title, problem, team, what we built, results, next) and the **demo video** `docs/demo/orbit-demo-voz.mp4` (3:27): `scripts/record-demo.mjs` records the flow with the real x402 payments on camera and writes a timeline; `scripts/narrate.mjs` generates the ElevenLabs narration from `docs/pitch.md` and syncs it. Also `scripts/x402-pay.mjs`, `scripts/gen-signing-key.mjs`.
 
 ### Changed
 - Eval now reports safety **before and after negotiation** and a resolution rate: 21/21, 0 · 0 unsafe, 76% autonomy, 3/10 resolved.
