@@ -11,6 +11,7 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 - README rewritten as a short hook: punchline, a Mermaid diagram of how ORBIT works, results, how to try it. The detail moved to `docs/architecture.md`, `docs/api.md`, `docs/setup.md` and `docs/dataset.md`.
 
 - Demo video: core footage recorded with `scripts/record-demo.mjs` (2:27); narration and the activation clip pending. HackRadar submission.
+- Upload the demo video and link it; HackRadar submission.
 - Cobrador screens (collection cases with the rules inverted).
 
 ## 0.3.0 · 2026-10-17 (evening) · "Agents that collect and pay"
@@ -25,7 +26,7 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 - **Hire the agents with USDC over x402**: `POST /api/agents/{pagador,cobrador}/activate` (fee to ORBIT's treasury) and `/fund` (into the agent's own per-company wallet), protected with `withX402` on Base Sepolia; Privy login gives the company an embedded wallet that pays the 402. `ORBIT_ACTIVATION_FREE=1` for previews without a wallet.
 - Claude writes the negotiation messages (`lib/engine/vendor-prose.ts`, templates as fallback).
 - Live x402 payments verified on Base Sepolia (activate 0.10 USDC, fund 1.00 USDC); settlement tx hashes attached to the activation (`POST /api/agents/:kind/tx`) and linked from Configuración. Malformed case ids return 404.
-- `docs/pitch.md`, `scripts/record-demo.mjs`, `scripts/x402-pay.mjs`, `scripts/gen-signing-key.mjs`.
+- **Pitch deck** at `/deck` (title, problem, team, what we built, results, next) and the **demo video** `docs/demo/orbit-demo-voz.mp4` (4:21): `scripts/record-demo.mjs` records the flow with the real x402 payments on camera and writes a timeline; `scripts/narrate.mjs` generates the ElevenLabs narration from `docs/pitch.md` and syncs it. Also `scripts/x402-pay.mjs`, `scripts/gen-signing-key.mjs`.
 
 ### Changed
 - Eval now reports safety **before and after negotiation** and a resolution rate: 21/21, 0 · 0 unsafe, 76% autonomy, 3/10 resolved.

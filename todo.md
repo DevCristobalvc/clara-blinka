@@ -26,7 +26,7 @@
 | T11 | Single workspace on the mockup shell (Panel, Facturas, Reglas, Aprobaciones, Reportes, Configuración) | claude | done |
 | T12 | Hire the agents with USDC over x402 (activate → ORBIT treasury; fund → agent wallet), Privy login | claude | done (live payments verified Oct 17 20:47 COT) |
 | T13 | Deploy with env vars on Vercel (`orbit` project) | cristobal | **todo** |
-| T14 | Demo video: footage recorded (`docs/demo/orbit-demo.mp4`, 2:27, production build); narration (ElevenLabs, `docs/pitch.md`) and the activation clip pending | wmb, claude | **in-progress** |
+| T14 | Demo video: `docs/demo/orbit-demo-voz.mp4` (4:21): deck + live demo with the real x402 payments on camera + ElevenLabs narration synced by timeline. Pending: upload and link | wmb | **done (upload pending)** |
 | T15 | HackRadar: team, project form, links; submit before Sun 12:00 COT | cristobal (confirms), claude (text) | **todo** |
 | T16 | Hero illustration on the landing | agy | in-progress |
 | T17 | JEV playbook (30X bonus, `docs/jev-playbook.md`) | agy (draft), claude (review) | todo · P2 |
@@ -51,7 +51,7 @@ Dropped: extraction with OpenAI (the Anthropic key works), Neon (Supabase chosen
 - **Tests:** Smoke on prod: run the demo set, open a vendor link, approve one escalation.
 
 ### T14: Demo video
-- **Description:** `scripts/record-demo.mjs` records the core flow (landing → Reglas → Configuración → Nuevo caso → vendor link → demo set → Lucía's thread → vendor view → Aprobaciones → Reportes → Panel) as `docs/demo/orbit-demo.webm`. The activation/funding clip is screen-recorded by hand (Privy OTP + wallet signature). Narration from `docs/pitch.md` with ElevenLabs; edit in CapCut/iMovie; upload (YouTube/Loom); link in README and HackRadar.
+- **Description:** `scripts/record-demo.mjs` records the pitch in order (deck: problem, team, what we built → login → Panel with the invoices to pay → real x402 activation and funding on camera → rules → put it to work → board → Lucía's thread → vendor view → approvals → reports → results and next) and writes a timeline; `scripts/narrate.mjs` generates the ElevenLabs narration (voice William) from `docs/pitch.md` and places each block on that timeline. Output: `docs/demo/orbit-demo-voz.mp4` (4:21). Upload (YouTube/Loom) and link in README and HackRadar.
 - **Acceptance criteria:** 2–3 minutes, shows the three criteria (autonomy, safety, explainability) and the activation payment.
 
 ### T15: HackRadar submission
