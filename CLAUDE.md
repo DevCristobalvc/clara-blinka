@@ -14,7 +14,7 @@ ORBIT's **pagador** agent reads invoices (PDF, image, email, chat), decides **PA
 2. **Negotiation can only add facts.** Vendor text never reaches a rule: corrected invoices are built in code from structured fields, pass `validateCorrection` (same vendor, registered account, amount ≤ original and ≤ contract) and re-run the unchanged `decide()`. Only `NEGOTIABLE_CODES` are negotiated; bank changes, pressure, budget, limits, unknown vendors and past-due go to a person. Max 2 rounds. The prose layer only sees `ProseFacts` (no limits).
 3. **No arithmetic, dates or counting in an LLM/JEV.** That belongs in `rules.ts` / `fx.ts` / `negotiate.ts`.
 4. **The eval must stay at 0 unsafe payments, before and after negotiation.** Run `npm test` after any engine, dataset or cobrador change.
-5. **No secrets in the repo.** Keys go in `.env.local` and Vercel only: `ANTHROPIC_API_KEY`, `TYPESAFE_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (server only), `CLARA_SIGNING_KEY` (receipts), `CLARA_ADMIN_TOKEN` (optional), `NEXT_PUBLIC_PRIVY_APP_ID` (login + company wallet), `ORBIT_PAY_TO` (x402 treasury on Base Sepolia), `ORBIT_ACTIVATION_FREE` / `ORBIT_REQUIRE_ACTIVATION` (optional switches).
+5. **No secrets in the repo.** Keys go in `.env.local` and Vercel only: `ANTHROPIC_API_KEY`, `TYPESAFE_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (server only), `ORBIT_SIGNING_KEY` (receipts), `ORBIT_ADMIN_TOKEN` (optional), `NEXT_PUBLIC_PRIVY_APP_ID` (login + company wallet), `ORBIT_PAY_TO` (x402 treasury on Base Sepolia), `ORBIT_ACTIVATION_FREE` / `ORBIT_REQUIRE_ACTIVATION` (optional switches).
 6. **Payments are recorded, never executed.** `LedgerExecutor` writes a ledger reference; "rails" wording stays out of the UI. The only on-chain movement is the agent activation over x402 (testnet USDC).
 
 ## Commands
@@ -32,7 +32,7 @@ CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node 
 ## Layout
 
 - `lib/engine/` (pure, offline-testable): `types` → `extract` (Claude structured output) → `rules` → `jev` → `decide` → `explain`; `negotiate` (loop, guardrails, templates), `cobrador` (rule-driven vendor agent), `receipt` (Ed25519 receipts + `policyHash`), `executor` (`MockExecutor`), `ledger` (`ledgerFor`, `effectiveDecision`), `labels`, `fx`, `severity`, `thresholds`. `vendor-prose` is server-only (Claude writes the words).
-- `lib/server/`: `store` (`CaseStore`: `SupabaseStore` + `MemoryStore`), `cases` (service: create → submit → negotiate → review, `publicCase`), `webhooks` (signed `X-Clara-Signature`), `http` (route helpers, `notify` via `after()`), `seed`.
+- `lib/server/`: `store` (`CaseStore`: `SupabaseStore` + `MemoryStore`), `cases` (service: create → submit → negotiate → review, `publicCase`), `webhooks` (signed `X-Orbit-Signature`), `http` (route helpers, `notify` via `after()`), `seed`.
 - `app/api/`: `cases`, `cases/[id]`, `cases/[id]/{invoice,messages,review}`, `policy`, `reset`, `health`, `keys`, plus the stateless `decide` and `extract`. `app/c/[id]`: public case page (`components/CasePage.tsx`).
 - `db/schema.sql`: `policies`, `cases`, `case_events` (append-only audit). Applied to Supabase project `clara` (org Ekinoxis labs). RLS on, no policies: server-only.
 - `components/app/`: the workspace (`Shell` sidebar/topbar, `Workspace` server-backed context, `PanelView`, `FacturasView`, `ReglasView`, `AprobacionesView`, `ReportesView`, `ConfiguracionView`, `AgentsCard` (x402 activation), `CaseDetail`). `components/CasePage.tsx` is the vendor's public page; `RulesEditor` the rules form; `landing/`, `brand/`, `PrivyLogin`. State never lives in the browser: everything reads `/api/*`. Theme tokens in `app/globals.css` (`ink`, `panel`, `panel-2`, `line`, `orbit`).
@@ -48,6 +48,6 @@ CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" node 
 
 ## Skills to load
 
-Project skills (`.claude/skills/`): `clara-engine` (pipeline, negotiation, recipes), `hackathon-30x` (criteria, submission checklist).
+Project skills (`.claude/skills/`): `orbit-engine` (pipeline, negotiation, recipes), `hackathon-30x` (criteria, submission checklist).
 
 User/plugin skills: `typesafe:typesafe-ai` (JEV), `claude-api` / `ekx-anthropic-sdk` (extraction, prose), `vercel:nextjs`, `vercel:next-cache-components`, `ekx-nextjs-app`, `supabase:supabase` + `supabase:supabase-postgres-best-practices` (store, schema), `frontend-design` (UI polish), `ekx-vercel-deploy`, `vercel:env`, `vercel:deploy`.

@@ -1,4 +1,4 @@
--- Clara case store. Server-only: every table has RLS enabled with no policies, so the anon and
+-- ORBIT case store. Server-only: every table has RLS enabled with no policies, so the anon and
 -- authenticated roles see nothing; the app talks to Postgres with the service role from API routes.
 
 create table if not exists public.policies (

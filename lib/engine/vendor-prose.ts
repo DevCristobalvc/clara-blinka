@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
-import { claraTemplate, vendorTemplate, type ProseWriter } from "./negotiate";
+import { orbitTemplate, vendorTemplate, type ProseWriter } from "./negotiate";
 import type { ClaraRequest, VendorReply } from "./types";
 
 /**
@@ -46,15 +46,15 @@ export function claudeProse(client = new Anthropic()): ProseWriter {
   }
 
   return {
-    clara(request: ClaraRequest) {
+    orbit(request: ClaraRequest) {
       const { facts } = request;
       const prompt = [
         `Language: ${LANG[facts.language]}.`,
         `Request type: ${request.type}.`,
         `Facts (JSON): ${JSON.stringify(facts)}`,
-        `A template version you may paraphrase: ${claraTemplate(request)}`,
+        `A template version you may paraphrase: ${orbitTemplate(request)}`,
       ].join("\n");
-      return write(CLARA_SYSTEM, prompt, claraTemplate(request));
+      return write(CLARA_SYSTEM, prompt, orbitTemplate(request));
     },
     vendor(reply: VendorReply, request: ClaraRequest) {
       const { facts } = request;

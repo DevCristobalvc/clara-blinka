@@ -15,8 +15,8 @@ export async function GET() {
 /** Replace the setup. Rule changes are the one thing the agent can never do on its own; this is the human path. */
 export async function PUT(request: Request) {
   return handle(async () => {
-    const token = process.env.CLARA_ADMIN_TOKEN;
-    if (token && request.headers.get("x-clara-admin") !== token) throw new HttpError(401, "Missing or invalid admin token");
+    const token = process.env.ORBIT_ADMIN_TOKEN ?? process.env.CLARA_ADMIN_TOKEN;
+    if (token && request.headers.get("x-orbit-admin") !== token) throw new HttpError(401, "Missing or invalid admin token");
     const body = await readJson<Partial<Company>>(request);
     if (!body.policy || !Array.isArray(body.beneficiaries) || !Array.isArray(body.contracts)) {
       throw new HttpError(400, "Body must include policy, beneficiaries and contracts");

@@ -66,11 +66,11 @@ let ephemeralSeed: string | undefined;
 
 /** The secret the agent wallets are derived from. Server-only; never a hardcoded value. */
 function walletSeed(): string {
-  const seed = process.env.ORBIT_WALLET_SEED ?? process.env.CLARA_SIGNING_KEY;
+  const seed = process.env.ORBIT_WALLET_SEED ?? process.env.ORBIT_SIGNING_KEY ?? process.env.CLARA_SIGNING_KEY;
   if (seed && seed.length >= 32) return seed;
   if (!ephemeralSeed) {
     ephemeralSeed = randomBytes(32).toString("hex");
-    console.warn("[agents] ORBIT_WALLET_SEED / CLARA_SIGNING_KEY not set: agent wallets are derived from a per-process random seed and will change on restart");
+    console.warn("[agents] ORBIT_WALLET_SEED / ORBIT_SIGNING_KEY not set: agent wallets are derived from a per-process random seed and will change on restart");
   }
   return ephemeralSeed;
 }

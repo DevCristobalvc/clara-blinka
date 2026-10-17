@@ -45,7 +45,7 @@ Dropped: extraction with OpenAI (the Anthropic key works), Neon (Supabase chosen
 - **Comments:** Verified live Oct 17 20:47 COT with `scripts/x402-pay.mjs`: activate 0.10 USDC (tx 0x28c7fb74…9059) and fund 1.00 USDC (tx 0x0ab9fa56…cacc) settled on Base Sepolia; treasury and agent wallet balances match. The UI path (Privy wallet) uses the same client code; tx hashes are attached via `POST /api/agents/:kind/tx`. Env vars in `.env.local`: `NEXT_PUBLIC_PRIVY_APP_ID`, `ORBIT_PAY_TO` (treasury), `ORBIT_TREASURY_PRIVATE_KEY` (sweep only), `ORBIT_TEST_PAYER_PRIVATE_KEY`. Fallback for the video: `ORBIT_ACTIVATION_FREE=1`.
 
 ### T13: Deploy
-- **Description:** Merge PR #1 (`wmb/orbit-v2`) to `main`. In Vercel project `orbit` set: `ANTHROPIC_API_KEY`, `TYPESAFE_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CLARA_SIGNING_KEY` (`node scripts/gen-signing-key.mjs`), `NEXT_PUBLIC_PRIVY_APP_ID`, `ORBIT_PAY_TO`; optionally `ORBIT_ACTIVATION_FREE=1`. Add `orbit.devcristobalvc.com` and `*.vercel.app` to the Privy app's allowed domains.
+- **Description:** Merge PR #1 (`wmb/orbit-v2`) to `main`. In Vercel project `orbit` set: `ANTHROPIC_API_KEY`, `TYPESAFE_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ORBIT_SIGNING_KEY` (`node scripts/gen-signing-key.mjs`), `NEXT_PUBLIC_PRIVY_APP_ID`, `ORBIT_PAY_TO`; optionally `ORBIT_ACTIVATION_FREE=1`. Add `orbit.devcristobalvc.com` and `*.vercel.app` to the Privy app's allowed domains.
 - **Acceptance criteria:** `/api/health` on prod reports `store: supabase`, extraction and JEV true; a case link works from another device; `/api/extract` no longer 503.
 - **Tests:** Smoke on prod: run the demo set, open a vendor link, approve one escalation.
 

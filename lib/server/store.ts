@@ -6,7 +6,7 @@ export type CaseEventType =
   | "case.created"
   | "invoice.submitted"
   | "decision"
-  | "clara.message"
+  | "orbit.message"
   | "vendor.message"
   | "correction.rejected"
   | "correction.decided"
@@ -238,15 +238,15 @@ export class SupabaseStore implements CaseStore {
 // ---------------------------------------------------------------------------
 
 declare global {
-  var __claraStore: CaseStore | undefined;
+  var __orbitStore: CaseStore | undefined;
 }
 
 /** One store per process: Supabase when configured, otherwise memory (survives dev HMR via globalThis). */
 export function getStore(): CaseStore {
-  if (!globalThis.__claraStore) {
+  if (!globalThis.__orbitStore) {
     const supabase = SupabaseStore.fromEnv();
     if (!supabase) console.warn("[store] SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY not set: using the in-memory store (cases do not persist)");
-    globalThis.__claraStore = supabase ?? new MemoryStore();
+    globalThis.__orbitStore = supabase ?? new MemoryStore();
   }
-  return globalThis.__claraStore;
+  return globalThis.__orbitStore;
 }

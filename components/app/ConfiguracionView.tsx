@@ -47,7 +47,7 @@ export function ConfiguracionView() {
 
         <Card>
           <h3 className="font-semibold text-white">Webhook</h3>
-          <p className="text-xs text-zinc-500">ORBIT avisa a tus sistemas en cada cambio de un caso, con el recibo firmado y una firma HMAC (<span className="font-mono">X-Clara-Signature</span>).</p>
+          <p className="text-xs text-zinc-500">ORBIT avisa a tus sistemas en cada cambio de un caso, con el recibo firmado y una firma HMAC (<span className="font-mono">X-Orbit-Signature</span>).</p>
           <label className="mt-3 block text-xs font-medium text-zinc-400">
             URL
             <input className="mt-1 w-full rounded-md border border-line px-2 py-1.5 font-mono text-sm" placeholder="https://tu-sistema.com/orbit" value={webhook.url ?? ""} onChange={(e) => setDraft({ ...draft, webhook: { ...webhook, url: e.target.value || undefined } })} />

@@ -4,10 +4,10 @@ import type { Company, Decision, Receipt, ReceiptPayload } from "./types";
 /**
  * Signed decision receipts. The rules are pure, so anyone holding the inputs can replay decide() and
  * get the same answer; the receipt proves which inputs, which rule set (policyHash) and which outcome
- * Clara recorded, and that nobody edited the record afterwards.
+ * ORBIT recorded, and that nobody edited the record afterwards.
  */
 
-export const ENGINE_VERSION = "clara@0.2";
+export const ENGINE_VERSION = "orbit@0.3";
 
 export function canonicalJSON(value: unknown): string {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
@@ -43,19 +43,19 @@ export function generateKeys(): SigningKeys {
   return { privateKey, publicKey, ephemeral: true };
 }
 
-/** PKCS8 PEM, base64-wrapped, ready for CLARA_SIGNING_KEY. */
+/** PKCS8 PEM, base64-wrapped, ready for ORBIT_SIGNING_KEY. */
 export function exportPrivateKey(keys: SigningKeys): string {
   return Buffer.from(keys.privateKey.export({ type: "pkcs8", format: "pem" }) as string).toString("base64");
 }
 
 let processKeys: SigningKeys | undefined;
 
-/** The server's keys: CLARA_SIGNING_KEY when set, otherwise one pair per process (receipts say so). */
+/** The server's keys: ORBIT_SIGNING_KEY when set, otherwise one pair per process (receipts say so). */
 export function signingKeys(): SigningKeys {
   if (!processKeys) {
-    const env = process.env.CLARA_SIGNING_KEY;
+    const env = process.env.ORBIT_SIGNING_KEY ?? process.env.CLARA_SIGNING_KEY; // old name still accepted
     processKeys = env ? keysFromPem(env) : generateKeys();
-    if (processKeys.ephemeral) console.warn("[receipt] CLARA_SIGNING_KEY not set: receipts are signed with an ephemeral key");
+    if (processKeys.ephemeral) console.warn("[receipt] ORBIT_SIGNING_KEY not set: receipts are signed with an ephemeral key");
   }
   return processKeys;
 }

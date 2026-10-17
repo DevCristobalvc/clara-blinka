@@ -94,9 +94,9 @@ export function CaseDetail({ c, busy, onClose, onCobrador, onReview }: { c: Case
             </h3>
             <ol className="mt-2 space-y-2">
               {c.thread.messages.map((m, i) => (
-                <li key={i} className={`flex ${m.from === "clara" ? "justify-start" : "justify-end"}`}>
-                  <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${m.from === "clara" ? "bg-panel-2 text-zinc-100" : "bg-orbit/15 text-zinc-100 ring-1 ring-inset ring-orbit/30"}`}>
-                    <p className="mb-0.5 text-[10px] uppercase tracking-wide text-zinc-500">{m.from === "clara" ? "ORBIT" : "Proveedor"} · {m.prose === "claude" ? "Claude" : m.prose === "template" ? "plantilla" : "texto del proveedor"}</p>
+                <li key={i} className={`flex ${m.from === "orbit" ? "justify-start" : "justify-end"}`}>
+                  <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${m.from === "orbit" ? "bg-panel-2 text-zinc-100" : "bg-orbit/15 text-zinc-100 ring-1 ring-inset ring-orbit/30"}`}>
+                    <p className="mb-0.5 text-[10px] uppercase tracking-wide text-zinc-500">{m.from === "orbit" ? "ORBIT" : "Proveedor"} · {m.prose === "claude" ? "Claude" : m.prose === "template" ? "plantilla" : "texto del proveedor"}</p>
                     <p className="whitespace-pre-wrap">{m.text}</p>
                     {m.invoice ? <p className="mt-1 font-mono text-xs text-zinc-400">Corregida {m.invoice.invoiceNumber} · {fmtMoney(m.invoice.amount, m.invoice.currency)}{m.invoice.payeeAccount ? ` · ${m.invoice.payeeAccount}` : ""}</p> : null}
                   </div>

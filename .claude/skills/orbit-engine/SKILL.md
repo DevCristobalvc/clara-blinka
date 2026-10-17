@@ -1,5 +1,5 @@
 ---
-name: clara-engine
+name: orbit-engine
 description: How ORBIT's PAY/HOLD/ESCALATE pipeline and the vendor negotiation loop work, and how to change them safely. Use when adding or changing a rule, a reason code, a JEV question or threshold, the extraction schema, a demo invoice or cobrador, a negotiation request type, or when the eval or a safety invariant fails.
 ---
 
@@ -14,7 +14,7 @@ rules.ts       runRules(ctx) -> RuleResult[]               deterministic: allowl
 jev.ts         judge(input) -> JevAnswers                   one batched JEV call; judgeOffline() heuristic when there is no key
 decide.ts      jevReasons() appends failing "jev" rules; actionFor(): any HOLD-severity reason -> HOLD, else any reason -> ESCALATE, else PAY
 explain.ts     plain-language Spanish explanation
-negotiate.ts   canNegotiate -> openThread -> stepThread*   Clara asks the vendor for a correction; corrected invoices re-run decide()
+negotiate.ts   canNegotiate -> openThread -> stepThread*   ORBIT asks the vendor for a correction; corrected invoices re-run decide()
 cobrador.ts    cobradorReply(config, request, invoice)      the vendor-side agent, rule-driven (data/cobradores.json overrides)
 receipt.ts     receiptFor(caseId, decision, company)        Ed25519 receipt with policyHash (sha256 of policy+beneficiaries+contracts)
 ledger.ts      ledgerFor(cases), effectiveDecision()        one payment record per paid case; negotiated decision wins
@@ -37,7 +37,7 @@ Server side (`lib/server/`): `cases.ts` drives a `Case` through `createCase → 
 
 **Add or tune a JEV question**: `buildQuestions()` in `jev.ts` (`noul` / `choice` with "other" / `score`), map in `JevAnswers`, parse in `judgeWithJev` and `judgeOffline`, turn into a reason in `jevReasons()` with a threshold in `thresholds.ts`. Load `typesafe:typesafe-ai` for the API shape.
 
-**Add a negotiation request type**: `RequestType` + `VendorReplyKind` in `types.ts`; pick it in `pickRequest()`; handle the reply in `stepThread()`; templates in `claraTemplate`/`vendorTemplate`; teach `cobradorReply` to answer it; label in `components/CasePage.tsx` (`REQUEST_LABEL`).
+**Add a negotiation request type**: `RequestType` + `VendorReplyKind` in `types.ts`; pick it in `pickRequest()`; handle the reply in `stepThread()`; templates in `orbitTemplate`/`vendorTemplate`; teach `cobradorReply` to answer it; label in `components/CasePage.tsx` (`REQUEST_LABEL`).
 
 **Add a demo invoice / cobrador**: append to `data/invoices.json` and `data/expected.json` (`expectedAction`, `reasonCodes`, `expectedResolution`, `note`); for a compromised vendor add a `byFile` override in `data/cobradores.json` (`compromise: { newAccount | injectText | raiseAmountPct }`); render with `CHROME_PATH=… node scripts/render-invoices.mjs`; `npm run eval` must still report 0 unsafe before and after negotiation.
 

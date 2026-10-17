@@ -3,7 +3,7 @@ import { languageFor } from "./negotiate";
 import type { Beneficiary, ClaraRequest, Contract, Counterparty, Invoice, Language, VendorReply } from "./types";
 
 /**
- * The vendor's side: a cobrador (collection agent) with its own view of the deal. It answers Clara's
+ * The vendor's side: a cobrador (collection agent) with its own view of the deal. It answers ORBIT's
  * requests by its own rules, so demo negotiations are deterministic and the eval is reproducible.
  * A compromised cobrador (adversarial cases) is the same agent with a bad config, not a special path.
  */
@@ -27,7 +27,7 @@ export interface CobradorConfig {
   account: string;
   canReissue: boolean;
   acceptsSchedule: boolean;
-  /** Refuses to acknowledge payments Clara says it made. */
+  /** Refuses to acknowledge payments ORBIT says it made. */
   disputesPayments?: boolean;
   compromise?: CobradorCompromise;
 }

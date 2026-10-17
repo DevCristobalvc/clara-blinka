@@ -87,7 +87,7 @@ function negotiationContext(deps: CaseDeps, company: Company, extraHistory: Paym
 
 async function logClaraMessage(deps: CaseDeps, c: Case) {
   const m = c.thread!.messages.at(-1)!;
-  await deps.store.appendEvent({ caseId: c.id, companyId: c.companyId, type: "clara.message", payload: { requestType: m.requestType, text: m.text, prose: m.prose } });
+  await deps.store.appendEvent({ caseId: c.id, companyId: c.companyId, type: "orbit.message", payload: { requestType: m.requestType, text: m.text, prose: m.prose } });
 }
 
 /** The vendor (or the company) attaches the invoice: ORBIT decides and, when it can, starts negotiating. */
@@ -244,7 +244,7 @@ export function publicCase(c: Case, company: Company): PublicCase {
           outcomeDetail: c.thread.outcomeDetail,
           scheduledFor: c.thread.scheduledFor,
           messages: c.thread.messages.map((m) => ({
-            from: m.from === "clara" ? "orbit" : "vendor",
+            from: m.from === "orbit" ? "orbit" : "vendor",
             at: m.at,
             text: m.text,
             prose: m.prose,

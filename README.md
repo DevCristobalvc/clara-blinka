@@ -58,7 +58,7 @@ JEV is a "System One" model: it answers typed questions (choice / score / yes-no
 
 ### Trust: receipts you can verify
 
-Every decision (first pass, each corrected attempt, each approval) is signed with Ed25519. The receipt carries the invoice figures, the outcome, and `policyHash`, a hash of the rules, beneficiaries and contracts in force at that moment, so you can tell which rule set decided and that nobody edited the record afterwards. The public key is at `GET /api/keys`. Because the rules are pure functions, anyone with the inputs can replay `decide()` and get the same answer; the receipt proves which inputs. Webhooks carry the receipt and are signed with HMAC-SHA256 (`X-Clara-Signature: t=…,v1=…`).
+Every decision (first pass, each corrected attempt, each approval) is signed with Ed25519. The receipt carries the invoice figures, the outcome, and `policyHash`, a hash of the rules, beneficiaries and contracts in force at that moment, so you can tell which rule set decided and that nobody edited the record afterwards. The public key is at `GET /api/keys`. Because the rules are pure functions, anyone with the inputs can replay `decide()` and get the same answer; the receipt proves which inputs. Webhooks carry the receipt and are signed with HMAC-SHA256 (`X-Orbit-Signature: t=…,v1=…`).
 
 ## Hiring the agents: pay ORBIT in USDC (x402)
 
@@ -122,8 +122,8 @@ ANTHROPIC_API_KEY=...          # extraction of uploaded PDFs/images/emails + nat
 TYPESAFE_API_KEY=...           # live JEV judgments (otherwise offline heuristics)
 SUPABASE_URL=...               # case store (otherwise in-memory; cases don't persist)
 SUPABASE_SERVICE_ROLE_KEY=...  # server only, never shipped to the browser
-CLARA_SIGNING_KEY=...          # node scripts/gen-signing-key.mjs (otherwise an ephemeral key per process)
-CLARA_ADMIN_TOKEN=...          # optional, required as X-Clara-Admin on PUT /api/policy
+ORBIT_SIGNING_KEY=...          # node scripts/gen-signing-key.mjs (otherwise an ephemeral key per process)
+ORBIT_ADMIN_TOKEN=...          # optional, required as X-Orbit-Admin on PUT /api/policy
 
 NEXT_PUBLIC_PRIVY_APP_ID=...   # Privy login + the company's embedded wallet (otherwise the demo login 123/123 only)
 ORBIT_PAY_TO=0x...             # ORBIT's treasury on Base Sepolia, where activation USDC lands

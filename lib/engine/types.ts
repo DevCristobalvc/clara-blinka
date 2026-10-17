@@ -29,7 +29,7 @@ export interface Policy {
   severity?: Partial<Record<ReasonCode, Severity>>;
   /** JEV thresholds. */
   jev?: Partial<JevThresholds>;
-  /** Whether Clara may ask the vendor for corrections on negotiable HOLDs (default: enabled, 2 rounds). */
+  /** Whether ORBIT may ask the vendor for corrections on negotiable HOLDs (default: enabled, 2 rounds). */
   negotiation?: NegotiationPolicy;
 }
 
@@ -81,7 +81,7 @@ export interface Company {
   /** Store key; the demo company is "andes". */
   id?: string;
   company: { name: string; country: string; baseCurrency: string };
-  /** Where Clara reports case events (signed). */
+  /** Where ORBIT reports case events (signed). */
   webhook?: WebhookConfig;
   /** Which agents the company has activated (paid for). */
   agents?: Partial<Record<AgentKind, AgentActivation>>;
@@ -139,7 +139,7 @@ export interface Decision {
 }
 
 // ---------------------------------------------------------------------------
-// Negotiation: Clara (paying) talks to the vendor's cobrador (collecting) to fix an invoice.
+// Negotiation: ORBIT (paying) talks to the vendor's cobrador (collecting) to fix an invoice.
 
 export const NEGOTIABLE_CODES = ["CONTRACT_MISMATCH", "CURRENCY_NOT_ALLOWED", "DUPLICATE", "DUE_TOO_FAR", "LOW_CONFIDENCE"] as const satisfies readonly ReasonCode[];
 export type NegotiableCode = (typeof NEGOTIABLE_CODES)[number];
@@ -194,7 +194,7 @@ export interface VendorReply {
 export type Counterparty = (request: ClaraRequest, invoice: Invoice) => Promise<VendorReply> | VendorReply;
 
 export interface NegotiationMessage {
-  from: "clara" | "vendor";
+  from: "orbit" | "vendor";
   at: string;
   text: string;
   prose: "claude" | "template" | "vendor";
@@ -213,7 +213,7 @@ export interface NegotiationThread {
   rounds: number;
   maxRounds: number;
   messages: NegotiationMessage[];
-  /** What Clara is waiting on while in progress. */
+  /** What ORBIT is waiting on while in progress. */
   pendingRequest?: ClaraRequest;
   /** Every re-run of decide() on a corrected invoice, in order. */
   attempts: Decision[];
@@ -272,7 +272,7 @@ export interface ReceiptPayload {
   policyHash: string;
   decidedAt: string;
   engine: string;
-  /** True when the server had no CLARA_SIGNING_KEY and signed with a per-process key. */
+  /** True when the server had no ORBIT_SIGNING_KEY and signed with a per-process key. */
   ephemeral?: boolean;
 }
 

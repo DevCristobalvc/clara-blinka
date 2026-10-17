@@ -79,7 +79,7 @@ describe("case service", () => {
     expect(records[0]).toMatchObject({ invoiceNumber: "LG-010-R", amount: 6000000, beneficiaryId: "b1" });
 
     const events = await store.listEvents("test", { caseId: created.id });
-    expect(events.map((e) => e.type)).toEqual(["case.created", "invoice.submitted", "decision", "clara.message", "vendor.message", "correction.decided", "settlement"]);
+    expect(events.map((e) => e.type)).toEqual(["case.created", "invoice.submitted", "decision", "orbit.message", "vendor.message", "correction.decided", "settlement"]);
     expect(events.map((e) => e.seq)).toEqual([1, 2, 3, 4, 5, 6, 7]);
     expect(events.filter((e) => e.receipt).every((e) => verifyReceipt(e.receipt!))).toBe(true);
   });
@@ -187,9 +187,9 @@ describe("webhooks", () => {
     }) as typeof fetch;
     await emitWebhook(store, withHook, paid, "case.paid", { fetch: okFetch, link: "https://orbit.example/c/" + c.id });
     expect(calls).toHaveLength(1);
-    expect(calls[0].headers["X-Clara-Event"]).toBe("case.paid");
-    expect(verifyWebhook("s3cret", calls[0].headers["X-Clara-Signature"], calls[0].body)).toBe(true);
-    expect(verifyWebhook("wrong", calls[0].headers["X-Clara-Signature"], calls[0].body)).toBe(false);
+    expect(calls[0].headers["X-Orbit-Event"]).toBe("case.paid");
+    expect(verifyWebhook("s3cret", calls[0].headers["X-Orbit-Signature"], calls[0].body)).toBe(true);
+    expect(verifyWebhook("wrong", calls[0].headers["X-Orbit-Signature"], calls[0].body)).toBe(false);
     const body = JSON.parse(calls[0].body);
     expect(body.case).toMatchObject({ id: c.id, status: "paid", action: "PAY", settlementRef: paid.settlement?.ref });
     expect(verifyReceipt(body.receipt)).toBe(true);

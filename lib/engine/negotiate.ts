@@ -21,7 +21,7 @@ import {
 } from "./types";
 
 /**
- * Negotiation loop. Clara (paying) asks the vendor's cobrador (collecting) to fix an invoice that the
+ * Negotiation loop. ORBIT (paying) asks the vendor's cobrador (collecting) to fix an invoice that the
  * rules held. Safety model:
  *  - only the codes in NEGOTIABLE_CODES are ever negotiated; anything else goes to a person;
  *  - the vendor's words never reach the rules: a corrected invoice is built in code from structured
@@ -95,7 +95,7 @@ function baseFacts(invoice: Invoice, company: Company, { beneficiary, contract }
   };
 }
 
-/** Which correction Clara asks for. Deterministic; all facts are computed here, never by a model. */
+/** Which correction ORBIT asks for. Deterministic; all facts are computed here, never by a model. */
 export function pickRequest(decision: Decision, company: Company, extraHistory: PaymentRecord[], today: string): ClaraRequest {
   const p = parties(decision, company);
   const history = [...company.history, ...extraHistory];
@@ -170,17 +170,17 @@ export function validateCorrection(original: Invoice, corrected: Invoice, compan
 // Prose: the words around the facts. Templates always work; Claude is optional (server side).
 
 export interface ProseWriter {
-  clara(request: ClaraRequest): Promise<{ text: string; source: "claude" | "template" }>;
+  orbit(request: ClaraRequest): Promise<{ text: string; source: "claude" | "template" }>;
   vendor(reply: VendorReply, request: ClaraRequest): Promise<{ text: string; source: "claude" | "template" }>;
 }
 
 const money = (n: number, cur: string) => `${n.toLocaleString(cur === "USD" || cur === "EUR" ? "en-US" : "es-CO", { maximumFractionDigits: 2 })} ${cur}`;
 
-export function claraTemplate({ type, facts: f }: ClaraRequest): string {
+export function orbitTemplate({ type, facts: f }: ClaraRequest): string {
   const en = f.language === "en";
   const head = en
-    ? `Hi ${f.vendorName}, this is Clara from ${f.companyName}. We received invoice ${f.invoiceNumber} for ${money(f.amount, f.currency)} (${f.concept}).`
-    : `Hola ${f.vendorName}, soy Clara, de ${f.companyName}. Recibimos la factura ${f.invoiceNumber} por ${money(f.amount, f.currency)} (${f.concept}).`;
+    ? `Hi ${f.vendorName}, this is ORBIT from ${f.companyName}. We received invoice ${f.invoiceNumber} for ${money(f.amount, f.currency)} (${f.concept}).`
+    : `Hola ${f.vendorName}, soy ORBIT, de ${f.companyName}. Recibimos la factura ${f.invoiceNumber} por ${money(f.amount, f.currency)} (${f.concept}).`;
   switch (type) {
     case "reissue_at_contract_amount":
       return en
@@ -231,8 +231,8 @@ export function vendorTemplate(reply: VendorReply, { facts: f }: ClaraRequest): 
 }
 
 export const templateProse: ProseWriter = {
-  async clara(request) {
-    return { text: claraTemplate(request), source: "template" };
+  async orbit(request) {
+    return { text: orbitTemplate(request), source: "template" };
   },
   async vendor(reply, request) {
     return { text: vendorTemplate(reply, request), source: "template" };
@@ -257,8 +257,8 @@ const nowIso = (ctx: NegotiationContext) => ctx.now?.() ?? new Date().toISOStrin
 const newId = (ctx: NegotiationContext) => ctx.id?.() ?? crypto.randomUUID();
 
 async function ask(thread: NegotiationThread, request: ClaraRequest, ctx: NegotiationContext) {
-  const { text, source } = await ctx.prose.clara(request);
-  thread.messages.push({ from: "clara", at: nowIso(ctx), text, prose: source, requestType: request.type });
+  const { text, source } = await ctx.prose.orbit(request);
+  thread.messages.push({ from: "orbit", at: nowIso(ctx), text, prose: source, requestType: request.type });
   thread.pendingRequest = request;
 }
 
@@ -267,7 +267,7 @@ function finish(thread: NegotiationThread, outcome: NegotiationThread["outcome"]
   return thread;
 }
 
-/** Start a thread for a HOLD that canNegotiate() approved: picks the first request and writes Clara's message. */
+/** Start a thread for a HOLD that canNegotiate() approved: picks the first request and writes ORBIT's message. */
 export async function openThread(decision: Decision, ctx: NegotiationContext): Promise<NegotiationThread> {
   const gate = canNegotiate(decision, ctx.company);
   if (!gate.ok) throw new Error(gate.why);

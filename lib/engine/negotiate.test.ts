@@ -5,7 +5,7 @@ import { toUSD } from "./fx";
 import {
   buildCorrected,
   canNegotiate,
-  claraTemplate,
+  orbitTemplate,
   openThread,
   pickRequest,
   runNegotiation,
@@ -130,7 +130,7 @@ describe("negotiation outcomes with an honest cobrador", () => {
     expect(t.finalDecision?.rules.every((r) => r.pass)).toBe(true);
     expect(t.finalDecision?.invoice.amount).toBe(6000000);
     expect(t.messages.map((m) => m.from)).toEqual(["clara", "vendor"]);
-    expect(t.messages[0].text).toMatch(/Hola Laura Gómez, soy Clara/);
+    expect(t.messages[0].text).toMatch(/Hola Laura Gómez, soy ORBIT/);
     expect(t.attempts).toHaveLength(1);
   });
 
@@ -226,7 +226,7 @@ describe("the prose layer cannot leak the company's limits", () => {
     const base = pickRequest(d, company, [], TODAY).facts;
     for (const type of types) {
       const req: ClaraRequest = { type, facts: { ...base, targetCurrency: "COP", scheduledFor: "2026-12-01", paidRecord: { invoiceNumber: "X", amount: 1, currency: "USD", paidAt: TODAY } } };
-      const text = claraTemplate(req);
+      const text = orbitTemplate(req);
       expect(text).not.toMatch(/toleran|presupuesto|budget|l[ií]mite|limit|umbral|threshold|anticipaci[oó]n/i);
       expect(text).not.toMatch(/\b(8[.,]?000|2[.,]?000|10[.,]?000)\b/);
     }

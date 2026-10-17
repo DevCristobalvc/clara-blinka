@@ -37,7 +37,7 @@ describe("receipts", () => {
     expect(verifyReceipt({ ...r, signature: r.signature.replace(/^./, (c) => (c === "A" ? "B" : "A")) })).toBe(false);
   });
 
-  it("round-trips a key through the CLARA_SIGNING_KEY format", () => {
+  it("round-trips a key through the ORBIT_SIGNING_KEY format", () => {
     const keys = generateKeys();
     const restored = keysFromPem(exportPrivateKey(keys));
     expect(restored.ephemeral).toBe(false);
