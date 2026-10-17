@@ -51,3 +51,4 @@ next-env.d.ts
 # demo recordings (published on YouTube/Loom, not in git)
 /docs/demo/*.webm
 /docs/demo/*.mp4
+/docs/demo/voice/
