@@ -142,6 +142,7 @@ interface EventRow {
   created_at: string;
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const fromRow = (r: CaseRow): Case => ({ ...r.data, version: r.version, updatedAt: r.updated_at });
 const fromEventRow = (r: EventRow): CaseEvent => ({ id: r.id, caseId: r.case_id, companyId: r.company_id, seq: r.seq, type: r.type, payload: r.payload, receipt: r.receipt ?? undefined, createdAt: r.created_at });
 
@@ -181,6 +182,7 @@ export class SupabaseStore implements CaseStore {
     if (error) this.fail("createCase", error);
   }
   async getCase(companyId: string, id: string) {
+    if (!UUID.test(id)) return undefined; // a malformed id (e.g. a link pasted with a trailing dot) is a 404, not a Postgres error
     const { data, error } = await this.db.from("cases").select("*").eq("company_id", companyId).eq("id", id).maybeSingle();
     if (error) this.fail("getCase", error);
     return data ? fromRow(data as CaseRow) : undefined;
