@@ -14,7 +14,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       config={{
         loginMethods: ["email", "google", "passkey"],
         appearance: { theme: "dark", accentColor: "#f5e400", logo: "/icon.svg" },
-        embeddedWallets: { ethereum: { createOnLogin: "users-without-wallets" } },
+        embeddedWallets: { ethereum: { createOnLogin: "users-without-wallets" }, showWalletUIs: false },
         defaultChain: baseSepolia,
         supportedChains: [baseSepolia],
       }}

@@ -54,3 +54,4 @@ next-env.d.ts
 /docs/demo/voice/
 /docs/design/screens/
 /docs/demo/timeline.json
+/.playwright-profile/
