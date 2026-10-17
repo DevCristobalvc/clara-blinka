@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto";
+import { createHmac, randomBytes } from "node:crypto";
 import { createPublicClient, erc20Abi, formatUnits, http, type Address } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
@@ -62,13 +62,26 @@ export function agentActive(company: Company | undefined, kind: AgentKind): bool
   return Boolean(company?.agents?.[kind]?.active);
 }
 
+let ephemeralSeed: string | undefined;
+
+/** The secret the agent wallets are derived from. Server-only; never a hardcoded value. */
+function walletSeed(): string {
+  const seed = process.env.ORBIT_WALLET_SEED ?? process.env.CLARA_SIGNING_KEY;
+  if (seed && seed.length >= 32) return seed;
+  if (!ephemeralSeed) {
+    ephemeralSeed = randomBytes(32).toString("hex");
+    console.warn("[agents] ORBIT_WALLET_SEED / CLARA_SIGNING_KEY not set: agent wallets are derived from a per-process random seed and will change on restart");
+  }
+  return ephemeralSeed;
+}
+
 /**
- * The agent's wallet for a company: derived from a server secret, so nothing is stored and the same
- * company always gets the same address. The key exists only to derive the address; the demo never sends from it.
+ * The agent's wallet for a company: derived (HMAC) from a server secret, so nothing is stored and the same
+ * company always gets the same address while the secret is stable. Acceptable for testnet funds in the demo;
+ * a production version keeps per-agent keys in a KMS. The demo never sends from these wallets.
  */
 export function agentWallet(companyId: string, kind: AgentKind): Address {
-  const seed = process.env.ORBIT_WALLET_SEED ?? process.env.CLARA_SIGNING_KEY ?? "orbit-demo-seed";
-  const pk = `0x${createHmac("sha256", seed).update(`${companyId}:${kind}`).digest("hex")}` as `0x${string}`;
+  const pk = `0x${createHmac("sha256", walletSeed()).update(`${companyId}:${kind}`).digest("hex")}` as `0x${string}`;
   return privateKeyToAccount(pk).address;
 }
 
