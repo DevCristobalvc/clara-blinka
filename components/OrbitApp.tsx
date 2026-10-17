@@ -9,6 +9,9 @@ import { DecisionDetail } from "./DecisionDetail";
 import { Inbox, type Sample } from "./Inbox";
 import { AuditLog, EvalPanel } from "./Panels";
 import { RulesEditor } from "./RulesEditor";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { SESSION_COOKIE } from "@/lib/session";
 import { OrbitLogo } from "./brand/OrbitLogo";
 import { Button } from "./ui";
 
@@ -31,6 +34,7 @@ export function OrbitApp({ company, samples, today }: { company: Company; sample
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
   const stateRef = useRef(state);
+  const router = useRouter();
 
   useEffect(() => {
     const saved = loadState();
@@ -99,7 +103,9 @@ export function OrbitApp({ company, samples, today }: { company: Company; sample
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4">
           <div className="flex items-center gap-5">
             <h1>
-              <OrbitLogo />
+              <Link href="/" aria-label="ORBIT">
+                <OrbitLogo />
+              </Link>
             </h1>
             <p className="hidden max-w-md border-l border-line pl-5 text-xs text-zinc-500 md:block">
               {state.company.company.name} · Actúa con autonomía. <span className="text-orbit">Nunca sin límites.</span>
@@ -117,6 +123,15 @@ export function OrbitApp({ company, samples, today }: { company: Company; sample
               }}
             >
               Reiniciar demo
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                document.cookie = `${SESSION_COOKIE}=; path=/; max-age=0`;
+                router.push("/");
+              }}
+            >
+              Cerrar sesión
             </Button>
           </div>
         </div>

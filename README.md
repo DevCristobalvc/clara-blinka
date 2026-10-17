@@ -4,7 +4,7 @@
 
 ORBIT is a platform where a company's AI agent reads its invoices (PDF, image, email or chat) and decides, for each one, whether to **PAY**, **HOLD** or **ESCALATE** it to a person. It works inside rules the company configures, never approves a payment outside those rules without a human, and explains every decision in plain language.
 
-- **Live demo:** https://blinka.devcristobalvc.com
+- **Live demo:** https://blinka.devcristobalvc.com (landing) → **Iniciar sesión** with the demo login `123` / `123` → workspace at `/app`
 - **Eval:** 18/18 correct decisions, 0 unsafe payments, 72% decided with no human ([docs/eval.md](docs/eval.md))
 
 ## The problem

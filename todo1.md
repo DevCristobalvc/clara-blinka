@@ -25,7 +25,7 @@ Tagline (from the mockup): **"Actúa con autonomía. Nunca sin límites."**
 | D5 | Inbound email | Provider with an inbound webhook (pick in T14) | open |
 | D6 | Hosting | Vercel (app, API, agent endpoints) + Neon Postgres (via the Vercel integration). Neon Functions only if a >5 min agent loop appears | proposed |
 | D7 | Brand / domain | Rebrand Clara → **ORBIT**. Keep `blinka.devcristobalvc.com`. Repo name stays `clara-blinka` unless renamed | proposed |
-| D8 | Auth | None for the demo: "Comenzar gratis" / "Iniciar sesión" open the demo workspace | proposed |
+| D8 | Auth | Mock login at `/login` (user `123`, password `123`); cookie gate on `/app` via `proxy.ts`. Not real auth | confirmed (Oct 17) |
 | D9 | Out of scope | x402, ERC-8004, real money movement, identity verification (excluded by the Blinka brief) | proposed |
 
 ## Architecture
@@ -110,19 +110,19 @@ Priority: **P1** = must ship for the demo, **P2** = ship if time allows.
   The dashboard preview in "Cómo funciona" shows **live** numbers from the demo workspace. CTAs go to `/app`. "Ver cómo funciona" plays the demo video once it exists.
 - **Owner:** claude (structure + data), agy (visual polish)
 - **Priority:** P1
-- **Status:** todo
+- **Status:** done
 - **Acceptance criteria:** A side-by-side screenshot at 1200px width matches the mockup. Responsive down to 375px with no horizontal scroll.
 - **Tests:** Headless screenshots at 1200 / 768 / 375 px. Lighthouse accessibility ≥ 90.
-- **Comments:**
+- **Comments:** Oct 17: landing at `/` matching the mockup (navbar, hero, Cómo funciona + dashboard preview, Beneficios, CTA, footer). Dashboard preview uses the mockup's static numbers for now. Checked at 1200/375 px with no horizontal scroll.
 
 ## T3: Hero illustration
 - **Description:** A glowing robot-orb head with two yellow eyes, elliptical orbit rings and a yellow planet-horizon glow, matching the mockup. Delivered as a transparent PNG/WebP (@2x) or SVG, plus the planet glow for the CTA banner.
 - **Owner:** agy (image generation) → claude integrates
 - **Priority:** P1
-- **Status:** todo
+- **Status:** in-progress
 - **Acceptance criteria:** Looks like the mockup at hero size, under 400 KB, no visible artifacts on the black background.
 - **Tests:** Visual check.
-- **Comments:** Fallback: a CSS/SVG approximation (radial gradients + stroked ellipses with glow).
+- **Comments:** CSS/SVG version of the robot orb + rings + planet glow is live (`components/landing/HeroVisual.tsx`). agy can replace it with a generated image.
 
 ## T4: App shell `/app`
 - **Description:** A sidebar (ORBIT logo; Panel [active yellow], Facturas, Reglas, Aprobaciones, Reportes, Configuración, with the mockup's icons) and a topbar (search "Buscar facturas, proveedores…", bell with the pending-approvals count, avatar "CV Cristobal Valencia").

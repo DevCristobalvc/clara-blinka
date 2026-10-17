@@ -16,6 +16,7 @@
     "@anthropic-ai/sdk": "^0.135.0",
     "@upstash/redis": "^1.39.0",
     "ai": "^7.0.143",
+    "lucide-react": "^1.59.0",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0",
