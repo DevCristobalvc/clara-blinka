@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowRight, Link2 } from "lucide-react";
 import { OrbitLogo } from "./brand/OrbitLogo";
@@ -33,8 +34,9 @@ const SLIDES = [
   { id: "next", kicker: "Qué sigue", title: "Del pagador al cobrador, y de agentes a agentes." },
 ] as const;
 
-export function Deck({ index }: { index: number }) {
-  const [i, setI] = useState(Math.min(Math.max(index, 0), SLIDES.length - 1));
+export function Deck() {
+  const index = Number(useSearchParams().get("s") ?? 0);
+  const [i, setI] = useState(Math.min(Math.max(Number.isFinite(index) ? index : 0, 0), SLIDES.length - 1));
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight" || e.key === " ") setI((v) => Math.min(v + 1, SLIDES.length - 1));
