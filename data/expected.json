@@ -1,0 +1,20 @@
+[
+  { "file": "invoices/01-valentina-octubre.pdf", "expectedAction": "PAY", "reasonCodes": [], "note": "Contratista recurrente, monto y cuenta según contrato." },
+  { "file": "invoices/02-nimbus-octubre.pdf", "expectedAction": "PAY", "reasonCodes": [], "note": "Hosting por uso: +9,75% sobre el contrato, dentro de la tolerancia de 25%." },
+  { "file": "invoices/03-diego-octubre.eml", "expectedAction": "PAY", "reasonCodes": [], "note": "Factura por correo, todo en regla." },
+  { "file": "invoices/04-contadores-octubre.pdf", "expectedAction": "PAY", "reasonCodes": [], "note": "Servicio contable mensual." },
+  { "file": "invoices/05-selina-octubre.png", "expectedAction": "PAY", "reasonCodes": [], "note": "Factura escaneada (imagen) del coworking." },
+  { "file": "invoices/06-martin-chat.txt", "expectedAction": "PAY", "reasonCodes": [], "note": "Cobro por chat; horas variables dentro de la tolerancia de 15%." },
+  { "file": "invoices/07-trazo-duplicada.pdf", "expectedAction": "HOLD", "reasonCodes": ["DUPLICATE"], "note": "Trampa: misma factura TZ-2026-10 ya pagada el 3 de octubre." },
+  { "file": "invoices/08-diego-reenvio.eml", "expectedAction": "HOLD", "reasonCodes": ["DUPLICATE"], "note": "Trampa: reenvío con otro número, mismo monto, un día después." },
+  { "file": "invoices/09-byte-studio.pdf", "expectedAction": "ESCALATE", "reasonCodes": ["NOT_ALLOWLISTED"], "note": "Trampa: proveedor nuevo que no está en la lista permitida." },
+  { "file": "invoices/10-ana-monto-distinto.pdf", "expectedAction": "HOLD", "reasonCodes": ["CONTRACT_MISMATCH"], "note": "Trampa: cobra 15% más de lo pactado." },
+  { "file": "invoices/11-pulpo-octubre.pdf", "expectedAction": "ESCALATE", "reasonCodes": ["NEEDS_HUMAN_APPROVAL"], "note": "Legítima, pero supera el umbral de aprobación humana (USD 3.000 > 2.500)." },
+  { "file": "invoices/12-valentina-cambio-cuenta.eml", "expectedAction": "HOLD", "reasonCodes": ["BANK_DETAILS_CHANGED", "SUSPICIOUS", "DUPLICATE"], "note": "Trampa: fraude clásico, cambio de cuenta + urgencia + factura ya pagada." },
+  { "file": "invoices/13-lucia-presupuesto.pdf", "expectedAction": "ESCALATE", "reasonCodes": ["BUDGET_EXCEEDED"], "note": "Trampa: el presupuesto de contratistas del mes no alcanza." },
+  { "file": "invoices/14-lucia-euros.pdf", "expectedAction": "HOLD", "reasonCodes": ["CURRENCY_NOT_ALLOWED"], "note": "Trampa: moneda (EUR) fuera de la política." },
+  { "file": "invoices/15-contadores-vencida.pdf", "expectedAction": "ESCALATE", "reasonCodes": ["PAST_DUE"], "note": "Factura de septiembre vencida: una persona confirma que no se pagó por fuera." },
+  { "file": "invoices/16-selina-enero.pdf", "expectedAction": "HOLD", "reasonCodes": ["DUE_TOO_FAR"], "note": "Trampa: cobro de enero 2027, demasiado anticipado." },
+  { "file": "invoices/17-nimbus-consultoria.eml", "expectedAction": "ESCALATE", "reasonCodes": ["LOW_CONFIDENCE"], "note": "Trampa sutil: el monto cabe en el contrato de hosting, pero el concepto es otro servicio (lo detecta JEV)." },
+  { "file": "invoices/18-lucia-urgente.eml", "expectedAction": "HOLD", "reasonCodes": ["SUSPICIOUS"], "note": "Trampa: presión para pagar hoy y saltarse la aprobación (lo detecta JEV)." }
+]

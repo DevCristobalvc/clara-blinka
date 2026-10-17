@@ -2,22 +2,12 @@ import { toUSD } from "./fx";
 import { DEFAULT_JEV_THRESHOLDS, judge, type JudgeInput } from "./jev";
 import { findContract, matchBeneficiary, runRules } from "./rules";
 import { explain } from "./explain";
-import type { Action, Company, Decision, Invoice, JevAnswers, PaymentRecord, ReasonCode, Severity } from "./types";
+import { DEFAULT_SEVERITY } from "./severity";
+import type { Action, Company, Decision, Invoice, JevAnswers, PaymentRecord, ReasonCode } from "./types";
 
-export const DEFAULT_SEVERITY: Record<ReasonCode, Severity> = {
-  DUPLICATE: "HOLD",
-  BANK_DETAILS_CHANGED: "HOLD",
-  CONTRACT_MISMATCH: "HOLD",
-  CURRENCY_NOT_ALLOWED: "HOLD",
-  SUSPICIOUS: "HOLD",
-  DUE_TOO_FAR: "HOLD",
-  NOT_ALLOWLISTED: "ESCALATE",
-  OVER_PER_PAYMENT_LIMIT: "ESCALATE",
-  NEEDS_HUMAN_APPROVAL: "ESCALATE",
-  BUDGET_EXCEEDED: "ESCALATE",
-  PAST_DUE: "ESCALATE",
-  LOW_CONFIDENCE: "ESCALATE",
-};
+export { toPaymentRecord } from "./ledger";
+
+export { DEFAULT_SEVERITY };
 
 export interface DecideOptions {
   /** Reference date for due dates and monthly budgets (ISO date). */
@@ -95,17 +85,4 @@ export async function decide(invoice: Invoice, company: Company, opts: DecideOpt
   };
   decision.explanation = explain(decision);
   return decision;
-}
-
-/** Turn an approved or auto-paid decision into a ledger entry (counts for budget and duplicates). */
-export function toPaymentRecord(decision: Decision, paidAt: string): PaymentRecord | undefined {
-  if (!decision.beneficiaryId) return undefined;
-  return {
-    invoiceNumber: decision.invoice.invoiceNumber,
-    beneficiaryId: decision.beneficiaryId,
-    amount: decision.invoice.amount,
-    currency: decision.invoice.currency,
-    paidAt,
-    category: decision.category,
-  };
 }

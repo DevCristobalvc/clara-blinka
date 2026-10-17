@@ -204,12 +204,13 @@ const duplicate: Rule = ({ invoice, match, history, company, today }) => {
   const hit = history.find((h) => {
     if (h.beneficiaryId !== b.id) return false;
     if (number && normalizeInvoiceNumber(h.invoiceNumber) === number) return true;
-    const paid = parseDate(h.paidAt);
+    // Recurring fixed fees repeat the amount every month, so compare invoice issue dates, not payment dates.
+    const prev = parseDate(h.issueDate ?? h.paidAt);
     return (
       h.amount === invoice.amount &&
       h.currency.toUpperCase() === invoice.currency.toUpperCase() &&
-      paid !== undefined &&
-      Math.abs(days(paid, ref)) <= window
+      prev !== undefined &&
+      Math.abs(days(prev, ref)) <= window
     );
   });
   return hit

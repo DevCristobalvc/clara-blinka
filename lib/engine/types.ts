@@ -70,6 +70,8 @@ export interface PaymentRecord {
   amount: number;
   currency: string;
   paidAt: string;
+  /** Issue date of the paid invoice; duplicates by amount are compared on issue dates. */
+  issueDate?: string;
   category: string;
 }
 

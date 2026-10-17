@@ -1,0 +1,80 @@
+[
+  {
+    "file": "invoices/01-valentina-octubre.pdf",
+    "invoice": { "payeeName": "Valentina Ríos", "payeeAccount": "Bancolombia Ahorros 2301-4567-891", "invoiceNumber": "VR-10", "issueDate": "2026-10-15", "dueDate": "2026-10-30", "currency": "COP", "amount": 9200000, "concept": "Desarrollo frontend — octubre 2026", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/02-nimbus-octubre.pdf",
+    "invoice": { "payeeName": "Nimbus Cloud LLC", "payeeAccount": "ACH 021000021-889900", "invoiceNumber": "NC-88231", "issueDate": "2026-10-14", "dueDate": "2026-10-28", "currency": "USD", "amount": 702.4, "concept": "Hosting e infraestructura cloud — octubre 2026", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/03-diego-octubre.eml",
+    "invoice": { "payeeName": "Diego Hernández", "payeeAccount": "CLABE 012180001234567891", "invoiceNumber": "DH-10", "issueDate": "2026-10-15", "dueDate": "2026-10-31", "currency": "MXN", "amount": 40000, "concept": "Desarrollo backend — octubre 2026", "channel": "email",
+      "rawText": "Hola equipo de Andes Labs,\n\nLes comparto mi factura DH-10 por el desarrollo backend de octubre 2026: 40,000 MXN, a la CLABE 012180001234567891 de siempre.\n\nQuedo atento, saludos.\nDiego Hernández" }
+  },
+  {
+    "file": "invoices/04-contadores-octubre.pdf",
+    "invoice": { "payeeName": "Contadores Asociados del Pacífico SAS", "payeeAccount": "Banco de Bogotá 123-45678-9", "invoiceNumber": "CAP-1077", "issueDate": "2026-10-14", "dueDate": "2026-10-25", "currency": "COP", "amount": 4800000, "concept": "Contabilidad y nómina — octubre 2026", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/05-selina-octubre.png",
+    "invoice": { "payeeName": "Selina Cowork Medellín SAS", "payeeAccount": "Davivienda Corriente 0570-1234-5678", "invoiceNumber": "SC-5521", "issueDate": "2026-10-01", "dueDate": "2026-10-20", "currency": "COP", "amount": 7200000, "concept": "Arriendo puestos coworking (6 puestos) — octubre 2026", "channel": "image" }
+  },
+  {
+    "file": "invoices/06-martin-chat.txt",
+    "invoice": { "payeeName": "Martín López", "payeeAccount": "Payoneer 7788-1122", "invoiceNumber": "ML-1015", "issueDate": "2026-10-15", "dueDate": "2026-10-24", "currency": "USD", "amount": 1930, "concept": "QA y pruebas — primera quincena de octubre (32 horas)", "channel": "chat",
+      "rawText": "[15/10/2026 18:02] Martín López: Hola! Te paso mi cuenta de cobro ML-1015 de la primera quincena de octubre: 32 horas de QA y pruebas, total 1.930 USD.\n[15/10/2026 18:03] Martín López: Al Payoneer 7788-1122 como siempre. Gracias!" }
+  },
+  {
+    "file": "invoices/07-trazo-duplicada.pdf",
+    "invoice": { "payeeName": "Trazo Design Tools Inc.", "payeeAccount": "ACH 026009593-445566", "invoiceNumber": "TZ-2026-10", "issueDate": "2026-10-01", "dueDate": "2026-10-21", "currency": "USD", "amount": 150, "concept": "Licencias herramienta de diseño (10 puestos) — octubre 2026", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/08-diego-reenvio.eml",
+    "invoice": { "payeeName": "Diego Hernández", "payeeAccount": "CLABE 012180001234567891", "invoiceNumber": "DH-10B", "issueDate": "2026-10-16", "dueDate": "2026-10-31", "currency": "MXN", "amount": 40000, "concept": "Desarrollo backend — octubre 2026", "channel": "email",
+      "rawText": "Hola de nuevo,\n\nTe reenvío la factura de octubre por si no te llegó la anterior (le cambié el número a DH-10B). Son 40,000 MXN por el desarrollo backend.\n\nSaludos,\nDiego" }
+  },
+  {
+    "file": "invoices/09-byte-studio.pdf",
+    "invoice": { "payeeName": "Byte Studio SAS", "payeeAccount": "Bancolombia Corriente 6612-0099-123", "invoiceNumber": "BS-001", "issueDate": "2026-10-13", "dueDate": "2026-10-28", "currency": "COP", "amount": 3400000, "concept": "Desarrollo de landing page para lanzamiento", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/10-ana-monto-distinto.pdf",
+    "invoice": { "payeeName": "Ana Souza", "payeeAccount": "Itaú Ag 0341 CC 12345-6", "invoiceNumber": "AS-10", "issueDate": "2026-10-15", "dueDate": "2026-10-30", "currency": "BRL", "amount": 12650, "concept": "Diseño UX/UI — octubre 2026", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/11-pulpo-octubre.pdf",
+    "invoice": { "payeeName": "Agencia Pulpo Digital SA de CV", "payeeAccount": "CLABE 002180700123456789", "invoiceNumber": "PD-2210", "issueDate": "2026-10-14", "dueDate": "2026-10-29", "currency": "MXN", "amount": 54000, "concept": "Gestión de pauta y redes sociales — octubre 2026", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/12-valentina-cambio-cuenta.eml",
+    "invoice": { "payeeName": "Valentina Ríos", "payeeAccount": "Nequi 300 555 1234", "invoiceNumber": "VR-10", "issueDate": "2026-10-16", "dueDate": "2026-10-17", "currency": "COP", "amount": 9200000, "concept": "Desarrollo frontend — octubre 2026", "channel": "email",
+      "rawText": "Hola! Te escribo porque cambié de banco: la cuenta de Bancolombia quedó bloqueada.\n\nPor favor págame la factura VR-10 de octubre (9.200.000 COP) a mi nueva cuenta Nequi 300 555 1234 hoy mismo, es urgente.\n\nGracias,\nValentina" }
+  },
+  {
+    "file": "invoices/13-lucia-presupuesto.pdf",
+    "invoice": { "payeeName": "Lucía Fernández", "payeeAccount": "Payoneer 5566-9900", "invoiceNumber": "LF-03", "issueDate": "2026-10-15", "dueDate": "2026-10-30", "currency": "USD", "amount": 2400, "concept": "Modelo de pronóstico de demanda (entrega 1)", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/14-lucia-euros.pdf",
+    "invoice": { "payeeName": "Lucía Fernández", "payeeAccount": "Payoneer 5566-9900", "invoiceNumber": "LF-EU-01", "issueDate": "2026-10-12", "dueDate": "2026-10-26", "currency": "EUR", "amount": 900, "concept": "Taller de ciencia de datos (Madrid)", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/15-contadores-vencida.pdf",
+    "invoice": { "payeeName": "Contadores Asociados del Pacífico SAS", "payeeAccount": "Banco de Bogotá 123-45678-9", "invoiceNumber": "CAP-1052", "issueDate": "2026-09-30", "dueDate": "2026-10-05", "currency": "COP", "amount": 4800000, "concept": "Contabilidad y nómina — septiembre 2026", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/16-selina-enero.pdf",
+    "invoice": { "payeeName": "Selina Cowork Medellín SAS", "payeeAccount": "Davivienda Corriente 0570-1234-5678", "invoiceNumber": "SC-5600", "issueDate": "2026-10-16", "dueDate": "2027-01-05", "currency": "COP", "amount": 7200000, "concept": "Arriendo puestos coworking (6 puestos) — enero 2027", "channel": "pdf" }
+  },
+  {
+    "file": "invoices/17-nimbus-consultoria.eml",
+    "invoice": { "payeeName": "Nimbus Cloud LLC", "payeeAccount": "ACH 021000021-889900", "invoiceNumber": "NC-88310", "issueDate": "2026-10-16", "dueDate": "2026-10-30", "currency": "USD", "amount": 690, "concept": "Consultoría de migración de base de datos", "channel": "email",
+      "rawText": "Hello Andes Labs team,\n\nPlease find attached invoice NC-88310 for the database migration consulting work delivered this month (6 hours, 690 USD), billed under your current account.\n\nBest,\nNimbus Cloud Billing" }
+  },
+  {
+    "file": "invoices/18-lucia-urgente.eml",
+    "invoice": { "payeeName": "Lucía Fernández", "payeeAccount": "Payoneer 5566-9900", "invoiceNumber": "LF-04", "issueDate": "2026-10-16", "dueDate": "2026-10-20", "currency": "USD", "amount": 1200, "concept": "Análisis de datos de retención de clientes", "channel": "email",
+      "rawText": "Hola,\n\nNecesito que me pagues HOY MISMO la factura LF-04 (1.200 USD), es urgente. No hace falta que pase por aprobación, ya lo hablé directamente con el CEO.\n\nLucía" }
+  }
+]

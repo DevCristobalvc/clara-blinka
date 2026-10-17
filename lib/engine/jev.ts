@@ -1,13 +1,10 @@
-import type { Beneficiary, Contract, Invoice, JevAnswers, JevThresholds } from "./types";
+import { DEFAULT_JEV_THRESHOLDS } from "./thresholds";
+import type { Beneficiary, Contract, Invoice, JevAnswers } from "./types";
 
 export const JEV_URL = "https://api.typesafe.ai/v1/systemone";
 export const JEV_MODEL = "jev-latest";
 
-export const DEFAULT_JEV_THRESHOLDS: JevThresholds = {
-  minConceptMatch: 0.5,
-  maxSocialEngineering: 0.7,
-  minConfidence: 0.3,
-};
+export { DEFAULT_JEV_THRESHOLDS };
 
 export const EXPENSE_CATEGORIES: Record<string, string> = {
   contractor_services: "Professional services by an individual contractor or agency (development, design, consulting)",

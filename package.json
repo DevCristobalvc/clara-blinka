@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "predev": "node scripts/sync-public.mjs",
+    "prebuild": "node scripts/sync-public.mjs",
+    "eval": "vitest run lib/engine/dataset.test.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.135.0",

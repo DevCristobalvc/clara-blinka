@@ -1,0 +1,52 @@
+{
+  "asOf": "2026-10-17",
+  "company": { "name": "Andes Labs Inc. (ficticia)", "country": "US", "baseCurrency": "USD" },
+  "policy": {
+    "perPaymentLimitUSD": 8000,
+    "humanApprovalAboveUSD": 2500,
+    "monthlyBudgetUSD": {
+      "contractor_services": 16000,
+      "software": 2500,
+      "office": 4000,
+      "marketing": 4000,
+      "legal_accounting": 2500,
+      "travel": 1500,
+      "other": 500
+    },
+    "allowedCurrencies": ["USD", "COP", "MXN", "BRL", "ARS"],
+    "maxDaysUntilDue": 30,
+    "duplicateWindowDays": 10
+  },
+  "beneficiaries": [
+    { "id": "b-valentina", "name": "Valentina Ríos", "country": "CO", "currency": "COP", "account": { "type": "bank", "value": "Bancolombia Ahorros 2301-4567-891" }, "category": "contractor_services" },
+    { "id": "b-diego", "name": "Diego Hernández", "country": "MX", "currency": "MXN", "account": { "type": "bank", "value": "CLABE 012180001234567891" }, "category": "contractor_services" },
+    { "id": "b-ana", "name": "Ana Souza", "country": "BR", "currency": "BRL", "account": { "type": "bank", "value": "Itaú Ag 0341 CC 12345-6" }, "category": "contractor_services" },
+    { "id": "b-martin", "name": "Martín López", "country": "AR", "currency": "USD", "account": { "type": "bank", "value": "Payoneer 7788-1122" }, "category": "contractor_services" },
+    { "id": "b-lucia", "name": "Lucía Fernández", "country": "CO", "currency": "USD", "account": { "type": "bank", "value": "Payoneer 5566-9900" }, "category": "contractor_services" },
+    { "id": "b-nimbus", "name": "Nimbus Cloud LLC", "country": "US", "currency": "USD", "account": { "type": "bank", "value": "ACH 021000021-889900" }, "category": "software" },
+    { "id": "b-trazo", "name": "Trazo Design Tools Inc.", "country": "US", "currency": "USD", "account": { "type": "bank", "value": "ACH 026009593-445566" }, "category": "software" },
+    { "id": "b-selina", "name": "Selina Cowork Medellín SAS", "country": "CO", "currency": "COP", "account": { "type": "bank", "value": "Davivienda Corriente 0570-1234-5678" }, "category": "office" },
+    { "id": "b-contadores", "name": "Contadores Asociados del Pacífico SAS", "country": "CO", "currency": "COP", "account": { "type": "bank", "value": "Banco de Bogotá 123-45678-9" }, "category": "legal_accounting" },
+    { "id": "b-pulpo", "name": "Agencia Pulpo Digital SA de CV", "country": "MX", "currency": "MXN", "account": { "type": "bank", "value": "CLABE 002180700123456789" }, "category": "marketing" }
+  ],
+  "contracts": [
+    { "id": "c-valentina", "beneficiaryId": "b-valentina", "concept": "Desarrollo frontend (mensual)", "amount": 9200000, "currency": "COP", "tolerancePct": 2, "frequency": "monthly" },
+    { "id": "c-diego", "beneficiaryId": "b-diego", "concept": "Desarrollo backend (mensual)", "amount": 40000, "currency": "MXN", "tolerancePct": 2, "frequency": "monthly" },
+    { "id": "c-ana", "beneficiaryId": "b-ana", "concept": "Diseño UX/UI (mensual)", "amount": 11000, "currency": "BRL", "tolerancePct": 2, "frequency": "monthly" },
+    { "id": "c-martin", "beneficiaryId": "b-martin", "concept": "QA y pruebas (por horas)", "amount": 1800, "currency": "USD", "tolerancePct": 15, "frequency": "biweekly" },
+    { "id": "c-nimbus", "beneficiaryId": "b-nimbus", "concept": "Hosting e infraestructura cloud", "amount": 640, "currency": "USD", "tolerancePct": 25, "frequency": "monthly" },
+    { "id": "c-trazo", "beneficiaryId": "b-trazo", "concept": "Licencias herramienta de diseño (10 puestos)", "amount": 150, "currency": "USD", "tolerancePct": 0, "frequency": "monthly" },
+    { "id": "c-selina", "beneficiaryId": "b-selina", "concept": "Arriendo puestos coworking (6 puestos)", "amount": 7200000, "currency": "COP", "tolerancePct": 0, "frequency": "monthly" },
+    { "id": "c-contadores", "beneficiaryId": "b-contadores", "concept": "Contabilidad y nómina mensual", "amount": 4800000, "currency": "COP", "tolerancePct": 0, "frequency": "monthly" },
+    { "id": "c-pulpo", "beneficiaryId": "b-pulpo", "concept": "Gestión de pauta y redes sociales", "amount": 54000, "currency": "MXN", "tolerancePct": 5, "frequency": "monthly" }
+  ],
+  "history": [
+    { "invoiceNumber": "PD-2209", "beneficiaryId": "b-pulpo", "amount": 54000, "currency": "MXN", "issueDate": "2026-09-22", "paidAt": "2026-09-29", "category": "marketing" },
+    { "invoiceNumber": "NC-87990", "beneficiaryId": "b-nimbus", "amount": 655.1, "currency": "USD", "issueDate": "2026-09-14", "paidAt": "2026-09-20", "category": "software" },
+    { "invoiceNumber": "ML-0930", "beneficiaryId": "b-martin", "amount": 1750, "currency": "USD", "issueDate": "2026-09-30", "paidAt": "2026-10-01", "category": "contractor_services" },
+    { "invoiceNumber": "VR-09", "beneficiaryId": "b-valentina", "amount": 9200000, "currency": "COP", "issueDate": "2026-09-30", "paidAt": "2026-10-02", "category": "contractor_services" },
+    { "invoiceNumber": "DH-09", "beneficiaryId": "b-diego", "amount": 40000, "currency": "MXN", "issueDate": "2026-09-30", "paidAt": "2026-10-02", "category": "contractor_services" },
+    { "invoiceNumber": "AS-09", "beneficiaryId": "b-ana", "amount": 11000, "currency": "BRL", "issueDate": "2026-09-30", "paidAt": "2026-10-03", "category": "contractor_services" },
+    { "invoiceNumber": "TZ-2026-10", "beneficiaryId": "b-trazo", "amount": 150, "currency": "USD", "issueDate": "2026-10-01", "paidAt": "2026-10-03", "category": "software" }
+  ]
+}
