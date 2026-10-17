@@ -12,10 +12,11 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, r
 await ctx.addCookies([{ name: "orbit_session", value: "demo", url: base }]);
 const page = await ctx.newPage();
 const pause = (ms) => page.waitForTimeout(ms);
-const go = async (path, wait) => { await page.goto(base + path, { waitUntil: "load" }); if (wait) await page.waitForSelector(wait, { timeout: 30000 }); };
+const go = async (path, wait) => { await page.goto(base + path, { waitUntil: "load" }); if (wait) await page.waitForSelector(wait, { timeout: 120000 }); };
 
-// Fresh company
+// Fresh company, and warm the dev server so cold compiles do not show up in the video
 await fetch(`${base}/api/reset`, { method: "POST" });
+for (const p of ["/", "/app", "/app/facturas", "/app/reglas", "/app/configuracion", "/app/aprobaciones", "/app/reportes"]) await fetch(base + p, { headers: { cookie: "orbit_session=demo" } }).catch(() => {});
 
 // 0. Landing
 await go("/", "text=Actúa con autonomía");

@@ -115,7 +115,7 @@ npm test             # engine, negotiation, receipts, case service, dataset eval
 npm run eval         # writes docs/eval.md
 ```
 
-`.env.local` (all optional; without them the app runs offline with an in-memory store):
+`.env.local` (copy [`.env.example`](.env.example); all optional, each missing value falls back to a labeled demo mode):
 
 ```
 ANTHROPIC_API_KEY=...          # extraction of uploaded PDFs/images/emails + natural wording of negotiation messages
