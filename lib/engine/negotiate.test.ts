@@ -129,7 +129,7 @@ describe("negotiation outcomes with an honest cobrador", () => {
     expect(t.finalDecision?.action).toBe("PAY");
     expect(t.finalDecision?.rules.every((r) => r.pass)).toBe(true);
     expect(t.finalDecision?.invoice.amount).toBe(6000000);
-    expect(t.messages.map((m) => m.from)).toEqual(["clara", "vendor"]);
+    expect(t.messages.map((m) => m.from)).toEqual(["orbit", "vendor"]);
     expect(t.messages[0].text).toMatch(/Hola Laura Gómez, soy ORBIT/);
     expect(t.attempts).toHaveLength(1);
   });
