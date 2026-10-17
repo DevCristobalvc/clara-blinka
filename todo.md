@@ -26,7 +26,7 @@
 | T11 | Single workspace on the mockup shell (Panel, Facturas, Reglas, Aprobaciones, Reportes, Configuración) | claude | done |
 | T12 | Hire the agents with USDC over x402 (activate → ORBIT treasury; fund → agent wallet), Privy login | claude | done (live payments verified Oct 17 20:47 COT) |
 | T13 | Deploy with env vars on Vercel (`orbit` project) | cristobal | **todo** |
-| T14 | Demo video (`scripts/record-demo.mjs` + ElevenLabs narration from `docs/pitch.md`) + activation clip by hand | wmb, claude | **in-progress** |
+| T14 | Demo video: footage recorded (`docs/demo/orbit-demo.mp4`, 2:27, production build); narration (ElevenLabs, `docs/pitch.md`) and the activation clip pending | wmb, claude | **in-progress** |
 | T15 | HackRadar: team, project form, links; submit before Sun 12:00 COT | cristobal (confirms), claude (text) | **todo** |
 | T16 | Hero illustration on the landing | agy | in-progress |
 | T17 | JEV playbook (30X bonus, `docs/jev-playbook.md`) | agy (draft), claude (review) | todo · P2 |

@@ -4,7 +4,7 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 
 ## [Unreleased]
 
-- Demo video and pitch (`docs/pitch.md`), HackRadar submission.
+- Demo video: core footage recorded with `scripts/record-demo.mjs` (2:27); narration and the activation clip pending. HackRadar submission.
 - Cobrador screens (collection cases with the rules inverted).
 
 ## 0.3.0 · 2026-10-17 (evening) · "Agents that collect and pay"
