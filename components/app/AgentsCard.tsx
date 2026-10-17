@@ -3,20 +3,25 @@
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { PRIVY_APP_ID } from "@/app/providers";
+import { fmtUSD } from "@/lib/client/format";
 import { paidFetchFor, paymentDetails, usdcBalance } from "@/lib/client/x402";
+import { effectiveDecision } from "@/lib/engine/ledger";
 import type { AgentActivation, AgentKind } from "@/lib/engine/types";
 import { Button, Card } from "../ui";
 import { useWorkspace } from "./Workspace";
 
 interface AgentsInfo {
-  plans: { kind: AgentKind; name: string; tagline: string; price: string; billing: string; available: boolean }[];
+  plans: { kind: AgentKind; name: string; tagline: string; activationPrice: string; fundingPrice: string; billing: string; available: boolean }[];
   activations: Partial<Record<AgentKind, AgentActivation>>;
+  wallets: Record<AgentKind, { address: string; balance?: string }>;
   payment: { network: string; payTo: string; facilitator: string; asset: string; free: boolean; required: boolean };
 }
 
-/** Hire the agents by paying ORBIT in USDC over x402, with the company's Privy wallet. */
+const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
+
+/** Hire the agents (fee to ORBIT) and load their funds (into the agent's own wallet), both in USDC over x402 with the company's Privy wallet. */
 export function AgentsCard() {
-  const { refresh, run, busy } = useWorkspace();
+  const { cases, refresh, run, busy } = useWorkspace();
   const [info, setInfo] = useState<AgentsInfo>();
   const [log, setLog] = useState<string[]>([]);
   const load = async () => setInfo(await (await fetch("/api/agents", { cache: "no-store" })).json());
@@ -24,17 +29,22 @@ export function AgentsCard() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch of plans and activations
     void load();
   }, []);
+  const registeredUSD = cases.filter((c) => c.status === "paid" && c.decision).reduce((s, c) => s + effectiveDecision(c.decision!, c.thread).amountUSD, 0);
+  const onLog = (m: string) => setLog((l) => [...l.slice(-7), m]);
+  const after = (label: string) => run(label, async () => { await load(); await refresh(); });
 
   return (
     <Card className="lg:col-span-2">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="font-semibold text-white">Agentes</h3>
-          <p className="text-xs text-zinc-500">Contratas a tus agentes pagándole a ORBIT en USDC. Sin cuenta, sin tarjeta: la wallet de la empresa paga y el agente queda activo.</p>
+          <p className="text-xs text-zinc-500">
+            Dos pagos, los dos en USDC desde la wallet de la empresa: <b className="text-zinc-300">activar</b> (la cuota a ORBIT) y <b className="text-zinc-300">cargar fondos</b> (a la wallet propia del agente, de donde paga). El agente frena todo lo que no cuadre con tus reglas.
+          </p>
         </div>
         {info ? (
           <p className="text-[11px] text-zinc-500">
-            {info.payment.asset} en {info.payment.network === "eip155:84532" ? "Base Sepolia" : info.payment.network} · a <span className="font-mono">{info.payment.payTo.slice(0, 6)}…{info.payment.payTo.slice(-4)}</span>
+            {info.payment.asset} en {info.payment.network === "eip155:84532" ? "Base Sepolia" : info.payment.network} · cuota a ORBIT <span className="font-mono">{short(info.payment.payTo)}</span>
             {info.payment.free ? " · modo demo sin pago" : ""}
           </p>
         ) : null}
@@ -43,6 +53,8 @@ export function AgentsCard() {
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         {(info?.plans ?? []).map((plan) => {
           const a = info?.activations[plan.kind];
+          const w = info?.wallets[plan.kind];
+          const loaded = (a?.funding ?? []).reduce((s, f) => s + Number(f.amount.replace("$", "")), 0);
           return (
             <div key={plan.kind} className={`rounded-xl border p-4 ${a?.active ? "border-emerald-500/30 bg-emerald-500/[0.05]" : "border-line bg-panel-2"}`}>
               <div className="flex items-center justify-between">
@@ -50,58 +62,69 @@ export function AgentsCard() {
                 <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${a?.active ? "bg-emerald-500/15 text-emerald-300" : "bg-zinc-700/40 text-zinc-300"}`}>{a?.active ? "Activo" : "Inactivo"}</span>
               </div>
               <p className="mt-1 text-sm text-zinc-300">{plan.tagline}</p>
-              <p className="mt-2 text-xs text-zinc-500">{plan.billing}</p>
+
+              {w ? (
+                <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 rounded-lg bg-black/30 p-3 text-xs">
+                  <dt className="text-zinc-500">Wallet del agente</dt>
+                  <dd className="truncate font-mono text-zinc-200" title={w.address}>{short(w.address)}</dd>
+                  <dt className="text-zinc-500">Fondos (USDC)</dt>
+                  <dd className="font-mono text-zinc-200">{w.balance ?? "—"}{loaded ? <span className="text-zinc-500"> · cargados {loaded.toFixed(2)}</span> : null}</dd>
+                  {plan.kind === "pagador" ? (
+                    <>
+                      <dt className="text-zinc-500">Registrado como pagado</dt>
+                      <dd className="font-mono text-zinc-200">{fmtUSD(registeredUSD)}</dd>
+                    </>
+                  ) : null}
+                </dl>
+              ) : null}
+
               {a?.active ? (
                 <p className="mt-3 text-xs text-emerald-200">
                   Activado el {new Date(a.activatedAt).toLocaleString("es-CO")} · {a.payment.method === "x402" ? `${a.payment.amount ?? ""} ${a.payment.asset ?? "USDC"} por x402` : "activación de demo"}
-                  {a.payment.payer ? <> · pagó <span className="font-mono">{a.payment.payer.slice(0, 6)}…{a.payment.payer.slice(-4)}</span></> : null}
+                  {a.payment.payer ? <> · pagó <span className="font-mono">{short(a.payment.payer)}</span></> : null}
                   {a.payment.transaction ? <> · <a className="underline" target="_blank" rel="noreferrer" href={`https://sepolia.basescan.org/tx/${a.payment.transaction}`}>tx</a></> : null}
                 </p>
-              ) : (
-                <div className="mt-3">
-                  <ActivateButton
-                    kind={plan.kind}
-                    price={plan.price}
-                    free={Boolean(info?.payment.free)}
-                    busy={Boolean(busy)}
-                    onLog={(m) => setLog((l) => [...l.slice(-6), m])}
-                    onDone={() => run(`activando ${plan.name}`, async () => { await load(); await refresh(); })}
-                  />
-                </div>
-              )}
+              ) : null}
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                {!a?.active ? (
+                  <PayButton label={`Activar por ${plan.activationPrice} USDC`} demoLabel={`Activar ${plan.name} (demo)`} path={`/api/agents/${plan.kind}/activate`} free={Boolean(info?.payment.free)} busy={Boolean(busy)} onLog={onLog} onDone={() => after(`activando ${plan.name}`)} />
+                ) : null}
+                <PayButton variant="secondary" label={`Cargar ${plan.fundingPrice} USDC`} demoLabel="Cargar fondos (demo)" path={`/api/agents/${plan.kind}/fund`} free={Boolean(info?.payment.free)} busy={Boolean(busy)} onLog={onLog} onDone={() => after(`cargando fondos de ${plan.name}`)} />
+              </div>
+              <p className="mt-2 text-[11px] text-zinc-500">{plan.billing}</p>
             </div>
           );
         })}
       </div>
 
       <WalletStatus />
-      {log.length ? <pre className="mt-3 max-h-32 overflow-auto rounded-lg bg-black/40 p-2 font-mono text-[11px] text-zinc-400">{log.join("\n")}</pre> : null}
+      {log.length ? <pre className="mt-3 max-h-36 overflow-auto rounded-lg bg-black/40 p-2 font-mono text-[11px] text-zinc-400">{log.join("\n")}</pre> : null}
     </Card>
   );
 }
 
-function ActivateButton({ kind, price, free, busy, onLog, onDone }: { kind: AgentKind; price: string; free: boolean; busy: boolean; onLog: (m: string) => void; onDone: () => void }) {
+function PayButton({ label, demoLabel, path, free, busy, variant = "primary", onLog, onDone }: { label: string; demoLabel: string; path: string; free: boolean; busy: boolean; variant?: "primary" | "secondary"; onLog: (m: string) => void; onDone: () => void }) {
   const privy = usePrivySafe();
   const [working, setWorking] = useState(false);
 
-  async function activate() {
+  async function pay() {
     setWorking(true);
     try {
-      const url = `/api/agents/${kind}/activate`;
       if (free || !privy?.wallet) {
-        onLog(`POST ${url} (${free ? "modo demo" : "sin wallet"})`);
-        const res = await fetch(url, { method: "POST" });
-        const body = await res.json();
-        if (!res.ok) throw new Error(body.error ?? (res.status === 402 ? "Este despliegue exige el pago x402: entra con Privy para pagar con la wallet de la empresa." : `HTTP ${res.status}`));
-        onLog(`→ ${res.status} activado`);
+        onLog(`POST ${path} (${free ? "modo demo" : "sin wallet"})`);
+        const res = await fetch(path, { method: "POST" });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error((body as { error?: string }).error ?? (res.status === 402 ? "Este despliegue exige el pago x402: entra con Privy para pagar con la wallet de la empresa." : `HTTP ${res.status}`));
+        onLog(`→ ${res.status} ok`);
       } else {
-        onLog(`Wallet ${privy.wallet.address.slice(0, 10)}… firma el pago de ${price} USDC (EIP-3009) · POST ${url}`);
+        onLog(`Wallet ${short(privy.wallet.address)} firma el pago (EIP-3009, sin gas) · POST ${path}`);
         const paidFetch = await paidFetchFor(privy.wallet);
-        const res = await paidFetch(url, { method: "POST" });
+        const res = await paidFetch(path, { method: "POST" });
         const body = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error((body as { error?: string }).error ?? `HTTP ${res.status}`);
         const d = paymentDetails(res);
-        onLog(`→ ${res.status} pagado y activado${d.transaction ? ` · tx ${d.transaction.slice(0, 12)}…` : ""}`);
+        onLog(`→ ${res.status} pagado${d.transaction ? ` · tx ${d.transaction.slice(0, 14)}…` : ""}`);
       }
       onDone();
     } catch (err) {
@@ -112,11 +135,11 @@ function ActivateButton({ kind, price, free, busy, onLog, onDone }: { kind: Agen
   }
 
   if (!free && PRIVY_APP_ID && privy && !privy.authenticated) {
-    return <Button disabled={busy || working} onClick={privy.login}>Entrar con Privy para activar</Button>;
+    return <Button variant={variant} disabled={busy || working} onClick={privy.login}>Entrar con Privy para pagar</Button>;
   }
   return (
-    <Button disabled={busy || working} onClick={activate}>
-      {working ? "Pagando…" : free ? `Activar ${kind} (demo)` : `Activar por ${price} USDC`}
+    <Button variant={variant} disabled={busy || working} onClick={pay}>
+      {working ? "Pagando…" : free ? demoLabel : label}
     </Button>
   );
 }
@@ -129,11 +152,11 @@ function WalletStatus() {
     if (!address) return;
     usdcBalance(address as `0x${string}`).then(setBalance).catch(() => setBalance(undefined));
   }, [address]);
-  if (!PRIVY_APP_ID) return <p className="mt-4 text-xs text-zinc-500">Sin `NEXT_PUBLIC_PRIVY_APP_ID`: no hay wallet de empresa en este despliegue. Las activaciones usan el modo demo si `ORBIT_ACTIVATION_FREE=1`.</p>;
+  if (!PRIVY_APP_ID) return <p className="mt-4 text-xs text-zinc-500">Sin `NEXT_PUBLIC_PRIVY_APP_ID`: no hay wallet de empresa en este despliegue. Los pagos usan el modo demo si `ORBIT_ACTIVATION_FREE=1`.</p>;
   if (!privy?.authenticated) return <p className="mt-4 text-xs text-zinc-500">Entra con Privy (email, Google o wallet) para tener la wallet de la empresa.</p>;
   return (
     <p className="mt-4 text-xs text-zinc-400">
-      Wallet de la empresa: <span className="font-mono text-zinc-200">{address ?? "creándose…"}</span>
+      Wallet de la empresa (quien paga): <span className="font-mono text-zinc-200">{address ?? "creándose…"}</span>
       {balance !== undefined ? <> · saldo <b className="text-zinc-200">{balance} USDC</b> (Base Sepolia)</> : null}
       {" · "}
       <a className="underline" href="https://faucet.circle.com" target="_blank" rel="noreferrer">USDC de prueba</a>
@@ -145,7 +168,6 @@ function WalletStatus() {
 
 /** usePrivy throws without a provider; without an app id we render the no-wallet path. */
 function usePrivySafe() {
-  // Hooks must run unconditionally; when there is no provider these hooks are never mounted (see PRIVY_APP_ID checks above).
   const { ready, authenticated, login, logout } = usePrivy();
   const { wallets } = useWallets();
   if (!PRIVY_APP_ID) return undefined;

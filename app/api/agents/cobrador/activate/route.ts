@@ -1,3 +1,3 @@
-import { activateRoute } from "@/lib/server/activate-route";
+import { paidAgentRoute } from "@/lib/server/activate-route";
 
-export const POST = activateRoute("cobrador");
+export const POST = paidAgentRoute("cobrador", "activate");

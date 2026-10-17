@@ -293,9 +293,21 @@ export interface WebhookConfig {
 
 export type AgentKind = "pagador" | "cobrador";
 
+export interface AgentFunding {
+  amount: string;
+  asset: string;
+  network: string;
+  at: string;
+  payer?: string;
+  transaction?: string;
+}
+
 export interface AgentActivation {
   active: boolean;
   activatedAt: string;
+  /** The agent's own wallet (per company): where the company loads the funds the agent pays from. */
+  wallet?: string;
+  funding?: AgentFunding[];
   /** How it was paid: x402 over USDC (network in CAIP-2), or a demo activation. */
   payment: {
     method: "x402" | "demo";
