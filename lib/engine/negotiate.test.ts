@@ -15,7 +15,7 @@ import {
   type NegotiationContext,
 } from "./negotiate";
 import { findContract } from "./rules";
-import type { ClaraRequest, Company, Counterparty, Decision, Invoice, JevAnswers, ProseFacts, RequestType, VendorReply } from "./types";
+import type { OrbitRequest, Company, Counterparty, Decision, Invoice, JevAnswers, ProseFacts, RequestType, VendorReply } from "./types";
 
 const TODAY = "2026-10-17";
 
@@ -225,7 +225,7 @@ describe("the prose layer cannot leak the company's limits", () => {
     const types: RequestType[] = ["reissue_at_contract_amount", "reissue_in_currency", "confirm_already_paid", "schedule_payment", "clarify_concept"];
     const base = pickRequest(d, company, [], TODAY).facts;
     for (const type of types) {
-      const req: ClaraRequest = { type, facts: { ...base, targetCurrency: "COP", scheduledFor: "2026-12-01", paidRecord: { invoiceNumber: "X", amount: 1, currency: "USD", paidAt: TODAY } } };
+      const req: OrbitRequest = { type, facts: { ...base, targetCurrency: "COP", scheduledFor: "2026-12-01", paidRecord: { invoiceNumber: "X", amount: 1, currency: "USD", paidAt: TODAY } } };
       const text = orbitTemplate(req);
       expect(text).not.toMatch(/toleran|presupuesto|budget|l[ií]mite|limit|umbral|threshold|anticipaci[oó]n/i);
       expect(text).not.toMatch(/\b(8[.,]?000|2[.,]?000|10[.,]?000)\b/);

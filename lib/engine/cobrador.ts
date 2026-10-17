@@ -1,6 +1,6 @@
 import { FX_PER_USD, toUSD } from "./fx";
 import { languageFor } from "./negotiate";
-import type { Beneficiary, ClaraRequest, Contract, Counterparty, Invoice, Language, VendorReply } from "./types";
+import type { Beneficiary, OrbitRequest, Contract, Counterparty, Invoice, Language, VendorReply } from "./types";
 
 /**
  * The vendor's side: a cobrador (collection agent) with its own view of the deal. It answers ORBIT's
@@ -70,7 +70,7 @@ function reissue(cfg: CobradorConfig, invoice: Invoice, patch: NonNullable<Vendo
   return out;
 }
 
-export function cobradorReply(cfg: CobradorConfig, request: ClaraRequest, invoice: Invoice): VendorReply {
+export function cobradorReply(cfg: CobradorConfig, request: OrbitRequest, invoice: Invoice): VendorReply {
   const en = cfg.language === "en";
   const inject = cfg.compromise?.injectText;
   switch (request.type) {

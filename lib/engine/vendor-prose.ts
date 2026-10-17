@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import { orbitTemplate, vendorTemplate, type ProseWriter } from "./negotiate";
-import type { ClaraRequest, VendorReply } from "./types";
+import type { OrbitRequest, VendorReply } from "./types";
 
 /**
  * Natural-language wording for negotiation messages, on top of the engine's facts. Server-only.
@@ -46,7 +46,7 @@ export function claudeProse(client = new Anthropic()): ProseWriter {
   }
 
   return {
-    orbit(request: ClaraRequest) {
+    orbit(request: OrbitRequest) {
       const { facts } = request;
       const prompt = [
         `Language: ${LANG[facts.language]}.`,
@@ -56,7 +56,7 @@ export function claudeProse(client = new Anthropic()): ProseWriter {
       ].join("\n");
       return write(CLARA_SYSTEM, prompt, orbitTemplate(request));
     },
-    vendor(reply: VendorReply, request: ClaraRequest) {
+    vendor(reply: VendorReply, request: OrbitRequest) {
       const { facts } = request;
       const prompt = [
         `Language: ${LANG[facts.language]}.`,

@@ -6,7 +6,7 @@ import { DEFAULT_JEV_THRESHOLDS } from "./thresholds";
 import {
   NEGOTIABLE_CODES,
   type Beneficiary,
-  type ClaraRequest,
+  type OrbitRequest,
   type Company,
   type Contract,
   type Counterparty,
@@ -96,7 +96,7 @@ function baseFacts(invoice: Invoice, company: Company, { beneficiary, contract }
 }
 
 /** Which correction ORBIT asks for. Deterministic; all facts are computed here, never by a model. */
-export function pickRequest(decision: Decision, company: Company, extraHistory: PaymentRecord[], today: string): ClaraRequest {
+export function pickRequest(decision: Decision, company: Company, extraHistory: PaymentRecord[], today: string): OrbitRequest {
   const p = parties(decision, company);
   const history = [...company.history, ...extraHistory];
   const inv = decision.invoice;
@@ -170,13 +170,13 @@ export function validateCorrection(original: Invoice, corrected: Invoice, compan
 // Prose: the words around the facts. Templates always work; Claude is optional (server side).
 
 export interface ProseWriter {
-  orbit(request: ClaraRequest): Promise<{ text: string; source: "claude" | "template" }>;
-  vendor(reply: VendorReply, request: ClaraRequest): Promise<{ text: string; source: "claude" | "template" }>;
+  orbit(request: OrbitRequest): Promise<{ text: string; source: "claude" | "template" }>;
+  vendor(reply: VendorReply, request: OrbitRequest): Promise<{ text: string; source: "claude" | "template" }>;
 }
 
 const money = (n: number, cur: string) => `${n.toLocaleString(cur === "USD" || cur === "EUR" ? "en-US" : "es-CO", { maximumFractionDigits: 2 })} ${cur}`;
 
-export function orbitTemplate({ type, facts: f }: ClaraRequest): string {
+export function orbitTemplate({ type, facts: f }: OrbitRequest): string {
   const en = f.language === "en";
   const head = en
     ? `Hi ${f.vendorName}, this is ORBIT from ${f.companyName}. We received invoice ${f.invoiceNumber} for ${money(f.amount, f.currency)} (${f.concept}).`
@@ -209,7 +209,7 @@ export function orbitTemplate({ type, facts: f }: ClaraRequest): string {
   }
 }
 
-export function vendorTemplate(reply: VendorReply, { facts: f }: ClaraRequest): string {
+export function vendorTemplate(reply: VendorReply, { facts: f }: OrbitRequest): string {
   const en = f.language === "en";
   const note = reply.note ? ` ${reply.note}` : "";
   const own = reply.text ? ` ${reply.text}` : "";
@@ -256,7 +256,7 @@ export interface NegotiationContext {
 const nowIso = (ctx: NegotiationContext) => ctx.now?.() ?? new Date().toISOString();
 const newId = (ctx: NegotiationContext) => ctx.id?.() ?? crypto.randomUUID();
 
-async function ask(thread: NegotiationThread, request: ClaraRequest, ctx: NegotiationContext) {
+async function ask(thread: NegotiationThread, request: OrbitRequest, ctx: NegotiationContext) {
   const { text, source } = await ctx.prose.orbit(request);
   thread.messages.push({ from: "orbit", at: nowIso(ctx), text, prose: source, requestType: request.type });
   thread.pendingRequest = request;

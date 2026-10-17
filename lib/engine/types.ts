@@ -176,7 +176,7 @@ export interface ProseFacts {
   scheduledFor?: string;
 }
 
-export interface ClaraRequest {
+export interface OrbitRequest {
   type: RequestType;
   facts: ProseFacts;
 }
@@ -191,7 +191,7 @@ export interface VendorReply {
   text?: string;
 }
 
-export type Counterparty = (request: ClaraRequest, invoice: Invoice) => Promise<VendorReply> | VendorReply;
+export type Counterparty = (request: OrbitRequest, invoice: Invoice) => Promise<VendorReply> | VendorReply;
 
 export interface NegotiationMessage {
   from: "orbit" | "vendor";
@@ -214,7 +214,7 @@ export interface NegotiationThread {
   maxRounds: number;
   messages: NegotiationMessage[];
   /** What ORBIT is waiting on while in progress. */
-  pendingRequest?: ClaraRequest;
+  pendingRequest?: OrbitRequest;
   /** Every re-run of decide() on a corrected invoice, in order. */
   attempts: Decision[];
   outcome?: NegotiationOutcome;
