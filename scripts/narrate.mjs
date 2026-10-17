@@ -63,10 +63,13 @@ for (const b of blocks) {
   clips.push({ ...b, file, length: dur(file) });
 }
 
-// 2. Place each clip at its start (or right after the previous one if that ran long).
+// 2. Place each clip where its block starts on screen (docs/demo/timeline.json from the recorder, else the
+//    script's planned times), or right after the previous clip if that ran long.
+const timelineFile = `${dir.replace(/\/voice$/, "")}/timeline.json`;
+const timeline = existsSync(timelineFile) ? Object.fromEntries(JSON.parse(readFileSync(timelineFile, "utf8")).map((t) => [t.block, t.at])) : {};
 let cursor = 0;
 for (const c of clips) {
-  c.at = Math.max(c.start, cursor);
+  c.at = Math.max(timeline[c.n] ?? c.start, cursor);
   cursor = c.at + c.length + 0.4;
 }
 const voiceEnd = cursor;
@@ -77,11 +80,11 @@ console.log(`voice ends at ${voiceEnd.toFixed(1)} s, video is ${videoLen.toFixed
 // 3. Mix: delay each clip, sum them, then mux onto the video (pad the video with its last frame if needed).
 const inputs = clips.flatMap((c) => ["-i", c.file]);
 const delays = clips.map((c, i) => `[${i + 1}:a]adelay=${Math.round(c.at * 1000)}|${Math.round(c.at * 1000)}[a${i}]`).join(";");
-const mix = `${delays};${clips.map((_, i) => `[a${i}]`).join("")}amix=inputs=${clips.length}:normalize=0,volume=1.0[voice]`;
+const mix = `${delays};${clips.map((_, i) => `[a${i}]`).join("")}amix=inputs=${clips.length}:normalize=0,volume=1.0,apad[voice]`;
 const pad = voiceEnd > videoLen ? `,tpad=stop_mode=clone:stop_duration=${(voiceEnd - videoLen + 0.5).toFixed(2)}` : "";
 execFileSync(
   "ffmpeg",
-  ["-v", "error", "-y", "-i", video, ...inputs, "-filter_complex", `[0:v]setpts=PTS-STARTPTS${pad}[v];${mix}`, "-map", "[v]", "-map", "[voice]", "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", out],
+  ["-v", "error", "-y", "-i", video, ...inputs, "-filter_complex", `[0:v]setpts=PTS-STARTPTS${pad}[v];${mix}`, "-map", "[v]", "-map", "[voice]", "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", out],
   { stdio: "inherit" },
 );
 console.log("written", out, `${dur(out).toFixed(1)} s`);
