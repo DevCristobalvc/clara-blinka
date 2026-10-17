@@ -17,7 +17,19 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, r
 const page = await ctx.newPage();
 const pause = (ms) => page.waitForTimeout(ms);
 const go = async (path, wait) => { await page.goto(base + path, { waitUntil: "load" }); if (wait) await page.waitForSelector(wait, { timeout: 120000 }); };
-const pay = (action) => execFileSync("node", ["scripts/x402-pay.mjs", action, "pagador"], { env: process.env, stdio: "inherit" });
+// The public facilitator occasionally fails on an RPC hiccup; retry a few times before giving up.
+const pay = (action) => {
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      execFileSync("node", ["scripts/x402-pay.mjs", action, "pagador"], { env: process.env, stdio: "inherit" });
+      return;
+    } catch (err) {
+      console.warn(`${action}: attempt ${attempt} failed`);
+      if (attempt === 4) throw err;
+      execFileSync("sleep", ["5"]);
+    }
+  }
+};
 
 // Fresh company with no agent hired yet, and warm the server
 await fetch(`${base}/api/reset?full=1`, { method: "POST" });
