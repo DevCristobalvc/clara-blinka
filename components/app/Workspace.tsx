@@ -1,8 +1,14 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { health, listCases } from "@/lib/client/cases";
-import type { Case, Company, Expected, Invoice } from "@/lib/engine/types";
+import { health, listCases, runSample } from "@/lib/client/cases";
+import type { AgentActivation, AgentKind, Case, Company, Expected, Invoice } from "@/lib/engine/types";
+
+export interface AgentsState {
+  activations: Partial<Record<AgentKind, AgentActivation>>;
+  wallets: Record<AgentKind, { address: string; balance?: string }>;
+  payment: { network: string; payTo: string; free: boolean; required: boolean };
+}
 
 /** One dataset invoice, with its ground truth when known. */
 export interface SampleRow {
@@ -18,6 +24,9 @@ interface WorkspaceState {
   cases: Case[];
   company?: Company;
   info?: Health;
+  agents?: AgentsState;
+  /** The pagador is hired (activated); until then the workspace points to the Panel's first step. */
+  pagadorActive: boolean;
   samples: SampleRow[];
   busy?: string;
   error?: string;
@@ -29,9 +38,20 @@ interface WorkspaceState {
   /** Run an action with busy/error handling, then refresh. */
   run: (label: string, fn: () => Promise<void>) => Promise<void>;
   savePolicy: (company: Company) => Promise<void>;
+  /** Dataset invoices that have no case yet: the company's "facturas por pagar". */
+  pending: SampleRow[];
+  /** Run every pending invoice through the real flow, one at a time, refreshing after each. */
+  runDemoSet: (list?: SampleRow[]) => Promise<void>;
 }
 
 const Ctx = createContext<WorkspaceState | undefined>(undefined);
+
+async function fetchAgents(): Promise<AgentsState> {
+  const res = await fetch("/api/agents", { cache: "no-store" });
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error ?? `HTTP ${res.status}`);
+  return body as AgentsState;
+}
 
 async function fetchPolicy(): Promise<Company> {
   const res = await fetch("/api/policy", { cache: "no-store" });
@@ -45,6 +65,7 @@ export function WorkspaceProvider({ samples, children }: { samples: SampleRow[];
   const [cases, setCases] = useState<Case[]>([]);
   const [company, setCompany] = useState<Company>();
   const [info, setInfo] = useState<Health>();
+  const [agents, setAgents] = useState<AgentsState>();
   const [busy, setBusy] = useState<string>();
   const [error, setError] = useState<string>();
   const [query, setQuery] = useState("");
@@ -53,9 +74,10 @@ export function WorkspaceProvider({ samples, children }: { samples: SampleRow[];
 
   const refresh = useCallback(async () => {
     try {
-      const [c, p] = await Promise.all([listCases(), fetchPolicy()]);
+      const [c, p, a] = await Promise.all([listCases(), fetchPolicy(), fetchAgents().catch(() => undefined)]);
       setCases(c);
       setCompany(p);
+      if (a) setAgents(a);
       setError(undefined);
     } catch (err) {
       setError((err as Error).message);
@@ -100,9 +122,26 @@ export function WorkspaceProvider({ samples, children }: { samples: SampleRow[];
     [],
   );
 
+  const done = useMemo(() => new Set(cases.map((c) => c.source)), [cases]);
+  const pending = useMemo(() => samples.filter((s) => !done.has(s.file)), [samples, done]);
+  const runDemoSet = useCallback(
+    async (list?: SampleRow[]) => {
+      const todo = list ?? pending;
+      await run("demo", async () => {
+        // One at a time: each payment updates the ledger the next invoice is checked against.
+        for (const s of todo) {
+          setBusy(`procesando ${s.invoice.payeeName}`);
+          await runSample(s.file, s.invoice);
+          await refresh();
+        }
+      });
+    },
+    [pending, run, refresh],
+  );
+
   const value = useMemo<WorkspaceState>(
-    () => ({ cases, company, info, samples, busy, error, query, loaded, setQuery, setError, refresh, run, savePolicy }),
-    [cases, company, info, samples, busy, error, query, loaded, refresh, run, savePolicy],
+    () => ({ cases, company, info, agents, pagadorActive: Boolean(agents?.activations.pagador?.active), samples, busy, error, query, loaded, setQuery, setError, refresh, run, savePolicy, pending, runDemoSet }),
+    [cases, company, info, agents, samples, busy, error, query, loaded, refresh, run, savePolicy, pending, runDemoSet],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

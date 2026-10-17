@@ -1,15 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { cobradorReply, createCase, resetDemo, reviewCase, runSample, submitInvoiceForm } from "@/lib/client/cases";
+import { cobradorReply, createCase, resetDemo, reviewCase, submitInvoiceForm } from "@/lib/client/cases";
 import { fmtMoney } from "@/lib/client/format";
 import { OUTCOME_LABEL, STATUS_LABEL } from "@/lib/engine/labels";
 import { effectiveDecision } from "@/lib/engine/ledger";
 import type { Case, CaseStatus } from "@/lib/engine/types";
 import { Button, Card, ReasonChip } from "../ui";
 import { CaseDetail, StatusChip } from "./CaseDetail";
-import { matchesQuery, useWorkspace } from "./Workspace";
+import { matchesQuery, useWorkspace, type SampleRow } from "./Workspace";
 
 const GROUPS: { title: string; hint: string; statuses: CaseStatus[]; tone: string }[] = [
   { title: "Pagadas", hint: "Dentro de las reglas, o corregidas por el proveedor", statuses: ["paid"], tone: "border-emerald-500/25 bg-emerald-500/[0.04]" },
@@ -20,7 +21,7 @@ const GROUPS: { title: string; hint: string; statuses: CaseStatus[]; tone: strin
 
 /** Every payment as a case: open a link, drop a document, or run the demo set; then watch the board. */
 export function FacturasView() {
-  const { cases, samples, busy, query, run, loaded } = useWorkspace();
+  const { cases, samples, busy, query, run, loaded, pagadorActive, agents, pending, runDemoSet } = useWorkspace();
   const params = useSearchParams();
   const [openId, setOpenId] = useState<string | undefined>(params.get("caso") ?? undefined);
   const [newLink, setNewLink] = useState<string>();
@@ -29,16 +30,8 @@ export function FacturasView() {
   const fileRef = useRef<HTMLInputElement>(null);
   const autoRan = useRef(false);
 
-  const done = new Set(cases.map((c) => c.source));
-  const pending = samples.filter((s) => !done.has(s.file));
   const open = cases.find((c) => c.id === openId);
-
-  async function runDemo(list = pending) {
-    await run("demo", async () => {
-      // One at a time: each payment updates the ledger the next invoice is checked against.
-      for (const s of list) await runSample(s.file, s.invoice);
-    });
-  }
+  const runDemo = (list?: SampleRow[]) => runDemoSet(list);
 
   // "/app/facturas?demo=1" (from an empty Panel) starts the demo once the list is known.
   useEffect(() => {
@@ -78,11 +71,18 @@ export function FacturasView() {
             }}
           />
           <Button variant="secondary" disabled={Boolean(busy) || !pending.length} onClick={() => runDemo()}>
-            {busy === "demo" ? "Procesando el set…" : pending.length ? `Correr set de demo (${pending.length})` : "Set de demo completo"}
+            {busy?.startsWith("procesando") ? busy.replace("procesando", "Procesando") + "…" : pending.length ? `Correr set de demo (${pending.length})` : "Set de demo completo"}
           </Button>
           <Button variant="ghost" disabled={Boolean(busy)} onClick={() => run("reiniciar", async () => { await resetDemo(); setOpenId(undefined); setNewLink(undefined); })}>Reiniciar</Button>
         </div>
       </div>
+
+      {loaded && agents && !pagadorActive ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-orbit/40 bg-orbit/10 px-4 py-3 text-sm text-zinc-100">
+          <span><b>Paso 1 pendiente:</b> contrata al pagador antes de abrir casos. Se paga en USDC desde la wallet de la empresa y queda activo al instante.</span>
+          <Link href="/app" className="rounded-full bg-orbit px-4 py-1.5 text-sm font-semibold text-black">Ir al Panel</Link>
+        </div>
+      ) : null}
 
       {showNew ? (
         <NewCaseForm

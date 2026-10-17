@@ -10,6 +10,7 @@ import { effectiveDecision } from "@/lib/engine/ledger";
 import type { Case } from "@/lib/engine/types";
 import { Button, Card } from "../ui";
 import { StatusChip } from "./CaseDetail";
+import { Onboarding } from "./Onboarding";
 import { needsPerson, useWorkspace } from "./Workspace";
 
 function reasonFor(c: Case): string {
@@ -39,6 +40,7 @@ export function PanelView() {
 
   return (
     <div className="space-y-6">
+      <Onboarding />
       <div>
         <h1 className="text-lg font-semibold text-white">Resumen ejecutivo</h1>
         <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">

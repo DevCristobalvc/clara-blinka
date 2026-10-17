@@ -1,6 +1,6 @@
 import { isAgentKind } from "@/lib/server/agents";
 import { HttpError } from "@/lib/server/cases";
-import { COMPANY_ID, companyForRequest, handle, json, readJson } from "@/lib/server/http";
+import { companyForRequest, handle, json, readJson } from "@/lib/server/http";
 import { getStore } from "@/lib/server/store";
 
 /**

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { resetDemo } from "@/lib/client/cases";
 import type { Company } from "@/lib/engine/types";
-import { PRIVY_APP_ID } from "@/app/providers";
 import { BeneficiariesCard, ContractsCard } from "../RulesEditor";
 import { Button, Card } from "../ui";
 import { AgentsCard } from "./AgentsCard";
@@ -41,7 +40,7 @@ export function ConfiguracionView() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        {PRIVY_APP_ID !== undefined ? <AgentsCard /> : <AgentsCard />}
+        <AgentsCard />
         <BeneficiariesCard company={draft} onChange={setDraft} />
         <ContractsCard company={draft} />
 

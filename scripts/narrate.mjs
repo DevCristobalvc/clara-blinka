@@ -7,11 +7,25 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 const [video = "docs/demo/orbit-demo.mp4", out = "docs/demo/orbit-demo-voz.mp4"] = process.argv.slice(2);
-const key = process.env.ELEVENLABS_API_KEY;
-const voice = process.env.ELEVENLABS_VOICE_ID;
-if (!key || !voice) {
-  console.error("Set ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID in .env.local");
+const key = process.env.ELEVENLABS_API_KEY ?? process.env.ELEVEN_LABS_API_KEY ?? process.env.ELEVENLABS_KEY ?? process.env.XI_API_KEY;
+if (!key) {
+  console.error("Set ELEVENLABS_API_KEY in .env.local");
   process.exit(1);
+}
+// Voice by id, or by name in the account (default "William").
+let voice = process.env.ELEVENLABS_VOICE_ID;
+if (!voice) {
+  const wanted = (process.env.ELEVENLABS_VOICE_NAME ?? "William").toLowerCase();
+  const res = await fetch("https://api.elevenlabs.io/v1/voices", { headers: { "xi-api-key": key } });
+  if (!res.ok) throw new Error(`ElevenLabs voices ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const { voices } = await res.json();
+  const found = voices.find((v) => v.name.toLowerCase() === wanted) ?? voices.find((v) => v.name.toLowerCase().includes(wanted));
+  if (!found) {
+    console.error(`No voice named "${wanted}". Available: ${voices.map((v) => v.name).join(", ")}`);
+    process.exit(1);
+  }
+  voice = found.voice_id;
+  console.log(`voice: ${found.name} (${found.category ?? "?"})`);
 }
 const model = process.env.ELEVENLABS_MODEL ?? "eleven_multilingual_v2";
 const dir = "docs/demo/voice";

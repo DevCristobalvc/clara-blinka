@@ -20,7 +20,7 @@ const NAV = [
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { cases, query, setQuery, error, setError, info, busy } = useWorkspace();
+  const { cases, query, setQuery, error, setError, info, busy, pagadorActive, agents } = useWorkspace();
   const pending = cases.filter(needsPerson).length;
 
   return (
@@ -57,6 +57,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </label>
           <div className="flex items-center gap-4 text-sm text-zinc-300">
             {busy ? <span className="hidden text-xs text-orbit sm:inline">{busy}…</span> : null}
+            {agents && !pagadorActive ? <Link href="/app" className="hidden rounded-full border border-orbit/50 px-3 py-1 text-xs text-orbit sm:inline">Paso 1: contrata al pagador</Link> : null}
             <Link href="/app/aprobaciones" className="relative" aria-label="Pendientes de aprobación">
               <Bell className="h-5 w-5" />
               {pending ? <span className="absolute -right-2 -top-2 rounded-full bg-orbit px-1.5 text-[10px] font-bold text-black">{pending}</span> : null}

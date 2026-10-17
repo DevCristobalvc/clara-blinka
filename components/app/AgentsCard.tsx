@@ -26,7 +26,7 @@ export function AgentsCard() {
   const [log, setLog] = useState<string[]>([]);
   const load = async () => setInfo(await (await fetch("/api/agents", { cache: "no-store" })).json());
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch of plans and activations
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- plans and prices come from the server
     void load();
   }, []);
   const registeredUSD = cases.filter((c) => c.status === "paid" && c.decision).reduce((s, c) => s + effectiveDecision(c.decision!, c.thread).amountUSD, 0);

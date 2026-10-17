@@ -1,49 +1,55 @@
-# ORBIT · guion del video (2:30) y pitch
+# ORBIT · guion del video (≈2:40) y pitch
 
-Narración en español para ElevenLabs. Cada bloque indica lo que se ve en pantalla. Duración aproximada por bloque entre corchetes.
+Narración en español para ElevenLabs (voz de William). Cada bloque indica lo que se ve en pantalla y el momento aproximado. `scripts/record-demo.mjs` graba la pantalla en este mismo orden; `scripts/narrate.mjs` genera la voz y la monta.
 
 ---
 
-## 0. Gancho [0:00–0:15] · pantalla: landing
+## 0. El problema [0:00–0:18] · pantalla: landing
 
-Toda empresa en Estados Unidos que trabaja con equipo y proveedores en Latinoamérica hace lo mismo cada mes: recibe facturas por correo, PDF o chat, las compara con lo acordado, persigue al proveedor cuando algo no cuadra, pide aprobación y paga a mano. Es manual, se repite, y depende de que alguien esté disponible.
+Imagina que llevas las finanzas de una empresa en Estados Unidos con equipo y proveedores en Latinoamérica. Cada mes llegan facturas por correo, PDF o chat. Las comparas con lo acordado, persigues al que cobró de más, pides aprobación y pagas a mano, en otra moneda, hacia otro país. Es manual, se repite, y depende de ti.
 
 ORBIT es la plataforma donde tus agentes de IA cobran y pagan por tu empresa. Actúan con autonomía. Nunca sin límites.
 
-## 1. Una sola configuración [0:15–0:40] · pantalla: Reglas, luego Configuración → Agentes
+## 1. Estás en tu cuenta, tienes facturas por pagar [0:18–0:34] · pantalla: login y Panel con "Tienes 21 facturas por pagar"
 
-Configuras tu agente una sola vez: límite por pago, presupuesto mensual por categoría, proveedores permitidos con su cuenta registrada, monedas, y qué motivos puede negociar y cuáles nunca.
+Entras a tu cuenta como siempre. Y ahí están: veintiún facturas por pagar este mes. Seis normales. Doce con algún problema. Tres de proveedores que intentan colarte algo.
 
-Y lo contratas como lo haría un agente: pagándole a ORBIT en USDC. Sin cuenta, sin tarjeta. Activas el pagador, le cargas fondos a su propia wallet, y queda listo. El cobrador, que hace lo mismo para lo que te deben, se activa igual.
+En vez de revisarlas una por una, contratas a ORBIT.
 
-## 2. Un enlace por pago [0:40–1:05] · pantalla: Facturas → Nuevo caso → enlace; vista del proveedor
+## 2. Contratas al pagador y le cargas fondos [0:34–0:58] · pantalla: Panel, pasos 1 y 2 se completan con el pago real en USDC
 
-Cada pago es un caso con su enlace. Eliges el proveedor y el contrato, y el proveedor adjunta su factura ahí: PDF, imagen, correo o chat. ORBIT la lee, la revisa contra las reglas y decide en segundos: pagar, frenar o escalar a una persona.
+Contratar al agente es un pago, como lo haría un agente. Tu wallet le paga a ORBIT en USDC y el pagador queda activo al instante: sin cuenta, sin tarjeta. Después le cargas fondos a su propia wallet: ese es el dinero que puede mover, y nada más.
 
-## 3. Cuando algo no cuadra, lo resuelve [1:05–1:40] · pantalla: Facturas corriendo el set; caso de Lucía con la conversación
+## 3. Sus reglas [0:58–1:12] · pantalla: Reglas
 
-Aquí está la diferencia. Lucía manda su factura en euros, y la política solo permite dólares. ORBIT no se limita a frenarla: le escribe, le pide la factura en dólares, ella la reemite, y la versión corregida pasa por las mismas reglas. Cumple, se registra el pago, y queda un recibo firmado.
+Las reglas las pones tú, una sola vez: cuánto puede pagar por factura, el presupuesto del mes, qué proveedores y en qué moneda, y a partir de qué monto quieres aprobar tú. El agente nunca las cambia. Solo puede ser más estricto, nunca más laxo.
 
-Una corrección solo puede acercarse al contrato. Nunca una cuenta nueva, nunca un monto mayor, nunca bajo presión. Tres proveedores del set intentan exactamente eso. Los tres terminan en manos de una persona.
+## 4. Lo pones a trabajar [1:12–1:42] · pantalla: Panel "Pon a ORBIT a trabajar", el tablero de Facturas se va llenando
 
-## 4. Las personas solo ven lo que les toca [1:40–2:00] · pantalla: Aprobaciones
+Y lo pones a trabajar. Cada factura se vuelve un caso con su enlace. ORBIT la lee, la revisa contra las reglas y decide en segundos: pagar, frenar o escalar a una persona. Las seis correctas se pagan solas. Las que se salen de lo que puede aprobar, van a una persona.
 
-Lo único que llega a una persona es lo que las reglas no dejan decidir solo al agente: un pago legítimo por encima del umbral, un proveedor nuevo, un presupuesto agotado. Aprobar o rechazar, con toda la conversación y los motivos a la vista.
+## 5. Cuando algo no cuadra, lo resuelve [1:42–2:10] · pantalla: caso de Lucía, la conversación; luego la vista del proveedor
 
-## 5. Confianza que se puede verificar [2:00–2:20] · pantalla: Reportes; recibo firmado
+Aquí está la diferencia. Lucía mandó su factura en euros, y la política solo permite dólares. ORBIT no se limita a frenarla: le escribe, le pide la factura en dólares, ella la reemite, y la versión corregida pasa por las mismas reglas. Cumple, se registra el pago, y queda un recibo firmado.
 
-Veintiún facturas, doce trampas, tres proveedores comprometidos. Cien por ciento de precisión. Cero pagos fuera de las reglas, antes y después de negociar. Cada decisión firmada con el hash de las reglas vigentes, verificable por cualquiera.
+Una corrección solo puede acercarse al contrato. Nunca una cuenta nueva, nunca un monto mayor, nunca bajo presión. Los tres proveedores que lo intentaron terminaron en manos de una persona.
 
-## 6. Cierre [2:20–2:30] · pantalla: landing o logo
+## 6. Tú solo ves lo que te toca [2:10–2:24] · pantalla: Aprobaciones
 
-ORBIT. Agentes que pagan y cobran por tu empresa, dentro de tus límites, y que te explican cada decisión. Construido sobre Blinka, con JEV como capa de juicio rápido.
+A ti te llega únicamente lo que las reglas reservan para una persona: un pago legítimo por encima de tu umbral, un proveedor nuevo, un presupuesto agotado. Apruebas o rechazas con toda la conversación y los motivos a la vista.
+
+## 7. Confianza que se puede verificar [2:24–2:40] · pantalla: Reportes; cierre en el Panel
+
+Veintiún facturas, doce trampas, tres proveedores comprometidos. Cien por ciento de precisión. Cero pagos fuera de las reglas, antes y después de negociar. Cada decisión firmada con las reglas vigentes, verificable por cualquiera.
+
+ORBIT. Agentes que pagan y cobran por tu empresa, dentro de tus límites. Construido sobre Blinka, con JEV como capa de juicio rápido.
 
 ---
 
 ## Pitch de 60 segundos (para la sesión en vivo)
 
 1. **Problema.** Finanzas hace a mano, cada mes, lo que un agente debería hacer: leer, comparar, perseguir, aprobar, pagar. Lo que falta es confianza.
-2. **Qué es ORBIT.** Agentes que pagan y cobran por la empresa, dentro de reglas que la empresa define una vez. Se contratan pagando en USDC; cada pago es un enlace donde el agente conversa con el proveedor hasta que la factura cuadra.
+2. **Qué es ORBIT.** Agentes que pagan y cobran por la empresa, dentro de reglas que la empresa define una vez. Se contratan y se fondean pagando en USDC; cada pago es un enlace donde el agente conversa con el proveedor hasta que la factura cuadra.
 3. **Por qué se puede confiar.** Los límites viven en código. El modelo (JEV, Claude) solo puede volver una decisión más estricta, nunca más laxa. Una corrección solo puede acercarse al contrato. Cada decisión queda firmada.
 4. **Prueba.** 21 facturas, 12 trampas, 3 proveedores comprometidos: 100% de precisión, 0 pagos fuera de reglas, 76% sin intervención humana, 3 de 10 frenadas resueltas con el proveedor.
 5. **Qué sigue.** El cobrador con las reglas invertidas; agentes pagándole a agentes por caso con x402; negociación sin revelar los límites de ninguna de las partes.
@@ -52,5 +58,5 @@ ORBIT. Agentes que pagan y cobran por tu empresa, dentro de tus límites, y que 
 
 - **Nombre:** ORBIT
 - **Reto:** Blinka · Agentes que pagan por la empresa
-- **Descripción (corta):** ORBIT es la plataforma donde los agentes de IA de una empresa cobran y pagan por ella. El pagador lee cada factura, la revisa contra las reglas de la empresa, negocia correcciones con el proveedor en un enlace por pago, y paga, frena o escala a una persona, con un recibo firmado por decisión. Se contrata pagando en USDC (x402). 21 facturas de prueba con 12 trampas y 3 proveedores comprometidos: 0 pagos fuera de reglas.
-- **Enlaces:** repo https://github.com/DevCristobalvc/orbit · demo https://orbit.devcristobalvc.com (login 123/123 o Privy) · eval `docs/eval.md` · video (pendiente)
+- **Descripción (corta):** ORBIT es la plataforma donde los agentes de IA de una empresa cobran y pagan por ella. El pagador lee cada factura, la revisa contra las reglas de la empresa, negocia correcciones con el proveedor en un enlace por pago, y paga, frena o escala a una persona, con un recibo firmado por decisión. Se contrata y se fondea pagando en USDC (x402). 21 facturas de prueba con 12 trampas y 3 proveedores comprometidos: 0 pagos fuera de reglas.
+- **Enlaces:** repo https://github.com/DevCristobalvc/orbit · demo https://orbit.devcristobalvc.com (login con Privy, o 123/123) · eval `docs/eval.md` · video (pendiente)
