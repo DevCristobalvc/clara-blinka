@@ -1,6 +1,6 @@
 # 30X Hackathon context (agent handoff)
 
-> Last updated: **Sat Oct 17, 2026, ~11:15 COT (UTC-5)**. Owner: Cristobal Valencia (`DevCristobalvc`).
+> Last updated: **Sat Oct 17, 2026, ~12:35 COT (UTC-5)**. Owner: Cristobal Valencia (`DevCristobalvc`). Team: Cristobal + **wmb**.
 > Purpose: everything another agent needs to pick up this project. No secrets live here. API keys exist only in local `.env.local` files and in Vercel.
 
 ---
@@ -301,6 +301,7 @@ Today these are handled by hand or with fixed rules that don't adapt when the pe
   - Cristobal also has OpenAI and DeepSeek credits. Ask him for the keys.
   - Keys go only in `.env.local` and in Vercel env vars, **never in the repo**.
   - Switching extraction to another provider is a planning decision.
+- **Ideation input:** `idea.md` (Antigravity's proposal: x402 + ERC-8004 + MCP). Not decided; Claude flagged that identity verification and fraud decisions are out of Blinka's scope.
 - **Agents involved:**
   - Claude Code (session `30x1`).
   - Antigravity CLI (`agy`, session `30agy`, Gemini 3.8 Flash).
