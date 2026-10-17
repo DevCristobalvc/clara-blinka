@@ -12,7 +12,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <PrivyProvider
       appId={PRIVY_APP_ID}
       config={{
-        loginMethods: ["email", "google", "wallet"],
+        loginMethods: ["email", "google", "passkey"],
         appearance: { theme: "dark", accentColor: "#f5e400", logo: "/icon.svg" },
         embeddedWallets: { ethereum: { createOnLogin: "users-without-wallets" } },
         defaultChain: baseSepolia,

@@ -27,7 +27,7 @@ export function PrivyLogin() {
         disabled={authenticated}
         className="flex w-full items-center justify-center gap-2 rounded-full bg-orbit px-4 py-2.5 text-sm font-semibold text-black transition hover:brightness-95 disabled:opacity-60"
       >
-        {authenticated ? `Entrando como ${user?.email?.address ?? user?.wallet?.address?.slice(0, 8) ?? "…"}` : "Entrar con email, Google o wallet"}
+        {authenticated ? `Entrando como ${user?.email?.address ?? user?.wallet?.address?.slice(0, 8) ?? "…"}` : "Entrar con email, Google o passkey"}
         <ArrowRight className="h-4 w-4" />
       </button>
       <p className="text-center text-xs text-zinc-500">Privy crea una wallet para tu empresa al entrar. Con ella activas a los agentes pagando en USDC.</p>

@@ -163,7 +163,7 @@ function WalletStatus() {
     usdcBalance(address as `0x${string}`).then(setBalance).catch(() => setBalance(undefined));
   }, [address]);
   if (!PRIVY_APP_ID) return <p className="mt-4 text-xs text-zinc-500">Sin `NEXT_PUBLIC_PRIVY_APP_ID`: no hay wallet de empresa en este despliegue. Los pagos usan el modo demo si `ORBIT_ACTIVATION_FREE=1`.</p>;
-  if (!privy?.authenticated) return <p className="mt-4 text-xs text-zinc-500">Entra con Privy (email, Google o wallet) para tener la wallet de la empresa.</p>;
+  if (!privy?.authenticated) return <p className="mt-4 text-xs text-zinc-500">Entra con Privy (email, Google o passkey) para tener la wallet de la empresa.</p>;
   return (
     <p className="mt-4 text-xs text-zinc-400">
       Wallet de la empresa (quien paga): <span className="font-mono text-zinc-200">{address ?? "creándose…"}</span>
