@@ -4,6 +4,7 @@ import type { Case, Company, Receipt } from "@/lib/engine/types";
 
 export type CaseEventType =
   | "case.created"
+  | "link.sent"
   | "invoice.submitted"
   | "decision"
   | "orbit.message"

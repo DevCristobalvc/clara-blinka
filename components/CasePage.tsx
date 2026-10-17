@@ -119,6 +119,22 @@ export function CasePage({ id }: { id: string }) {
       ) : null}
 
       <Outcome c={c} />
+      {c.thread?.outcome && c.thread.outcome !== "human" && c.invoice ? (
+        <Card>
+          <h2 className="text-sm font-semibold text-white">Resumen del pago</h2>
+          <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-4">
+            <Field label="Factura original" value={`${c.invoice.invoiceNumber} · ${fmtMoney(c.invoice.amount, c.invoice.currency)}`} />
+            {c.thread.messages.filter((m) => m.invoice).at(-1)?.invoice ? (
+              <Field label="Factura corregida" value={`${c.thread.messages.filter((m) => m.invoice).at(-1)!.invoice!.invoiceNumber} · ${fmtMoney(c.thread.messages.filter((m) => m.invoice).at(-1)!.invoice!.amount, c.thread.messages.filter((m) => m.invoice).at(-1)!.invoice!.currency)}`} />
+            ) : (
+              <Field label="Corrección" value={c.thread.outcome === "scheduled" ? `programada para ${c.thread.scheduledFor}` : "sin pago: ya estaba pagada"} />
+            )}
+            <Field label="Rondas" value={`${c.thread.rounds} de ${c.thread.maxRounds}`} />
+            <Field label="Registro" value={c.settlement?.ref ?? "—"} />
+          </dl>
+          {c.thread.outcomeDetail ? <p className="mt-2 text-xs text-zinc-400">{c.thread.outcomeDetail}</p> : null}
+        </Card>
+      ) : null}
 
       {c.thread ? (
         <Card>

@@ -115,9 +115,22 @@ export function Wizard() {
             {pending.length > 7 ? <li className="py-1.5 text-xs text-zinc-500">y {pending.length - 7} más</li> : null}
           </ul>
           {hired ? (
-            <p className="mt-3 text-xs text-emerald-300">
-              Pagador activo{pagador?.payment.transaction ? <> · <a className="underline" target="_blank" rel="noreferrer" href={`https://sepolia.basescan.org/tx/${pagador.payment.transaction}`}>tx</a></> : null} · fondos {funds} USDC
-            </p>
+            <div className="mt-3 border-t border-line pt-3">
+              <p className="text-xs uppercase tracking-wide text-zinc-500">Confirmaciones</p>
+              <ul className="mt-1 space-y-1 text-xs">
+                <li className="flex items-center justify-between gap-2 text-emerald-300">
+                  <span>Pagador contratado · {pagador?.payment.amount ?? ""} USDC a ORBIT</span>
+                  {pagador?.payment.transaction ? <a className="font-mono underline" target="_blank" rel="noreferrer" href={`https://sepolia.basescan.org/tx/${pagador.payment.transaction}`}>{short(pagador.payment.transaction)}</a> : <span className="text-zinc-500">confirmando…</span>}
+                </li>
+                {(pagador?.funding ?? []).map((f, i) => (
+                  <li key={i} className="flex items-center justify-between gap-2 text-emerald-300">
+                    <span>Fondos cargados · {f.amount.replace("$", "")} USDC a la wallet del agente</span>
+                    {f.transaction ? <a className="font-mono underline" target="_blank" rel="noreferrer" href={`https://sepolia.basescan.org/tx/${f.transaction}`}>{short(f.transaction)}</a> : <span className="text-zinc-500">confirmando…</span>}
+                  </li>
+                ))}
+                <li className="text-zinc-400">Saldo del agente: <b className="text-zinc-200">{funds} USDC</b> · wallet <span className="font-mono">{agents ? short(agents.wallets.pagador.address) : ""}</span></li>
+              </ul>
+            </div>
           ) : null}
         </div>
       </div>

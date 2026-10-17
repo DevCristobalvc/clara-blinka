@@ -140,8 +140,14 @@ export function FacturasView() {
                             </div>
                             {c.invoice ? <p className="shrink-0 font-mono text-xs text-zinc-300">{fmtMoney(d?.invoice.amount ?? c.invoice.amount, d?.invoice.currency ?? c.invoice.currency)}</p> : null}
                           </div>
+                          {c.status === "negotiating" && c.thread?.messages.length ? (
+                            <p className="mt-2 line-clamp-2 rounded-md bg-black/30 px-2 py-1 text-[11px] text-zinc-300">
+                              <span className="text-zinc-500">{c.thread.messages.at(-1)!.from === "orbit" ? "ORBIT: " : "Proveedor: "}</span>{c.thread.messages.at(-1)!.text}
+                            </p>
+                          ) : null}
                           <div className="mt-2 flex flex-wrap items-center gap-1">
                             <StatusChip status={c.status} />
+                            {c.status === "awaiting_invoice" && c.invite ? <span className="rounded-md bg-panel-2 px-1.5 py-0.5 text-[11px] text-zinc-300">enlace enviado a {c.invite.email}</span> : null}
                             {c.thread?.outcome ? <span className="rounded-md bg-panel-2 px-1.5 py-0.5 text-[11px] text-zinc-300">{OUTCOME_LABEL[c.thread.outcome]}</span> : null}
                             {c.status === "negotiating" ? <span className="rounded-md bg-orbit/15 px-1.5 py-0.5 text-[11px] text-orbit">ronda {c.thread?.rounds ?? 0}/{c.thread?.maxRounds ?? 2}</span> : null}
                             {c.decision?.reasons.map((r) => <ReasonChip key={r} code={r} />)}

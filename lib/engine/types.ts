@@ -50,6 +50,8 @@ export interface Account {
 export interface Beneficiary {
   id: string;
   name: string;
+  /** Where the vendor receives the case link (optional; derived from the name for the demo set). */
+  email?: string;
   country: string;
   currency: string;
   account: Account;
@@ -333,6 +335,8 @@ export interface Case {
   thread?: NegotiationThread;
   /** Why a HOLD was not negotiated (plain language), when that is the case. */
   negotiationNote?: string;
+  /** The case link sent to the vendor: by email when a provider is configured, otherwise recorded. */
+  invite?: { email: string; sentAt: string; delivery: "email" | "recorded" };
   review?: Review;
   settlement?: Settlement;
   receipt?: Receipt;

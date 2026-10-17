@@ -30,7 +30,7 @@ Las reglas las pones tú, una sola vez: cuánto puede pagar por factura, el pres
 
 ## 5. Lo pones a trabajar [1:30–2:00] · pantalla: Panel "Pon a ORBIT a trabajar", el tablero de Facturas se va llenando
 
-Y lo pones a trabajar. Cada factura se vuelve un caso con su enlace. ORBIT la lee, la revisa contra las reglas y decide en segundos: pagar, frenar o escalar a una persona. Las seis correctas se pagan solas. Las que se salen de lo que puede aprobar, van a una persona.
+Y lo pones a trabajar. Cada factura se vuelve un caso con su enlace, y cada proveedor lo recibe por correo. ORBIT lee la factura, la revisa contra las reglas y decide en segundos: pagar, frenar o escalar a una persona. Las seis correctas se pagan solas. Las que se salen de lo que puede aprobar, van a una persona.
 
 ## 6. Cuando algo no cuadra, lo resuelve [2:00–2:28] · pantalla: caso de Lucía, la conversación; luego la vista del proveedor
 

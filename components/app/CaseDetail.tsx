@@ -50,6 +50,11 @@ export function CaseDetail({ c, busy, onClose, onCobrador, onReview }: { c: Case
           <Button variant="secondary" onClick={() => void navigator.clipboard.writeText(link)}>Copiar enlace</Button>
           <a href={link} target="_blank" rel="noreferrer" className="text-zinc-400 underline hover:text-white">Ver como proveedor</a>
         </div>
+        {c.invite ? (
+          <p className="mt-2 text-xs text-emerald-300">
+            Enlace enviado a <span className="font-mono">{c.invite.email}</span> · {new Date(c.invite.sentAt).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" })}{c.invite.delivery === "recorded" ? " · registrado (sin proveedor de correo configurado)" : " · por correo"}
+          </p>
+        ) : null}
 
         {d ? (
           <>
