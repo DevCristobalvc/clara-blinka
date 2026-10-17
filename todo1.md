@@ -24,7 +24,7 @@ Tagline (from the mockup): **"Actúa con autonomía. Nunca sin límites."**
 | D4 | Extraction LLM | Claude (`ANTHROPIC_API_KEY` provided Oct 17; works in prod). OpenAI as fallback | proposed |
 | D5 | Inbound email | Provider with an inbound webhook (pick in T14) | open |
 | D6 | Hosting / DB | Vercel (app, API, agent endpoints). DB: **open**. Supabase keys were provided (William) and Neon is also linked; pick one | open |
-| D7 | Brand / domain | Rebrand ORBIT → **ORBIT**. Keep `orbit.devcristobalvc.com`. Repo name stays `orbit` unless renamed | proposed |
+| D7 | Brand / domain | **ORBIT** everywhere: repo `DevCristobalvc/orbit`, Vercel project `orbit`, domain `orbit.devcristobalvc.com` (old `blinka.` subdomain and `clara-kohl` alias removed) | confirmed (Oct 17) |
 | D8 | Auth | Mock login at `/login` (user `123`, password `123`); cookie gate on `/app` via `proxy.ts`. Not real auth | confirmed (Oct 17) |
 | D9 | Out of scope | x402, ERC-8004, real money movement, identity verification (excluded by the Blinka brief) | proposed |
 
