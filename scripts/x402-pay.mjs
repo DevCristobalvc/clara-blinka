@@ -21,5 +21,12 @@ const res = await paidFetch(`${base}/api/agents/${kind}/${action}`, { method: "P
 const body = await res.json().catch(() => ({}));
 console.log(`HTTP ${res.status} in ${Date.now() - started} ms`, JSON.stringify(body).slice(0, 300));
 const header = res.headers.get("PAYMENT-RESPONSE");
-if (header) console.log("PAYMENT-RESPONSE", JSON.stringify(decodePaymentResponseHeader(header)));
+if (header) {
+  const settled = decodePaymentResponseHeader(header);
+  console.log("PAYMENT-RESPONSE", JSON.stringify(settled));
+  if (settled?.transaction) {
+    await fetch(`${base}/api/agents/${kind}/tx`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action, transaction: settled.transaction, payer: settled.payer }) });
+    console.log("tx attached to the activation record");
+  }
+}
 process.exit(res.ok ? 0 : 1);

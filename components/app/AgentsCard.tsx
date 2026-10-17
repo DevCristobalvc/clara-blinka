@@ -68,7 +68,12 @@ export function AgentsCard() {
                   <dt className="text-zinc-500">Wallet del agente</dt>
                   <dd className="truncate font-mono text-zinc-200" title={w.address}>{short(w.address)}</dd>
                   <dt className="text-zinc-500">Fondos (USDC)</dt>
-                  <dd className="font-mono text-zinc-200">{w.balance ?? "—"}{loaded ? <span className="text-zinc-500"> · cargados {loaded.toFixed(2)}</span> : null}</dd>
+                  <dd className="font-mono text-zinc-200">
+                    {w.balance ?? "—"}{loaded ? <span className="text-zinc-500"> · cargados {loaded.toFixed(2)}</span> : null}
+                    {a?.funding?.filter((f) => f.transaction).map((f) => (
+                      <a key={f.transaction} className="ml-1 underline" target="_blank" rel="noreferrer" href={`https://sepolia.basescan.org/tx/${f.transaction}`}>tx</a>
+                    ))}
+                  </dd>
                   {plan.kind === "pagador" ? (
                     <>
                       <dt className="text-zinc-500">Registrado como pagado</dt>
@@ -125,6 +130,11 @@ function PayButton({ label, demoLabel, path, free, busy, variant = "primary", on
         if (!res.ok) throw new Error((body as { error?: string }).error ?? `HTTP ${res.status}`);
         const d = paymentDetails(res);
         onLog(`→ ${res.status} pagado${d.transaction ? ` · tx ${d.transaction.slice(0, 14)}…` : ""}`);
+        if (d.transaction) {
+          const kind = path.split("/")[3];
+          const action = path.endsWith("/fund") ? "fund" : "activate";
+          await fetch(`/api/agents/${kind}/tx`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, transaction: d.transaction, payer: d.payer }) }).catch(() => {});
+        }
       }
       onDone();
     } catch (err) {
