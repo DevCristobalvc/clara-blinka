@@ -84,7 +84,7 @@ const mix = `${delays};${clips.map((_, i) => `[a${i}]`).join("")}amix=inputs=${c
 const pad = voiceEnd > videoLen ? `,tpad=stop_mode=clone:stop_duration=${(voiceEnd - videoLen + 0.5).toFixed(2)}` : "";
 execFileSync(
   "ffmpeg",
-  ["-v", "error", "-y", "-i", video, ...inputs, "-filter_complex", `[0:v]setpts=PTS-STARTPTS${pad}[v];${mix}`, "-map", "[v]", "-map", "[voice]", "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", out],
+  ["-v", "error", "-y", "-i", video, ...inputs, "-filter_complex", `[0:v]setpts=PTS-STARTPTS${pad}[v];${mix}`, "-map", "[v]", "-map", "[voice]", "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", out],
   { stdio: "inherit" },
 );
 console.log("written", out, `${dur(out).toFixed(1)} s`);
