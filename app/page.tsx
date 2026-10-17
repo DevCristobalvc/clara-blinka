@@ -4,7 +4,7 @@ import { OrbitLogo } from "@/components/brand/OrbitLogo";
 import { DashboardPreview } from "@/components/landing/DashboardPreview";
 import { HeroVisual } from "@/components/landing/HeroVisual";
 
-const REPO_URL = "https://github.com/DevCristobalvc/clara-blinka";
+const REPO_URL = "https://github.com/DevCristobalvc/orbit";
 
 const NAV_LINKS = [
   { label: "Beneficios", href: "#beneficios" },

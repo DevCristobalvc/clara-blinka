@@ -7,7 +7,7 @@
 
 ## 1. Status in one line
 
-We are competing in the **30X Hackathon** (online, LATAM). Submission closes **Sunday Oct 18, 12:00 COT**. A **prototype** ("Clara") for the **Blinka** challenge is already deployed and in this repo, but Cristobal considers it built **ahead of time**. The rule is to **ideate and plan together first**, then build. **The final idea is not decided yet.**
+We are competing in the **30X Hackathon** (online, LATAM). Submission closes **Sunday Oct 18, 12:00 COT**. A **prototype** ("ORBIT") for the **Blinka** challenge is already deployed and in this repo, but Cristobal considers it built **ahead of time**. The rule is to **ideate and plan together first**, then build. **The final idea is not decided yet.**
 
 ---
 
@@ -46,10 +46,9 @@ We are competing in the **30X Hackathon** (online, LATAM). Submission closes **S
 ### Ours
 | What | URL / value |
 |---|---|
-| Repo (**public**) | https://github.com/DevCristobalvc/clara-blinka |
-| Production (custom domain) | **https://blinka.devcristobalvc.com** |
-| Production (Vercel alias) | https://clara-kohl.vercel.app |
-| Vercel project | `clara` (team `devcristobalvc`); `blinka.devcristobalvc.com` is assigned to it, so every prod deploy lands there |
+| Repo (**public**) | https://github.com/DevCristobalvc/orbit |
+| Production (custom domain) | **https://orbit.devcristobalvc.com** |
+| Vercel project | `orbit` (team `devcristobalvc`); `orbit.devcristobalvc.com` is assigned to it, so every prod deploy lands there |
 
 ---
 
@@ -246,7 +245,7 @@ Today these are handled by hand or with fixed rules that don't adapt when the pe
 
 ---
 
-## 8. What already exists: prototype "Clara", rebranded to **ORBIT** (Blinka challenge)
+## 8. What already exists: ORBIT (Blinka challenge)
 
 > Oct 17, ~14:30 COT: landing at `/` (mockup), mock login `/login` (123 / 123), workspace moved to `/app`.
 > Oct 17, ~13:50 COT: rebranded to **ORBIT** following `docs/design/orbit-mockup.png` (dark + neon yellow). The new plan is `todo1.md`.

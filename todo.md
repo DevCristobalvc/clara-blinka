@@ -1,8 +1,8 @@
-# Clara: AP agent with guardrails (todo)
+# ORBIT: AP agent with guardrails (todo)
 
 **30X Hackathon, Blinka challenge** ("Agents that pay for the company"). Deadline **Sun Oct 18, 12:00 COT**. Uses **JEV (TypeSafe)** as the fast decision layer. (The PayBox Chapter 1 submission was cancelled on Oct 17.)
 
-**Pitch:** Clara reads a company's invoices and decides, for each one, whether to **PAY**, **HOLD** or **ESCALATE** to a human, inside rules the company defines. It never approves a payment outside the rules without a human, and it explains every decision in plain language.
+**Pitch:** ORBIT reads a company's invoices and decides, for each one, whether to **PAY**, **HOLD** or **ESCALATE** to a human, inside rules the company defines. It never approves a payment outside the rules without a human, and it explains every decision in plain language.
 
 ## Architecture
 
@@ -31,7 +31,7 @@ Owners: **claude** (`30x1`), **agy** (`30agy`), **cristobal** (human-only steps:
 - **Status:** done
 - **Acceptance criteria:** `npm run dev` serves a page. Repo pushed. No secrets committed.
 - **Tests:** `npm run build` passes.
-- **Comments:** Public repo https://github.com/DevCristobalvc/clara-blinka. Commits as DevCristobalvc.
+- **Comments:** Public repo https://github.com/DevCristobalvc/orbit. Commits as DevCristobalvc.
 
 ## T1: Mock dataset (fictitious company)
 - **Description:** A fictitious US company operating in LATAM (e.g. "Andes Labs Inc."). Includes `data/company.json` (policy: per-payment limit, monthly budget per category, human-approval threshold, allowlisted beneficiaries with wallet/bank, contracts with agreed amounts and tolerance), and 16–20 invoices in mixed formats in `data/invoices/` (PDF, PNG, `.eml`, chat `.txt`) in USD/COP/MXN/BRL. Trap cases required: duplicate charge, new non-allowlisted beneficiary, amount not matching the contract, over limit (needs human), insufficient period budget, plus a few subtle ones (changed bank details, wrong currency, past-due date, vague concept). `data/expected.json` holds the ground-truth action and reason per invoice.
@@ -85,7 +85,7 @@ Owners: **claude** (`30x1`), **agy** (`30agy`), **cristobal** (human-only steps:
   - `GET /api/decisions`
   - `POST /api/decisions/:id/approve|reject` (the human)
   - `GET/PUT /api/policy`
-  - `POST /api/v1/check` (public JSON check, so other agents can call Clara as a guardrail, < 2 s)
+  - `POST /api/v1/check` (public JSON check, so other agents can call ORBIT as a guardrail, < 2 s)
   - `POST /api/reset` (demo reset)
 - **Owner:** claude
 - **Status:** done
@@ -117,12 +117,12 @@ Owners: **claude** (`30x1`), **agy** (`30agy`), **cristobal** (human-only steps:
 - **Comments:** Board, decision detail with approve/reject, rules editor, audit log (CSV/JSON export), eval tab. Verified headless E2E.
 
 ## T9: Deploy
-- **Description:** Vercel project `clara`, with env vars `TYPESAFE_API_KEY` and AI Gateway configured.
+- **Description:** Vercel project `orbit`, with env vars `TYPESAFE_API_KEY` and AI Gateway configured.
 - **Owner:** claude (CLI), cristobal (any secret entry)
 - **Status:** in-progress
 - **Acceptance criteria:** A public URL works end to end.
 - **Tests:** Smoke test against prod.
-- **Comments:** Live at https://blinka.devcristobalvc.com (alias https://clara-kohl.vercel.app). Pending env vars `TYPESAFE_API_KEY`, `ANTHROPIC_API_KEY` in Vercel.
+- **Comments:** Live at https://orbit.devcristobalvc.com. Pending env vars `TYPESAFE_API_KEY`, `ANTHROPIC_API_KEY` in Vercel.
 
 ## T10: Demo video (30X)
 - **Description:** A 2–3 min pitch + demo video. The board processes the dataset: clean invoices get paid; the duplicate, new beneficiary and contract mismatch are held; the over-limit one is escalated and a human approves it. Then the audit log explains each decision, and the eval shows 0 unsafe payments.
@@ -133,7 +133,7 @@ Owners: **claude** (`30x1`), **agy** (`30agy`), **cristobal** (human-only steps:
 - **Comments:**
 
 ## T13: JEV playbook (30X bonus)
-- **Description:** `docs/jev-playbook.md`, at most 5 pages: the decisions JEV makes in Clara, the typed question schema, thresholds, when it hands off to a human or an LLM, who operates it, and how success is measured.
+- **Description:** `docs/jev-playbook.md`, at most 5 pages: the decisions JEV makes in ORBIT, the typed question schema, thresholds, when it hands off to a human or an LLM, who operates it, and how success is measured.
 - **Owner:** agy (draft), claude (review)
 - **Status:** todo
 - **Acceptance criteria:** Matches the real questions and thresholds in `lib/engine/jev.ts`.

@@ -1,6 +1,6 @@
 # ORBIT: autonomous AP agent, plan v1 (todo1)
 
-> Supersedes the prototype plan in `todo.md` (Clara). Status: **execution started**. Go given Oct 17 13:40 for the rebranding (T20); other tasks wait for T0.
+> Supersedes the first prototype plan in `todo.md`. Status: **execution started**. Go given Oct 17 13:40 for the rebranding (T20); other tasks wait for T0.
 > Deadline: **Sun Oct 18, 12:00 COT** (30X Hackathon, Blinka challenge). Created Sat Oct 17, 13:35 COT.
 
 ## Product in one line
@@ -24,7 +24,7 @@ Tagline (from the mockup): **"Actúa con autonomía. Nunca sin límites."**
 | D4 | Extraction LLM | OpenAI (credits available; reads PDF and images). DeepSeek is text-only. No Anthropic key | proposed |
 | D5 | Inbound email | Provider with an inbound webhook (pick in T14) | open |
 | D6 | Hosting | Vercel (app, API, agent endpoints) + Neon Postgres (via the Vercel integration). Neon Functions only if a >5 min agent loop appears | proposed |
-| D7 | Brand / domain | Rebrand Clara → **ORBIT**. Keep `blinka.devcristobalvc.com`. Repo name stays `clara-blinka` unless renamed | proposed |
+| D7 | Brand / domain | Rebrand ORBIT → **ORBIT**. Keep `orbit.devcristobalvc.com`. Repo name stays `orbit` unless renamed | proposed |
 | D8 | Auth | Mock login at `/login` (user `123`, password `123`); cookie gate on `/app` via `proxy.ts`. Not real auth | confirmed (Oct 17) |
 | D9 | Out of scope | x402, ERC-8004, real money movement, identity verification (excluded by the Blinka brief) | proposed |
 
@@ -134,7 +134,7 @@ Priority: **P1** = must ship for the demo, **P2** = ship if time allows.
 - **Comments:**
 
 ## T5: Neon Postgres + schema
-- **Description:** Create the Neon DB from Vercel (project `clara` → Storage → Neon, `aws-us-east-1`) so `DATABASE_URL` is injected, then `vercel env pull` locally. Use Drizzle ORM + `@neondatabase/serverless`.
+- **Description:** Create the Neon DB from Vercel (project `orbit` → Storage → Neon, `aws-us-east-1`) so `DATABASE_URL` is injected, then `vercel env pull` locally. Use Drizzle ORM + `@neondatabase/serverless`.
   - **Tables:** `companies`, `policies` (versioned JSON + `active`), `beneficiaries`, `contracts`, `invoices` (source, raw file ref, extracted JSON, status), `decisions` (action, reasons, rules JSON, jev JSON, explanation, policy_version), `reviews`, `payments` (ledger), `vendor_messages`.
   - Migrations plus a seed script for the demo company.
 - **Owner:** cristobal (create the DB in Vercel, 2 min), claude (schema, migrations, seed)
@@ -280,13 +280,13 @@ Priority: **P1** = must ship for the demo, **P2** = ship if time allows.
 - **Comments:**
 
 ## T20: Rebrand + README
-- **Description:** Clara → ORBIT in the UI, metadata, README and favicon (ring logo). Update the README with the architecture, demo link, eval and "built during the hackathon" note.
+- **Description:** ORBIT → ORBIT in the UI, metadata, README and favicon (ring logo). Update the README with the architecture, demo link, eval and "built during the hackathon" note.
 - **Owner:** claude
 - **Priority:** P1
 - **Status:** done
-- **Acceptance criteria:** No "Clara" left in the user-facing UI. The README explains the project in 60 s.
+- **Acceptance criteria:** No "ORBIT" left in the user-facing UI. The README explains the project in 60 s.
 - **Tests:** grep check.
-- **Comments:** Clara → ORBIT in UI, metadata, favicon, README, eval report, storage key, package name. Existing app re-skinned to the mockup palette. Vercel project/repo names unchanged (D7).
+- **Comments:** ORBIT → ORBIT in UI, metadata, favicon, README, eval report, storage key, package name. Existing app re-skinned to the mockup palette. Vercel project/repo names unchanged (D7).
 
 ## T21: Pitch + demo video
 - **Description:** A 2–3 min pitch covering the problem, a live demo (email in → decision → vendor follow-up → approval → reports), why it's safe, why JEV, and the fit with Blinka's rails. Screen recording automated with Playwright, voice by Cristobal or wmb.
