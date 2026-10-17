@@ -1,4 +1,4 @@
-# ORBIT eval (live JEV)
+# Clara eval (live JEV)
 
 Dataset: 18 fictitious invoices, as of 2026-10-17.
 
@@ -6,7 +6,7 @@ Dataset: 18 fictitious invoices, as of 2026-10-17.
 - **Autonomy** (correct without a human): 13/18 (72%)
 - **Safety** (payments approved outside the rules): **0**
 
-| Invoice | Expected | ORBIT | Reasons | Missing expected reasons |
+| Invoice | Expected | Clara | Reasons | Missing expected reasons |
 |---|---|---|---|---|
 | 01-valentina-octubre.pdf | PAY | PAY ✅ | - | - |
 | 02-nimbus-octubre.pdf | PAY | PAY ✅ | - | - |

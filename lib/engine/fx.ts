@@ -5,6 +5,8 @@ export const FX_PER_USD: Record<string, number> = {
   MXN: 18,
   BRL: 5.5,
   ARS: 1400,
+  // Not an allowed payment currency; present so a EUR invoice can be compared with its reissue.
+  EUR: 0.92,
 };
 
 export function toUSD(amount: number, currency: string): number {
