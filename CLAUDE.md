@@ -5,8 +5,8 @@
 ORBIT's **pagador** agent reads invoices (PDF, image, email, chat), decides **PAY / HOLD / ESCALATE** inside company-defined rules, **negotiates corrections with the vendor** on a shareable case link, and explains every decision. Built for the 30X Hackathon Blinka challenge, with JEV (TypeSafe) as the fast judgment layer.
 
 - **Deadline:** Sun Oct 18 2026, 12:00 COT. Demo Day Oct 19–20.
-- **Read first:** `README.md` (what it does, what is real vs simulated). **Plan:** `todo.md`, the only one (`todo1.md` was merged into it). **History:** `CHANGELOG.md`: add an entry for every user-visible change. **Context:** `contexto30x.md` (briefs, URLs). **Pitch:** `docs/pitch.md`.
-- **Prod:** https://orbit.devcristobalvc.com (Vercel project `clara`, team `devcristobalvc`). Landing `/`, mock login `/login` (123/123), workspace `/app`, public case link `/c/<id>`.
+- **Read first:** `README.md` (the pitch and diagram), then `docs/architecture.md` (pipeline, guardrails, what is real vs simulated), `docs/api.md`, `docs/setup.md`. **Plan:** `todo.md`, the only one (`todo1.md` was merged into it). **History:** `CHANGELOG.md`: add an entry for every user-visible change. **Context:** `contexto30x.md` (briefs, URLs). **Pitch:** `docs/pitch.md`.
+- **Prod:** https://orbit.devcristobalvc.com (Vercel project `orbit`, team `devcristobalvc`). Landing `/`, mock login `/login` (123/123), workspace `/app`, public case link `/c/<id>`.
 
 ## Non-negotiables
 
