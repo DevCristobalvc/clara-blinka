@@ -35,11 +35,15 @@ const pay = (action) => {
 await fetch(`${base}/api/reset?full=1`, { method: "POST" });
 for (const p of ["/", "/login", "/app", "/app/facturas", "/app/reglas", "/app/aprobaciones", "/app/reportes"]) await fetch(base + p, { headers: { cookie: "orbit_session=demo" } }).catch(() => {});
 
-// 0. The problem: landing
+// 0. The problem, then the team: landing, scrolled slowly through "Cómo funciona"
 await go("/", "text=Actúa con autonomía");
-await pause(3500);
-await page.mouse.wheel(0, 650);
-await pause(2500);
+await pause(9000);
+await page.mouse.wheel(0, 450);
+await pause(5000);
+await page.mouse.wheel(0, 450);
+await pause(6000);
+await page.mouse.wheel(0, 500);
+await pause(6000);
 
 // 1. You are in your account: login, then the Panel with the invoices to pay
 await go("/login", "text=Iniciar sesión");

@@ -1,4 +1,4 @@
-# ORBIT · guion del video (≈2:40) y pitch
+# ORBIT · guion del video (≈3:00, máximo 5:00) y pitch
 
 Narración en español para ElevenLabs (voz de William). Cada bloque indica lo que se ve en pantalla y el momento aproximado. `scripts/record-demo.mjs` graba la pantalla en este mismo orden; `scripts/narrate.mjs` genera la voz y la monta.
 
@@ -10,35 +10,39 @@ Imagina que llevas las finanzas de una empresa en Estados Unidos con equipo y pr
 
 ORBIT es la plataforma donde tus agentes de IA cobran y pagan por tu empresa. Actúan con autonomía. Nunca sin límites.
 
-## 1. Estás en tu cuenta, tienes facturas por pagar [0:18–0:34] · pantalla: login y Panel con "Tienes 21 facturas por pagar"
+## 1. El equipo [0:18–0:36] · pantalla: landing, sección "Cómo funciona"
+
+Somos Cristobal Valencia y William Martínez, de Ekinoxis. Construimos productos de pagos y agentes para empresas en Latinoamérica, y este fin de semana, en el hackathon de 30X, construimos ORBIT para el reto de Blinka: un agente que paga por la empresa, dentro de sus reglas, y que pide permiso cuando algo se sale de ellas.
+
+## 2. Estás en tu cuenta, tienes facturas por pagar [0:36–0:52] · pantalla: login y Panel con "Tienes 21 facturas por pagar"
 
 Entras a tu cuenta como siempre. Y ahí están: veintiún facturas por pagar este mes. Seis normales. Doce con algún problema. Tres de proveedores que intentan colarte algo.
 
 En vez de revisarlas una por una, contratas a ORBIT.
 
-## 2. Contratas al pagador y le cargas fondos [0:34–0:58] · pantalla: Panel, pasos 1 y 2 se completan con el pago real en USDC
+## 3. Contratas al pagador y le cargas fondos [0:52–1:16] · pantalla: Panel, pasos 1 y 2 se completan con el pago real en USDC
 
 Contratar al agente es un pago, como lo haría un agente. Tu wallet le paga a ORBIT en USDC y el pagador queda activo al instante: sin cuenta, sin tarjeta. Después le cargas fondos a su propia wallet: ese es el dinero que puede mover, y nada más.
 
-## 3. Sus reglas [0:58–1:12] · pantalla: Reglas
+## 4. Sus reglas [1:16–1:30] · pantalla: Reglas
 
 Las reglas las pones tú, una sola vez: cuánto puede pagar por factura, el presupuesto del mes, qué proveedores y en qué moneda, y a partir de qué monto quieres aprobar tú. El agente nunca las cambia. Solo puede ser más estricto, nunca más laxo.
 
-## 4. Lo pones a trabajar [1:12–1:42] · pantalla: Panel "Pon a ORBIT a trabajar", el tablero de Facturas se va llenando
+## 5. Lo pones a trabajar [1:30–2:00] · pantalla: Panel "Pon a ORBIT a trabajar", el tablero de Facturas se va llenando
 
 Y lo pones a trabajar. Cada factura se vuelve un caso con su enlace. ORBIT la lee, la revisa contra las reglas y decide en segundos: pagar, frenar o escalar a una persona. Las seis correctas se pagan solas. Las que se salen de lo que puede aprobar, van a una persona.
 
-## 5. Cuando algo no cuadra, lo resuelve [1:42–2:10] · pantalla: caso de Lucía, la conversación; luego la vista del proveedor
+## 6. Cuando algo no cuadra, lo resuelve [2:00–2:28] · pantalla: caso de Lucía, la conversación; luego la vista del proveedor
 
 Aquí está la diferencia. Lucía mandó su factura en euros, y la política solo permite dólares. ORBIT no se limita a frenarla: le escribe, le pide la factura en dólares, ella la reemite, y la versión corregida pasa por las mismas reglas. Cumple, se registra el pago, y queda un recibo firmado.
 
 Una corrección solo puede acercarse al contrato. Nunca una cuenta nueva, nunca un monto mayor, nunca bajo presión. Los tres proveedores que lo intentaron terminaron en manos de una persona.
 
-## 6. Tú solo ves lo que te toca [2:10–2:24] · pantalla: Aprobaciones
+## 7. Tú solo ves lo que te toca [2:28–2:42] · pantalla: Aprobaciones
 
 A ti te llega únicamente lo que las reglas reservan para una persona: un pago legítimo por encima de tu umbral, un proveedor nuevo, un presupuesto agotado. Apruebas o rechazas con toda la conversación y los motivos a la vista.
 
-## 7. Confianza que se puede verificar [2:24–2:40] · pantalla: Reportes; cierre en el Panel
+## 8. Confianza que se puede verificar [2:42–2:58] · pantalla: Reportes; cierre en el Panel
 
 Veintiún facturas, doce trampas, tres proveedores comprometidos. Cien por ciento de precisión. Cero pagos fuera de las reglas, antes y después de negociar. Cada decisión firmada con las reglas vigentes, verificable por cualquiera.
 
