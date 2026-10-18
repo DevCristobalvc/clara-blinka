@@ -6,7 +6,7 @@ ORBIT's **pagador** agent reads invoices (PDF, image, email, chat), decides **PA
 
 - **Deadline:** Sun Oct 18 2026, 12:00 COT. Demo Day Oct 19–20.
 - **Read first:** `README.md` (the pitch and diagram), then `docs/architecture.md` (pipeline, guardrails, what is real vs simulated), `docs/api.md`, `docs/setup.md`. **Plan:** `todo.md`, the only one (`todo1.md` was merged into it). **History:** `CHANGELOG.md`: add an entry for every user-visible change. **Context:** `contexto30x.md` (briefs, URLs). **Pitch:** `docs/pitch.md`.
-- **Prod:** https://orbit.devcristobalvc.com (Vercel project `orbit`, team `devcristobalvc`). Landing `/`, mock login `/login` (123/123), workspace `/app`, public case link `/c/<id>`.
+- **Prod:** https://orbit.ekinoxis.xyz (Vercel project `orbit`, team `ekinoxis-team`, repo `Ekinoxis-evm/orbit`) and the mirror https://orbit.devcristobalvc.com (project `orbit`, team `devcristobalvc`). Landing `/`, mock login `/login` (123/123), workspace `/app`, public case link `/c/<id>`.
 
 ## Non-negotiables
 

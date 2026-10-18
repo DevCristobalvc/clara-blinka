@@ -73,4 +73,4 @@ Veintiún facturas, doce trampas, tres proveedores comprometidos. Cien por cient
 - **Nombre:** ORBIT
 - **Reto:** Blinka · Agentes que pagan por la empresa
 - **Descripción (corta):** ORBIT es la plataforma donde los agentes de IA de una empresa cobran y pagan por ella. El pagador lee cada factura, la revisa contra las reglas de la empresa, negocia correcciones con el proveedor en un enlace por pago, y paga, frena o escala a una persona, con un recibo firmado por decisión. Se contrata y se fondea pagando en USDC (x402). 21 facturas de prueba con 12 trampas y 3 proveedores comprometidos: 0 pagos fuera de reglas.
-- **Enlaces:** repo https://github.com/DevCristobalvc/orbit · demo https://orbit.devcristobalvc.com (login con Privy, o 123/123) · eval `docs/eval.md` · video (pendiente)
+- **Enlaces:** repo https://github.com/DevCristobalvc/orbit · demo https://orbit.ekinoxis.xyz (login con Privy, o 123/123; espejo https://orbit.devcristobalvc.com) · eval `docs/eval.md` · video (pendiente)

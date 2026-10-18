@@ -63,7 +63,7 @@ Companies want agents that pay vendors, but the blocker is **trust**: an agent t
 
 ## Try it
 
-- **Live:** https://orbit.devcristobalvc.com → *Iniciar sesión* (demo `123` / `123`) → workspace at `/app`. The pitch deck is at `/deck`.
+- **Live:** https://orbit.ekinoxis.xyz (mirror: https://orbit.devcristobalvc.com) → *Iniciar sesión* (demo `123` / `123`) → workspace at `/app`. The pitch deck is at `/deck`.
 - **Local:** `npm install && npm run dev`, then `npm test` (engine, negotiation, receipts and dataset eval).
 
 ## Docs

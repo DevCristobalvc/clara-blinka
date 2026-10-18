@@ -110,8 +110,9 @@ await holdFor(1, 6000);
 block(2);
 if (live) {
   await go("/login");
-  console.log("\n>>> Sign in with Privy in the Chrome window now (email, Google or passkey). Waiting up to 4 minutes…\n");
-  await page.waitForURL(/\/app(\/|$|\?)/, { timeout: 240000 });
+  await page.bringToFront();
+  console.log("\n>>> Sign in with Privy in the Chrome window now (email, Google or passkey). Waiting up to 10 minutes…\n");
+  await page.waitForURL(/\/app(\/|$|\?)/, { timeout: 600000 });
   await page.waitForSelector("text=Configura a ORBIT", { timeout: 60000 });
   await page.waitForSelector("text=USDC", { timeout: 60000 }).catch(() => {});
 } else {

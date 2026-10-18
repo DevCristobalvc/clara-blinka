@@ -36,7 +36,7 @@
 | T21 | README as a short hook (punchline + Mermaid diagram); architecture, API, setup and dataset moved to `docs/` | claude | done |
 | T22 | Vendor payouts on-chain from the agent wallet, gas sponsored by Privy (EIP-3009 + Privy relayer wallet) | claude | done (live Oct 17 19:52 COT) |
 | T23 | Final video v2: tighter script (≈3:00), 1080p recording with zooms, captions, redone deck, live sign-in, on-chain payouts on camera | claude | in progress (pipeline built, dry run Oct 18 11:30 COT) |
-| T24 | Mirror repo `Ekinoxis-evm/orbit` and public deployment on the Ekinoxis Vercel team | claude | done (Oct 18 11:20 COT) |
+| T24 | Mirror repo `Ekinoxis-evm/orbit` and public deployment on the Ekinoxis Vercel team at https://orbit.ekinoxis.xyz | claude | done (Oct 18 11:20 COT; domain by wmb 12:10) |
 
 Dropped: extraction with OpenAI (the Anthropic key works), Neon (Supabase chosen), x402 per case / ERC-8004 / wallets that move vendor money (out of the brief), dataset renamed to the mockup's vendors.
 

@@ -142,7 +142,7 @@ export function Deck() {
       </section>
 
       <footer className="relative z-10 flex items-center justify-between px-10 py-6 text-xs text-zinc-500">
-        <span>orbit.devcristobalvc.com · github.com/DevCristobalvc/orbit</span>
+        <span>orbit.ekinoxis.xyz · github.com/DevCristobalvc/orbit</span>
         <span className="flex gap-1">
           {SLIDES.map((s, k) => (
             <button key={s.id} aria-label={s.kicker} onClick={() => setI(k)} className={`h-1.5 w-6 rounded-full ${k === i ? "bg-orbit" : "bg-zinc-700"}`} />

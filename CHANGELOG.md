@@ -10,7 +10,7 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 - Top bar shows the real signed-in Privy user; logout ends the Privy session and the workspace cookie.
 
 ### Ops
-- Second deployment on the Ekinoxis Vercel team from the mirror repo `Ekinoxis-evm/orbit` (`main` = `wmb/orbit-v2`): https://orbit-ekinoxis-team.vercel.app, public, same Supabase project and env as local (`.env.vercel`, gitignored, holds the nine production variables).
+- Second deployment on the Ekinoxis Vercel team from the mirror repo `Ekinoxis-evm/orbit` (`main` = `wmb/orbit-v2`): https://orbit.ekinoxis.xyz (custom domain by wmb; also orbit-ekinoxis-team.vercel.app), public, same Supabase project and env as local (`.env.vercel`, gitignored, holds the nine production variables).
 - One local env file: `.env.local` (scripts load it with `--env-file=.env.local`).
 - Vercel project `orbit` connected to GitHub: every push to `main` deploys to production (orbit.devcristobalvc.com); PR branches get preview URLs. `ORBIT_SIGNING_KEY` set in Vercel.
 
