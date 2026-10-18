@@ -138,10 +138,14 @@ describe("decide", () => {
     expect(d.reasons).toContain("LOW_CONFIDENCE");
   });
 
-  it("explains every decision in plain language", async () => {
+  it("explains every decision in plain language with a counterfactual condition when not paid", async () => {
     const d = await run({ payeeAccount: "NEQUI-777" });
     expect(d.explanation).toMatch(/Frenada/);
     expect(d.explanation).toMatch(/no coincide con la registrada/);
+    expect(d.explanation).toMatch(/Se habría pagado automáticamente con: usar la cuenta bancaria registrada del beneficiario\./);
+
+    const paid = await run({});
+    expect(paid.explanation).not.toMatch(/Se habría pagado automáticamente con:/);
   });
 });
 

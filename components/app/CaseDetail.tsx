@@ -25,10 +25,32 @@ export function StatusChip({ status, className = "" }: { status: CaseStatus; cla
 
 export function CaseDetail({ c, busy, onClose, onCobrador, onReview }: { c: Case; busy: boolean; onClose: () => void; onCobrador: () => void; onReview: (status: "approved" | "rejected", note: string) => void }) {
   const [note, setNote] = useState("");
+  const [verifyState, setVerifyState] = useState<{ caseId: string; mode: "authentic" | "tampered"; valid: boolean; checking?: boolean }>();
   const d = c.decision ? effectiveDecision(c.decision, c.thread) : undefined;
   const link = useMemo(() => (typeof window === "undefined" ? `/c/${c.id}` : `${window.location.origin}/c/${c.id}`), [c.id]);
   const canApprove = c.status === "escalated";
   const canReject = ["escalated", "held", "needs_human", "scheduled"].includes(c.status) && !c.review;
+
+  const checkReceipt = async (mode: "authentic" | "tampered") => {
+    if (!c.receipt) return;
+    setVerifyState({ caseId: c.id, mode, valid: false, checking: true });
+    const targetReceipt =
+      mode === "tampered"
+        ? { ...c.receipt, payload: { ...c.receipt.payload, amount: c.receipt.payload.amount + 1 } }
+        : c.receipt;
+    try {
+      const res = await fetch("/api/keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ receipt: targetReceipt }),
+      });
+      const data = (await res.json()) as { valid?: boolean };
+      setVerifyState({ caseId: c.id, mode, valid: Boolean(data.valid) });
+    } catch {
+      setVerifyState({ caseId: c.id, mode, valid: false });
+    }
+  };
+  const currentVerify = verifyState?.caseId === c.id ? verifyState : undefined;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/70" onClick={onClose}>
@@ -142,6 +164,23 @@ export function CaseDetail({ c, busy, onClose, onCobrador, onReview }: { c: Case
               {c.receipt.payload.action} · {fmtMoney(c.receipt.payload.amount, c.receipt.payload.currency)} · reglas <span className="font-mono">{c.receipt.payload.policyHash.slice(0, 16)}…</span> · {c.receipt.alg}
               {c.receipt.payload.ephemeral ? " · clave efímera" : ""} · verificable con <span className="font-mono">/api/keys</span>
             </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <Button variant="secondary" disabled={Boolean(currentVerify?.checking)} onClick={() => void checkReceipt("authentic")}>
+                Verificar firma Ed25519
+              </Button>
+              <Button variant="ghost" disabled={Boolean(currentVerify?.checking)} onClick={() => void checkReceipt("tampered")}>
+                Simular alteración (+1 {c.receipt.payload.currency})
+              </Button>
+            </div>
+            {currentVerify && !currentVerify.checking ? (
+              <p className={`mt-2 rounded-lg border p-2.5 text-xs ${currentVerify.valid ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300" : "border-rose-500/30 bg-rose-500/10 text-rose-300"}`}>
+                {currentVerify.valid
+                  ? `✓ Firma Ed25519 válida: el recibo y el policyHash (${c.receipt.payload.policyHash.slice(0, 12)}…) coinciden con la clave pública del servidor y no han sido alterados.`
+                  : currentVerify.mode === "tampered"
+                    ? `✕ Alteración detectada: al modificar el monto sin la clave privada Ed25519, la verificación criptográfica rechaza el recibo.`
+                    : `✕ La firma del recibo no pudo verificarse.`}
+              </p>
+            ) : null}
           </>
         ) : null}
 

@@ -122,6 +122,30 @@ describe("case service", () => {
     expect(await ledger(deps.store, "test")).toHaveLength(1);
   });
 
+  it("allows a human to approve an escalated unlisted vendor (NOT_ALLOWLISTED) and records it in the ledger", async () => {
+    const { deps } = await setup();
+    const c = await createCase(deps, "test");
+    const esc = await submitInvoice(deps, "test", c.id, {
+      ...laura,
+      payeeName: "Byte Studio LLC",
+      payeeAccount: "US-BYTE-001",
+      invoiceNumber: "BS-104",
+      currency: "USD",
+      amount: 950,
+      concept: "Diseño de iconos",
+    });
+    expect(esc.status).toBe("escalated");
+    expect(esc.decision?.reasons).toEqual(["NOT_ALLOWLISTED"]);
+    expect(esc.decision?.beneficiaryId).toBeUndefined();
+
+    const approved = await reviewCase(deps, "test", c.id, { status: "approved", by: "cfo", note: "Proveedor nuevo validado" });
+    expect(approved.status).toBe("paid");
+    expect(approved.settlement?.ref).toMatch(/^pago-/);
+    const records = await ledger(deps.store, "test");
+    expect(records).toHaveLength(1);
+    expect(records[0]).toMatchObject({ invoiceNumber: "BS-104", beneficiaryId: "unlisted:byte studio", amount: 950, currency: "USD" });
+  });
+
   it("rejects collector cases for now and unknown companies", async () => {
     const { deps } = await setup();
     await expect(createCase(deps, "test", { role: "collector" })).rejects.toMatchObject({ status: 501 });

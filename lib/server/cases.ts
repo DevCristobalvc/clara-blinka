@@ -176,6 +176,9 @@ export async function reviewCase(deps: CaseDeps, companyId: string, caseId: stri
     throw new HttpError(403, "Only escalated cases can be approved; held cases need a corrected invoice");
   }
   if (!["escalated", "held", "needs_human", "scheduled"].includes(c.status)) throw new HttpError(409, `A ${c.status} case cannot be reviewed`);
+  if (input.status === "approved" && !toPaymentRecord(effectiveDecision(c.decision, c.thread), deps.today)) {
+    throw new HttpError(422, "Cannot settle a payment without a valid payee");
+  }
   c.review = { status: input.status, by: input.by, at: nowIso(deps), note: input.note || undefined };
   await store.appendEvent({ caseId: c.id, companyId, type: "review", payload: c.review });
   if (input.status === "approved") await settle(deps, c);

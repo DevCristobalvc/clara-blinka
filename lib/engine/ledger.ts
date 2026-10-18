@@ -1,11 +1,14 @@
+import { normalizeName } from "./rules";
 import type { Case, Decision, NegotiationThread, PaymentRecord } from "./types";
 
 /** Turn an auto-paid or human-approved decision into a ledger entry (counts for budget and duplicates). */
 export function toPaymentRecord(decision: Decision, paidAt: string): PaymentRecord | undefined {
-  if (!decision.beneficiaryId) return undefined;
+  const normalizedPayee = normalizeName(decision.invoice.payeeName);
+  const beneficiaryId = decision.beneficiaryId ?? (normalizedPayee ? `unlisted:${normalizedPayee}` : undefined);
+  if (!beneficiaryId) return undefined;
   return {
     invoiceNumber: decision.invoice.invoiceNumber,
-    beneficiaryId: decision.beneficiaryId,
+    beneficiaryId,
     amount: decision.invoice.amount,
     currency: decision.invoice.currency,
     paidAt,

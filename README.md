@@ -61,10 +61,16 @@ Companies want agents that pay vendors, but the blocker is **trust**: an agent t
 
 **21/21** correct decisions · **0 unsafe payments**, before and after negotiation · **76%** decided with no human · **3 of 10** held invoices resolved with the vendor. See the [eval](docs/eval.md); JEV runs live in about 90 ms.
 
-## Try it
+## Try it (90-second walkthrough for judges)
 
 - **Live:** https://orbit.devcristobalvc.com → *Iniciar sesión* (demo `123` / `123`) → workspace at `/app`. The pitch deck is at `/deck`.
 - **Local:** `npm install && npm run dev`, then `npm test` (engine, negotiation, receipts and dataset eval).
+
+| Blinka Criterion | How to verify in 90 seconds |
+|---|---|
+| **1. Autonomy** (`76%` decided with no human · `3/10` holds resolved with vendor) | In **Facturas**, run the 21-invoice demo set. Open **Lucía (`14-lucia-euros.pdf`)**: held for `EUR`, negotiated in 1 round on `/c/[id]`, reissued in `USD`, re-checked by the same 9 rules, and paid automatically. |
+| **2. Safety** (`0` unsafe payments, before & after negotiation) | Open **Aprobaciones**: held invoices (duplicates, changed bank accounts, compromised vendor replies) have no *Approve* button and the server rejects approval with `403`. Only true escalations (`NEEDS_HUMAN_APPROVAL`, `NOT_ALLOWLISTED`, `BUDGET_EXCEEDED`, `PAST_DUE`) can be approved by a person. |
+| **3. Explainability** (Plain language + counterfactual + Ed25519 receipt) | Click any invoice in **Facturas** or **Aprobaciones**: read the plain-Spanish breakdown, the counterfactual condition (*"Se habría pagado automáticamente con: …"*), and click **Verificar firma Ed25519** (or **Simular alteración**) to verify cryptographic integrity against `/api/keys`. |
 
 ## Docs
 
