@@ -5,7 +5,7 @@
 //   --voice-only: only (re)generate the voice clips in docs/demo/voice (the recorder sizes its segments from them).
 // needs: ELEVENLABS_API_KEY (voice by ELEVENLABS_VOICE_ID or by name, default "William"); ffmpeg/ffprobe on PATH.
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 
 const flags = process.argv.slice(2).filter((a) => a.startsWith("--"));
@@ -103,7 +103,7 @@ console.table(clips.map((c) => ({ block: c.n, planned: c.start, placed: c.at.toF
 
 const videoOut = videoLen - saved;
 const voiceTail = Math.max(...clips.map((c) => c.at + c.length));
-const total = Math.max(videoOut, voiceTail + 0.5);
+const total = Math.min(Math.max(videoOut, voiceTail + 0.5), voiceTail + 1.6); // never more than 1.6 s of screen after the voice ends
 const pad = voiceTail > videoOut ? `,tpad=stop_mode=clone:stop_duration=${(voiceTail - videoOut + 0.5).toFixed(2)}` : "";
 console.log(`voice ends at ${voiceTail.toFixed(1)} s, video ${videoLen.toFixed(1)} s → ${total.toFixed(1)} s`);
 
@@ -120,22 +120,35 @@ const pick = (k) => (zs.length ? zs.map((z) => `between(${T},${z.from.toFixed(2)
 const zoomChain = `[vb]zoompan=z='${zExpr}':x='${pick("cx")}':y='${pick("cy")}':d=1:s=1920x1080:fps=${FPS}[vz]`;
 const tmp = `${tmpdir()}/orbit-narrate`;
 mkdirSync(tmp, { recursive: true });
-const font = `${tmp}/font.ttf`;
-copyFileSync("/System/Library/Fonts/Supplemental/Arial Bold.ttf", font);
-const captions = clips
-  .filter((c) => c.caption)
-  .map((c, i) => {
-    const file = `${tmp}/cap-${c.n}.txt`;
-    writeFileSync(file, c.caption);
-    const a = c.at.toFixed(2), b = (c.at + c.length).toFixed(2);
-    return `drawbox=x=72:y=h-176:w=8:h=64:color=0xf5e400@0.95:t=fill:enable='between(t,${a},${b})',drawtext=fontfile=${font}:textfile=${file}:fontsize=36:fontcolor=white:box=1:boxcolor=black@0.62:boxborderw=18:x=104:y=h-162:alpha='min(1,(t-${a})/0.35)*min(1,(${b}-t)/0.35)':enable='between(t,${a},${b})'`;
-  })
-  .join(",");
+// Captions: one transparent 1920×1080 PNG per block rendered with Chrome (this ffmpeg has no drawtext), faded in/out
+// and overlaid while the block's narration plays.
+const { chromium } = await import("playwright-core");
+const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" });
+const capPage = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+const captioned = clips.filter((c) => c.caption);
+for (const c of captioned) {
+  c.png = `${tmp}/cap-${c.n}.png`;
+  const text = c.caption.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  await capPage.setContent(`<html><body style="margin:0;width:1920px;height:1080px;background:transparent;font-family:Inter,-apple-system,'Helvetica Neue',Arial,sans-serif">
+    <div style="position:absolute;left:72px;bottom:96px;display:flex;align-items:stretch;gap:0;max-width:1500px">
+      <div style="width:10px;background:#f5e400;border-radius:3px"></div>
+      <div style="background:rgba(0,0,0,.66);backdrop-filter:blur(2px);color:#fff;font-size:38px;font-weight:600;line-height:1.25;padding:18px 28px;border-radius:0 12px 12px 0;letter-spacing:-0.01em">${text}</div>
+    </div></body></html>`);
+  await capPage.screenshot({ path: c.png, omitBackground: true });
+}
+await browser.close();
+const capInputs = captioned.flatMap((c) => ["-loop", "1", "-i", c.png]);
+let overlays = "", last = "vz";
+captioned.forEach((c, i) => {
+  const a = c.at.toFixed(2), b = (c.at + c.length).toFixed(2), idx = clips.length + 1 + i;
+  overlays += `[${idx}:v]format=rgba,fade=t=in:st=${a}:d=0.35:alpha=1,fade=t=out:st=${(c.at + c.length - 0.35).toFixed(2)}:d=0.35:alpha=1[c${i}];[${last}][c${i}]overlay=0:0:enable='between(t,${a},${b})'[o${i}];`;
+  last = `o${i}`;
+});
 const fades = `fade=t=in:st=0:d=0.8,fade=t=out:st=${(total - 1).toFixed(2)}:d=1`;
-const vchain = `${base};${zoomChain};[vz]${captions ? captions + "," : ""}${fades}[v]`;
+const vchain = `${base};${zoomChain};${overlays}[${last}]${fades},trim=0:${total.toFixed(2)}[v]`;
 
 // 4. Audio: each clip delayed to its place, summed, padded; mux and encode.
-const inputs = clips.flatMap((c) => ["-i", c.file]);
+const inputs = [...clips.flatMap((c) => ["-i", c.file]), ...capInputs];
 const delays = clips.map((c, i) => `[${i + 1}:a]adelay=${Math.round(c.at * 1000)}|${Math.round(c.at * 1000)}[a${i}]`).join(";");
 const mix = `${delays};${clips.map((_, i) => `[a${i}]`).join("")}amix=inputs=${clips.length}:normalize=0,volume=1.0,apad[voice]`;
 execFileSync(

@@ -180,7 +180,7 @@ block(5);
 await click("text=Pon a ORBIT a trabajar");
 await page.waitForSelector("text=Set de demo completo", { timeout: 600000 });
 await pause(1000);
-await zoomOn("text=Pagados", { z: 1.6, ms: 5000, dy: 170, dx: 100 });
+await zoomOn("text=Pagadas", { z: 1.6, ms: 5000, dy: 170, dx: 100 });
 await holdFor(5, 1500);
 
 // 6. Lucía's negotiation, then the vendor's view with the payout and its transaction
@@ -188,9 +188,10 @@ block(6);
 await click("text=Lucía Fernández");
 await page.waitForSelector("text=Negociación con el proveedor");
 await pause(1200);
-await zoomOn("text=Negociación con el proveedor", { z: 1.45, ms: 6000, dy: 170 });
-await page.mouse.wheel(0, 400);
-await pause(2500);
+await page.locator("text=Negociación con el proveedor").first().scrollIntoViewIfNeeded().catch(() => {});
+await pause(600);
+await zoomOn("text=Negociación con el proveedor", { z: 1.45, ms: 7000, dy: 200 });
+await pause(1500);
 const caseLink = await page.$eval("aside code", (el) => el.textContent);
 await page.goto(caseLink, { waitUntil: "load" });
 await page.waitForSelector("text=Conversación");
@@ -198,11 +199,8 @@ await pause(2000);
 await page.locator("text=Pago enviado").first().scrollIntoViewIfNeeded().catch(() => {});
 await pause(800);
 await zoomOn("text=Pago enviado", { z: 1.6, ms: 5000, dy: 40 });
-const txLink = await page.locator('a[href*="basescan.org/tx/"]').first().getAttribute("href").catch(() => null);
-if (txLink) {
-  await page.goto(txLink, { waitUntil: "domcontentloaded", timeout: 20000 }).catch(() => {});
-  await pause(5000);
-}
+// The transaction link itself (BaseScan is behind a bot check, so we don't open it on camera).
+await zoomOn('a[href*="basescan.org/tx/"]', { z: 2.2, ms: 3500 });
 await holdFor(6, 1000);
 
 // 7. Approvals
@@ -211,7 +209,7 @@ await go("/app/aprobaciones", "text=Aprobaciones");
 await pause(2500);
 await click("text=Aprobar pago").catch(() => {});
 await pause(800);
-await zoomOn("text=Aprobaciones", { z: 1.4, ms: 4500, dy: 190, dx: 300 });
+await zoomOn("main >> text=Aprobaciones", { z: 1.4, ms: 4500, dy: 190, dx: 300 });
 await holdFor(7, 1500);
 
 // 8. Reports, then results and what's next (deck)
