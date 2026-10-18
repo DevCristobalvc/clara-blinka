@@ -74,9 +74,9 @@ export class WalletExecutor implements PaymentExecutor {
       }
 
       let hash: Hex | undefined;
-      let via = "directo";
+      let via = "transferencia directa";
       if (PRIVY_SPONSORED) {
-        via = "Privy (gas patrocinado)";
+        via = "gas patrocinado por Privy";
         usdcDomain ??= {
           name: await publicClient.readContract({ address: USDC_BASE_SEPOLIA, abi: eip3009Abi, functionName: "name" }),
           version: await publicClient.readContract({ address: USDC_BASE_SEPOLIA, abi: eip3009Abi, functionName: "version" }),
@@ -106,7 +106,7 @@ export class WalletExecutor implements PaymentExecutor {
         ref: `pago-${hash.slice(2, 10)}`,
         status: "sent",
         transaction: hash,
-        note: `Pagado desde la wallet del agente (${via}): ${amountUSDC} USDC a la cuenta Blinka de ${vendor.name}; Blinka lo liquida en ${vendor.currency} en su banco (${vendor.account.value}). Escala demo: 1 USDC = ${PAYOUT_SCALE.toLocaleString("es-CO")} USD.`,
+        note: `Pagado desde la wallet del agente, ${via}: ${amountUSDC} USDC a la cuenta Blinka de ${vendor.name}; Blinka lo liquida en ${vendor.currency} en su banco (${vendor.account.value}). Escala demo: 1 USDC = ${PAYOUT_SCALE.toLocaleString("es-CO")} USD.`,
       };
     } catch (err) {
       const msg = (err as Error).message ?? "";
