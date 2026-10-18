@@ -2,7 +2,7 @@
 // landing → login → Panel (invoices to pay) → the pagador is hired and funded with REAL x402 payments
 // (scripts/x402-pay.mjs, test wallet) while the Panel is on screen → rules → "Pon a ORBIT a trabajar"
 // → the board fills → Lucía's negotiation → the vendor's view → approvals → reports → Panel.
-// usage: CHROME_PATH=... node --env-file=.env --env-file=.env.local scripts/record-demo.mjs [out dir = docs/demo] [--live]
+// usage: CHROME_PATH=... node --env-file=.env.local scripts/record-demo.mjs [out dir = docs/demo] [--live]
 //   --live: opens a visible Chrome window with a persistent profile; you sign in with Privy on camera, and the
 //   payments are made by clicking the wizard buttons with your wallet (script payments only as a fallback).
 import { execFileSync } from "node:child_process";
