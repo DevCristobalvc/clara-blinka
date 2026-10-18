@@ -15,6 +15,7 @@ All notable changes to ORBIT. Dates in COT (UTC-5). The hackathon window is Oct 
 - Vercel project `orbit` connected to GitHub: every push to `main` deploys to production (orbit.devcristobalvc.com); PR branches get preview URLs. `ORBIT_SIGNING_KEY` set in Vercel.
 
 ### Docs
+- **Final video v2** `docs/demo/orbit-demo-voz.mp4` (3:33): problem → team → what we built → live sign-in with Privy → account bar and Depositar QR → hiring and funding paid from the company wallet with confirmations → rules → the board filling with on-chain payouts (narration explains rules in code + JEV typed judgments) → Lucía's negotiation and the vendor's page with the payout → approvals → reports → results. Review frames in `docs/demo/frames/`.
 - Video v2 pipeline: `docs/pitch.md` trimmed to ≈3:00 with a caption line per block; `scripts/record-demo.mjs` records 1080p with zoom marks and a click pulse; `scripts/narrate.mjs` time-lapses the board, applies the zooms, captions and fades.
 - README rewritten as a short hook: punchline, a Mermaid diagram of how ORBIT works, results, how to try it. The detail moved to `docs/architecture.md`, `docs/api.md`, `docs/setup.md` and `docs/dataset.md`.
 

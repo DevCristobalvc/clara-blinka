@@ -85,21 +85,37 @@ for (const c of clips) {
 }
 const videoLen = dur(video);
 
-// 2b. Time-lapse the quiet stretch while the board fills (block 5): from 12 s after the block starts until
-//     1.5 s before block 6, sped up so that stretch lasts about 12 s on screen. Later times shift accordingly.
+// 2b. Time-lapse the quiet stretches: the board filling (block 5) is sped up so it lasts what that block's
+//     narration still needs, and any silent wait between the end of a block's voice and the next block's screen
+//     is compressed to about a second. Later times shift accordingly.
+const windows = []; // { from, to, factor } in raw video time, non-overlapping, sorted
 const b5 = timeline[5], b6 = timeline[6];
-let fast = null, FAST = 1, saved = 0;
 if (b5 !== undefined && b6 !== undefined && b6 - b5 > 26) {
-  fast = { from: b5 + 12, to: b6 - 1.5 };
-  // The stretch lasts what block 5's narration still needs after the parts kept at normal speed (min 8 s).
+  const from = b5 + 12, to = b6 - 1.5;
   const clip5 = clips.find((c) => c.n === 5);
-  const want = Math.max(8, (clip5?.length ?? 24) + 1.5 - 12 - (b6 - fast.to));
-  FAST = Math.min(12, Math.max(2, Math.round((fast.to - fast.from) / want)));
-  saved = (fast.to - fast.from) * (1 - 1 / FAST);
-  console.log(`time-lapse ${fast.from.toFixed(1)}–${fast.to.toFixed(1)} s at ${FAST}x, saves ${saved.toFixed(1)} s`);
+  const want = Math.max(8, (clip5?.length ?? 24) + 1.5 - 12 - (b6 - to));
+  windows.push({ from, to, factor: Math.min(12, Math.max(1.5, Number(((to - from) / want).toFixed(2)))) });
 }
-const remap = (t) => (!fast || t <= fast.from ? t : t < fast.to ? fast.from + (t - fast.from) / FAST : t - saved);
-for (const c of clips) c.at = remap(c.at);
+for (let i = 0; i < clips.length - 1; i++) {
+  const c = clips[i], next = clips[i + 1];
+  const rawStart = timeline[c.n], nextStart = timeline[next.n];
+  if (rawStart === undefined || nextStart === undefined || c.n === 5) continue;
+  const from = rawStart + c.length + 0.4, to = nextStart - 0.2;
+  if (to - from > 1.0) windows.push({ from, to, factor: Math.min(8, Math.max(1.5, Number(((to - from) / 0.8).toFixed(2)))) });
+}
+windows.sort((a, b) => a.from - b.from);
+for (const w of windows) console.log(`time-lapse ${w.from.toFixed(1)}–${w.to.toFixed(1)} s at ${w.factor}x`);
+const remap = (t) => {
+  let out = t;
+  for (const w of windows) {
+    if (t <= w.from) break;
+    const inside = Math.min(t, w.to) - w.from;
+    out -= inside * (1 - 1 / w.factor);
+  }
+  return out;
+};
+const saved = windows.reduce((s, w) => s + (w.to - w.from) * (1 - 1 / w.factor), 0);
+for (const c of clips) c.at = remap(timeline[c.n] ?? c.start);
 let cur = 0;
 for (const c of clips) { c.at = Math.max(c.at, cur); cur = c.at + c.length + 0.4; }
 console.table(clips.map((c) => ({ block: c.n, planned: c.start, placed: c.at.toFixed(1), length: c.length.toFixed(1) })));
@@ -112,9 +128,17 @@ console.log(`voice ends at ${voiceTail.toFixed(1)} s, video ${videoLen.toFixed(1
 
 // 3. Video chain: time-lapse → zoom-ins (zoompan, eased) → captions → fades.
 const FPS = 25;
-const base = fast
-  ? `[0:v]trim=0:${fast.from},setpts=PTS-STARTPTS[v0];[0:v]trim=${fast.from}:${fast.to},setpts=(PTS-STARTPTS)/${FAST}[v1];[0:v]trim=${fast.to},setpts=PTS-STARTPTS[v2];[v0][v1][v2]concat=n=3:v=1:a=0${pad},fps=${FPS}[vb]`
-  : `[0:v]setpts=PTS-STARTPTS${pad},fps=${FPS}[vb]`;
+let base;
+if (windows.length) {
+  const parts = []; let cursorT = 0, k = 0;
+  const seg = (from, to, factor) => { const lbl = `s${k++}`; parts.push(`[0:v]trim=${from.toFixed(3)}${to !== undefined ? ":" + to.toFixed(3) : ""},setpts=(PTS-STARTPTS)${factor > 1 ? "/" + factor : ""}[${lbl}]`); return lbl; };
+  const labels = [];
+  for (const w of windows) { if (w.from > cursorT) labels.push(seg(cursorT, w.from, 1)); labels.push(seg(w.from, w.to, w.factor)); cursorT = w.to; }
+  labels.push(seg(cursorT, undefined, 1));
+  base = `${parts.join(";")};${labels.map((l) => `[${l}]`).join("")}concat=n=${labels.length}:v=1:a=0${pad},fps=${FPS}[vb]`;
+} else {
+  base = `[0:v]setpts=PTS-STARTPTS${pad},fps=${FPS}[vb]`;
+}
 const T = `(in/${FPS})`;
 const zs = zooms.map((z) => ({ ...z, from: remap(z.from), to: remap(z.to) })).filter((z) => z.to - z.from > 1);
 const ease = (z) => `clip((${T}-${z.from.toFixed(2)})/0.6,0,1)*clip((${z.to.toFixed(2)}-${T})/0.6,0,1)`;
