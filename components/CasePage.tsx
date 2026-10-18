@@ -119,6 +119,22 @@ export function CasePage({ id }: { id: string }) {
       ) : null}
 
       <Outcome c={c} />
+      {c.thread?.outcome && c.thread.outcome !== "human" && c.invoice ? (
+        <Card>
+          <h2 className="text-sm font-semibold text-white">Resumen del pago</h2>
+          <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-4">
+            <Field label="Factura original" value={`${c.invoice.invoiceNumber} · ${fmtMoney(c.invoice.amount, c.invoice.currency)}`} />
+            {c.thread.messages.filter((m) => m.invoice).at(-1)?.invoice ? (
+              <Field label="Factura corregida" value={`${c.thread.messages.filter((m) => m.invoice).at(-1)!.invoice!.invoiceNumber} · ${fmtMoney(c.thread.messages.filter((m) => m.invoice).at(-1)!.invoice!.amount, c.thread.messages.filter((m) => m.invoice).at(-1)!.invoice!.currency)}`} />
+            ) : (
+              <Field label="Corrección" value={c.thread.outcome === "scheduled" ? `programada para ${c.thread.scheduledFor}` : "sin pago: ya estaba pagada"} />
+            )}
+            <Field label="Rondas" value={`${c.thread.rounds} de ${c.thread.maxRounds}`} />
+            <Field label="Registro" value={c.settlement?.ref ?? "—"} />
+          </dl>
+          {c.thread.outcomeDetail ? <p className="mt-2 text-xs text-zinc-400">{c.thread.outcomeDetail}</p> : null}
+        </Card>
+      ) : null}
 
       {c.thread ? (
         <Card>
@@ -166,10 +182,14 @@ function Outcome({ c }: { c: PublicCase }) {
   );
   switch (c.status) {
     case "paid":
-      return box(
-        "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
-        "Pago aprobado",
-        `${c.settlement?.note ?? "Liquidación registrada."}${c.settlement ? ` Referencia ${c.settlement.ref}.` : ""}`,
+      return (
+        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-emerald-200">
+          <p className="text-sm font-semibold">{c.settlement?.status === "sent" ? "Pago enviado: lo recibes en tu cuenta bancaria a través de Blinka" : c.settlement?.status ? "Pago aprobado · ejecución pendiente" : "Pago aprobado"}</p>
+          <p className="mt-1 text-sm opacity-90">
+            {c.settlement?.note ?? "Liquidación registrada."}{c.settlement ? ` Referencia ${c.settlement.ref}.` : ""}
+            {c.settlement?.transaction ? <> <a className="font-mono underline" target="_blank" rel="noreferrer" href={`https://sepolia.basescan.org/tx/${c.settlement.transaction}`}>ver transacción</a></> : null}
+          </p>
+        </div>
       );
     case "scheduled":
       return box("border-sky-500/30 bg-sky-500/10 text-sky-200", "Pago programado", `Se pagará el ${c.thread?.scheduledFor ?? "la fecha acordada"}.`);

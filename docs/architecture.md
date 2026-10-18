@@ -104,7 +104,9 @@ The **cobrador** (collector: the same engine with the rules inverted) activates 
 Money goes three ways:
 - **Activation fee** → ORBIT's treasury (`ORBIT_PAY_TO`).
 - **Funds** → the agent's own per-company wallet (what it pays from).
-- **Vendor payments** → decided and **recorded** by `LedgerExecutor`, never executed. In production they would go over Blinka's rails.
+- **Vendor payments** → with `ORBIT_PAYOUTS=onchain`, `WalletExecutor` pays each approved invoice from the agent's wallet in testnet USDC to the vendor's payout wallet (demo scale `ORBIT_PAYOUT_SCALE`: 1 USDC = 1,000 USD of invoice). Without it, `LedgerExecutor` only records the decision.
+
+**Gas.** The agent's wallet holds only USDC. For each payout it signs an EIP-3009 `transferWithAuthorization` off-chain and a **Privy server wallet** per company (the relayer, created on first use, holds no funds) submits it with Privy gas sponsorship (`sponsor: true`), so no wallet ever needs ETH. The settlement carries the tx hash, and the vendor page reads "pago enviado": in the Blinka model the vendor receives the USDC in their Blinka account and Blinka settles it in their bank currency. A chain or sponsorship error leaves the settlement `pending` with the reason; it never changes the decision.
 
 ## Code layout
 

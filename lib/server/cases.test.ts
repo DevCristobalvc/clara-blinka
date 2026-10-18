@@ -208,3 +208,13 @@ describe("webhooks", () => {
     expect(await store.listEvents("test", { type: "webhook.attempt" })).toEqual([]);
   });
 });
+
+describe("payout scale", () => {
+  it("converts invoice USD to demo USDC at 1:1000 with a 0.01 floor", async () => {
+    const { usdcFor } = await import("./payout");
+    expect(usdcFor(2300).toString()).toBe("2300000"); // 2.30 USDC
+    expect(usdcFor(978.26).toString()).toBe("980000"); // 0.98 USDC
+    expect(usdcFor(1).toString()).toBe("10000"); // floor 0.01 USDC
+    expect(usdcFor(2300, 100).toString()).toBe("23000000");
+  });
+});

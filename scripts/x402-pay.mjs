@@ -15,7 +15,7 @@ if (!pk) {
 const account = privateKeyToAccount(pk);
 console.log(`payer ${account.address} → POST ${base}/api/agents/${kind}/${action}`);
 
-const paidFetch = wrapFetchWithPaymentFromConfig(fetch, { schemes: [{ network: "eip155:84532", client: new ExactEvmScheme(account) }] });
+const paidFetch = wrapFetchWithPaymentFromConfig(fetch, { schemes: [{ network: "eip155:84532", client: new ExactEvmScheme(account) }], spendControls: { maxAmountPerPayment: "$25" } });
 const started = Date.now();
 const res = await paidFetch(`${base}/api/agents/${kind}/${action}`, { method: "POST" });
 const body = await res.json().catch(() => ({}));

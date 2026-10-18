@@ -3,7 +3,7 @@ import { REASON_LABEL } from "@/lib/engine/labels";
 import { effectiveDecision, ledgerFor, toPaymentRecord } from "@/lib/engine/ledger";
 import { canNegotiate, openThread, stepThread, type NegotiationContext, type ProseWriter } from "@/lib/engine/negotiate";
 import { policyHash, receiptFor } from "@/lib/engine/receipt";
-import type { Case, CaseRole, Company, Invoice, NegotiationOutcome, PaymentExecutor, PaymentRecord, Receipt, Review, VendorReply } from "@/lib/engine/types";
+import type { Case, CaseRole, Company, Invoice, NegotiationOutcome, PaymentExecutor, PaymentRecord, Receipt, Review, Settlement, VendorReply } from "@/lib/engine/types";
 import type { CaseStore } from "./store";
 
 /**
@@ -76,7 +76,8 @@ async function settle(deps: CaseDeps, c: Case): Promise<void> {
   const final = effectiveDecision(c.decision!, c.thread);
   const record = toPaymentRecord(final, deps.today);
   if (!record) throw new HttpError(500, "Cannot settle a payment without a registered beneficiary");
-  c.settlement = await deps.executor.execute(record, c.id);
+  const company = await getCompanyOrThrow(deps.store, c.companyId);
+  c.settlement = await deps.executor.execute(record, c.id, company);
   c.status = "paid";
   await deps.store.appendEvent({ caseId: c.id, companyId: c.companyId, type: "settlement", payload: { settlement: c.settlement, record } });
 }
@@ -213,7 +214,7 @@ export interface PublicCase {
     scheduledFor?: string;
     messages: { from: "orbit" | "vendor"; at: string; text: string; prose: string; requestType?: string; replyKind?: string; invoice?: Pick<Invoice, "invoiceNumber" | "amount" | "currency" | "concept"> }[];
   };
-  settlement?: { ref: string; rail: string; at: string; note: string };
+  settlement?: Settlement;
   receipt?: Receipt;
   review?: { status: Review["status"]; at: string };
 }

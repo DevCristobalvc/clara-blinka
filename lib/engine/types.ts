@@ -50,6 +50,10 @@ export interface Account {
 export interface Beneficiary {
   id: string;
   name: string;
+  /** Where the vendor receives the case link (optional; derived from the name for the demo set). */
+  email?: string;
+  /** Where the vendor receives on-chain payouts (USDC on Base Sepolia in the demo). */
+  payoutWallet?: string;
   country: string;
   currency: string;
   account: Account;
@@ -231,10 +235,16 @@ export interface Settlement {
   rail: string;
   at: string;
   note: string;
+  /** On-chain payout, when the executor moves testnet USDC from the agent's wallet. */
+  status?: "sent" | "pending" | "failed";
+  transaction?: string;
+  to?: string;
+  amountUSDC?: string;
+  network?: string;
 }
 
 export interface PaymentExecutor {
-  execute(record: PaymentRecord, caseId: string): Promise<Settlement>;
+  execute(record: PaymentRecord, caseId: string, company?: Company): Promise<Settlement>;
 }
 
 // ---------------------------------------------------------------------------
@@ -333,6 +343,8 @@ export interface Case {
   thread?: NegotiationThread;
   /** Why a HOLD was not negotiated (plain language), when that is the case. */
   negotiationNote?: string;
+  /** The case link sent to the vendor: by email when a provider is configured, otherwise recorded. */
+  invite?: { email: string; sentAt: string; delivery: "email" | "recorded" };
   review?: Review;
   settlement?: Settlement;
   receipt?: Receipt;

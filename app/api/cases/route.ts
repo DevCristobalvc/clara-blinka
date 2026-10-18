@@ -2,6 +2,7 @@ import type { Case } from "@/lib/engine/types";
 import { REQUIRE_ACTIVATION, agentActive } from "@/lib/server/agents";
 import { createCase, HttpError } from "@/lib/server/cases";
 import { caseLink, COMPANY_ID, companyForRequest, handle, json, notify, serverDeps } from "@/lib/server/http";
+import { sendInvite } from "@/lib/server/invite";
 
 /** The company's view of every case, newest last. */
 export async function GET() {
@@ -16,6 +17,8 @@ interface CreateBody {
   role?: Case["role"];
   source?: string;
   vendorHint?: Case["vendorHint"];
+  /** Send the link to the vendor on creation (default true when the vendor is known). */
+  invite?: boolean;
 }
 
 /** Open a case and get the link the vendor (or its cobrador agent) will use. */
@@ -25,8 +28,11 @@ export async function POST(request: Request) {
     const deps = serverDeps();
     const company = await companyForRequest();
     if (REQUIRE_ACTIVATION && !agentActive(company, "pagador")) throw new HttpError(403, "Activa el agente pagador en Configuración antes de abrir casos");
-    const c = await createCase(deps, COMPANY_ID, body);
+    let c = await createCase(deps, COMPANY_ID, body);
+    const url = caseLink(request, c.id);
+    // The vendor gets the link right away (email if configured, recorded otherwise) unless the caller opts out.
+    if (body.invite !== false) c = await sendInvite(deps.store, company, c, url);
     notify(request, company, undefined, c);
-    return json({ id: c.id, url: caseLink(request, c.id), case: c }, { status: 201 });
+    return json({ id: c.id, url, case: c }, { status: 201 });
   });
 }

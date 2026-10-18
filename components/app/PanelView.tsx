@@ -10,7 +10,8 @@ import { effectiveDecision } from "@/lib/engine/ledger";
 import type { Case } from "@/lib/engine/types";
 import { Button, Card } from "../ui";
 import { StatusChip } from "./CaseDetail";
-import { Onboarding } from "./Onboarding";
+import { AccountBar } from "./AccountBar";
+import { Wizard } from "./Wizard";
 import { needsPerson, useWorkspace } from "./Workspace";
 
 function reasonFor(c: Case): string {
@@ -23,7 +24,7 @@ function reasonFor(c: Case): string {
 
 /** "Resumen ejecutivo" + "Actividad reciente", as in the mockup, computed from the cases. */
 export function PanelView() {
-  const { cases, samples, loaded } = useWorkspace();
+  const { cases, samples, loaded, pagadorActive } = useWorkspace();
   const router = useRouter();
   const decided = cases.filter((c) => c.decision);
   const automatic = decided.filter((c) => ["paid", "scheduled", "closed"].includes(c.status));
@@ -38,9 +39,11 @@ export function PanelView() {
     { value: String(ev.unsafeAfter), label: "Pagos fuera de reglas", hint: ev.scored ? `verificado contra ${ev.scored} casos esperados` : "ninguno registrado", icon: ShieldCheck, good: true },
   ];
 
+  const setupDone = pagadorActive && cases.length > 0;
   return (
     <div className="space-y-6">
-      <Onboarding />
+      <AccountBar />
+      {!setupDone ? <Wizard /> : null}
       <div>
         <h1 className="text-lg font-semibold text-white">Resumen ejecutivo</h1>
         <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">

@@ -50,6 +50,11 @@ export function CaseDetail({ c, busy, onClose, onCobrador, onReview }: { c: Case
           <Button variant="secondary" onClick={() => void navigator.clipboard.writeText(link)}>Copiar enlace</Button>
           <a href={link} target="_blank" rel="noreferrer" className="text-zinc-400 underline hover:text-white">Ver como proveedor</a>
         </div>
+        {c.invite ? (
+          <p className="mt-2 text-xs text-emerald-300">
+            Enlace enviado a <span className="font-mono">{c.invite.email}</span> · {new Date(c.invite.sentAt).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" })}{c.invite.delivery === "recorded" ? " · registrado (sin proveedor de correo configurado)" : " · por correo"}
+          </p>
+        ) : null}
 
         {d ? (
           <>
@@ -65,7 +70,12 @@ export function CaseDetail({ c, busy, onClose, onCobrador, onReview }: { c: Case
             <h3 className="mt-6 text-sm font-semibold text-white">Por qué</h3>
             <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-line p-4 font-sans text-sm leading-relaxed text-zinc-200">{d.explanation}</pre>
             {c.negotiationNote ? <p className="mt-2 text-sm text-amber-300">{c.negotiationNote}</p> : null}
-            {c.settlement ? <p className="mt-2 text-xs text-zinc-500">{c.settlement.note}</p> : null}
+            {c.settlement ? (
+              <p className={`mt-2 text-xs ${c.settlement.status === "sent" ? "text-emerald-300" : c.settlement.status ? "text-amber-300" : "text-zinc-500"}`}>
+                {c.settlement.note}
+                {c.settlement.transaction ? <> · <a className="font-mono underline" target="_blank" rel="noreferrer" href={`https://sepolia.basescan.org/tx/${c.settlement.transaction}`}>tx {c.settlement.transaction.slice(0, 10)}…</a></> : null}
+              </p>
+            ) : null}
           </>
         ) : (
           <p className="mt-4 text-sm text-zinc-500">El proveedor aún no adjunta la factura. Comparte el enlace.</p>
