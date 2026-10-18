@@ -56,22 +56,24 @@ export function Deck() {
       </header>
 
       <section className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-10 pb-20">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orbit">{slide.kicker}</p>
-        <h1 className="mt-3 max-w-4xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">{slide.title}</h1>
+        <p className="text-base font-semibold uppercase tracking-[0.25em] text-orbit">{slide.kicker}</p>
+        <h1 className="mt-4 max-w-5xl text-5xl font-bold leading-[1.08] tracking-tight sm:text-6xl">{slide.title}</h1>
 
         {slide.id === "title" ? (
-          <p className="mt-6 max-w-2xl text-lg text-zinc-300">ORBIT: la plataforma donde tus agentes de IA cobran y pagan por tu empresa, dentro de las reglas que tú defines.</p>
+          <p className="mt-8 max-w-3xl text-2xl text-zinc-300">ORBIT: la plataforma donde tus agentes de IA cobran y pagan por tu empresa, dentro de las reglas que tú defines.</p>
         ) : null}
 
         {slide.id === "problem" ? (
-          <ul className="mt-8 grid gap-4 text-lg text-zinc-200 sm:grid-cols-2">
+          <ul className="mt-10 grid gap-5 sm:grid-cols-3">
             {[
-              "Llegan facturas por correo, PDF o chat; alguien las compara con lo acordado.",
-              "Persigue al proveedor cuando algo no cuadra, pide aprobación por chat.",
-              "Crea el pago a mano, en otra moneda, hacia otro país; concilia en una hoja de cálculo.",
-              "Las empresas quieren que un agente lo haga. Lo que falta es confianza: que pague solo lo que debe, lo explique y nunca se pase de los límites.",
-            ].map((t) => (
-              <li key={t} className="rounded-2xl border border-line bg-panel/80 p-5">{t}</li>
+              ["Llegan", "Facturas por correo, PDF o chat. Alguien las compara con lo acordado."],
+              ["Se persiguen", "Cuando algo no cuadra: escribir al proveedor, pedir aprobación por chat."],
+              ["Se pagan a mano", "En otra moneda, hacia otro país. Y se concilia en una hoja de cálculo."],
+            ].map(([h, t]) => (
+              <li key={h} className="rounded-2xl border border-line bg-panel/80 p-6">
+                <p className="text-2xl font-semibold text-orbit">{h}</p>
+                <p className="mt-2 text-xl text-zinc-200">{t}</p>
+              </li>
             ))}
           </ul>
         ) : null}
@@ -82,10 +84,10 @@ export function Deck() {
               <a key={m.name} href={m.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-6 rounded-2xl border border-line bg-panel/80 p-6 transition hover:border-orbit/60">
                 <Avatar src={m.photo} initials={m.initials} />
                 <div className="min-w-0">
-                  <p className="text-2xl font-semibold">{m.name}</p>
-                  <p className="mt-1 text-sm text-zinc-300">{m.role}</p>
-                  <p className="text-sm text-zinc-500">{m.org}</p>
-                  <p className="mt-2 flex items-center gap-1.5 text-xs text-orbit"><Link2 className="h-3.5 w-3.5" /> {m.linkedin.replace("https://www.", "")}</p>
+                  <p className="text-3xl font-semibold">{m.name}</p>
+                  <p className="mt-2 text-lg text-zinc-300">{m.role}</p>
+                  <p className="text-lg text-zinc-500">{m.org}</p>
+                  <p className="mt-3 flex items-center gap-1.5 text-base text-orbit"><Link2 className="h-4 w-4" /> {m.linkedin.replace("https://www.", "")}</p>
                 </div>
               </a>
             ))}
@@ -101,8 +103,8 @@ export function Deck() {
               ["Se puede verificar", "Cada decisión queda firmada con las reglas vigentes; webhooks firmados a los sistemas de la empresa."],
             ].map(([h, t]) => (
               <li key={h} className="rounded-2xl border border-line bg-panel/80 p-5">
-                <p className="text-lg font-semibold text-orbit">{h}</p>
-                <p className="mt-1 text-zinc-200">{t}</p>
+                <p className="text-2xl font-semibold text-orbit">{h}</p>
+                <p className="mt-2 text-lg text-zinc-200">{t}</p>
               </li>
             ))}
           </ul>
@@ -117,23 +119,23 @@ export function Deck() {
               ["3 / 10", "resueltas con el proveedor", "frenadas cerradas sin una persona"],
             ].map(([v, l, h]) => (
               <div key={l} className="rounded-2xl border border-line bg-panel/80 p-6">
-                <p className="text-4xl font-bold text-orbit">{v}</p>
-                <p className="mt-2 text-base font-medium">{l}</p>
-                <p className="text-xs text-zinc-500">{h}</p>
+                <p className="text-5xl font-bold text-orbit">{v}</p>
+                <p className="mt-3 text-xl font-medium">{l}</p>
+                <p className="mt-1 text-sm text-zinc-500">{h}</p>
               </div>
             ))}
           </div>
         ) : null}
 
         {slide.id === "next" ? (
-          <ul className="mt-8 space-y-3 text-lg text-zinc-200">
+          <ul className="mt-10 space-y-4 text-2xl text-zinc-200">
             {[
               "El cobrador: el mismo motor con las reglas invertidas, para lo que te deben.",
               "Agentes pagándole a agentes: el agente de la empresa paga por caso con x402.",
               "Negociar sin revelar límites: pruebas en lugar de confianza (ZK / FHE).",
               "Sobre los rieles de Blinka, con JEV como capa de juicio rápido.",
             ].map((t) => (
-              <li key={t} className="flex items-start gap-3"><ArrowRight className="mt-1.5 h-4 w-4 shrink-0 text-orbit" /> {t}</li>
+              <li key={t} className="flex items-start gap-3"><ArrowRight className="mt-2 h-5 w-5 shrink-0 text-orbit" /> {t}</li>
             ))}
           </ul>
         ) : null}
@@ -153,7 +155,7 @@ export function Deck() {
 
 function Avatar({ src, initials }: { src: string; initials: string }) {
   const [broken, setBroken] = useState(false);
-  if (broken) return <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-orbit text-2xl font-bold text-black">{initials}</div>;
+  if (broken) return <div className="flex h-40 w-40 shrink-0 items-center justify-center rounded-full bg-orbit text-4xl font-bold text-black">{initials}</div>;
   // eslint-disable-next-line @next/next/no-img-element -- static team photo in public/
-  return <img src={src} alt="" onError={() => setBroken(true)} className="h-28 w-28 shrink-0 rounded-full object-cover ring-2 ring-orbit/60" />;
+  return <img src={src} alt="" onError={() => setBroken(true)} className="h-40 w-40 shrink-0 rounded-full object-cover ring-2 ring-orbit/60" />;
 }
