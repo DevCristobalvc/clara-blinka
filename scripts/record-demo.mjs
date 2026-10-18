@@ -25,7 +25,8 @@ const ctxOpts = { viewport, deviceScaleFactor: 2, recordVideo: { dir: outDir, si
 const ctx = live
   ? await chromium.launchPersistentContext(".playwright-profile", { headless: false, executablePath, ...ctxOpts, args: [`--window-size=${viewport.width},${viewport.height + 90}`] })
   : await (await chromium.launch({ executablePath })).newContext(ctxOpts);
-const page = ctx.pages()[0] ?? (await ctx.newPage());
+let page = ctx.pages()[0] ?? (await ctx.newPage());
+ctx.on("page", (p) => { page = p; }); // a login redirect or popup may continue in a new tab
 const t0 = Date.now();
 const now = () => (Date.now() - t0) / 1000;
 const pause = (ms) => page.waitForTimeout(ms);
@@ -113,6 +114,8 @@ if (live) {
   await page.bringToFront();
   console.log("\n>>> Sign in with Privy in the Chrome window now (email, Google or passkey). Waiting up to 10 minutes…\n");
   await page.waitForURL(/\/app(\/|$|\?)/, { timeout: 600000 });
+  page = ctx.pages().find((p) => /\/app(\/|$|\?)/.test(p.url())) ?? page;
+  await page.bringToFront();
   await page.waitForSelector("text=Configura a ORBIT", { timeout: 60000 });
   await page.waitForSelector("text=USDC", { timeout: 60000 }).catch(() => {});
 } else {
@@ -181,6 +184,14 @@ await click("text=Pon a ORBIT a trabajar");
 await page.waitForSelector("text=Set de demo completo", { timeout: 600000 });
 await pause(1000);
 await zoomOn("text=Pagadas", { z: 1.6, ms: 5000, dy: 170, dx: 100 });
+// The two layers on one paid case: the rules that passed and JEV's typed judgment ("Juicio rápido por JEV …").
+await click("text=Valentina Ríos");
+await page.waitForSelector("text=Por qué", { timeout: 30000 }).catch(() => {});
+await page.locator("text=Juicio rápido por JEV").first().scrollIntoViewIfNeeded().catch(() => {});
+await pause(600);
+await zoomOn("text=Juicio rápido por JEV", { z: 1.7, ms: 9000, dy: -120 });
+await click("button:has-text('Cerrar')").catch(() => {});
+await pause(800);
 await holdFor(5, 1500);
 
 // 6. Lucía's negotiation, then the vendor's view with the payout and its transaction

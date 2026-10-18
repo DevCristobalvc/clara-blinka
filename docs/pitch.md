@@ -34,11 +34,11 @@ Contratar al agente es un pago, como lo haría un agente: tu wallet le paga a OR
 
 Las reglas las pones tú, una sola vez: cuánto puede pagar por factura, el presupuesto del mes, qué proveedores, en qué moneda, y desde qué monto apruebas tú. El agente nunca las cambia: solo puede ser más estricto, nunca más laxo.
 
-## 5. Lo pones a trabajar [1:18–1:44] · pantalla: "Pon a ORBIT a trabajar", el tablero de Facturas se va llenando, pagos con su transacción
+## 5. Lo pones a trabajar: reglas + JEV [1:18–1:56] · pantalla: "Pon a ORBIT a trabajar", el tablero se llena; el detalle de un caso con el juicio de JEV
 
-> Pagar · Frenar · Escalar. Los pagos salen de la wallet del agente, en USDC.
+> Reglas en código + JEV (TypeSafe) para las preguntas difusas. JEV solo endurece, nunca afloja.
 
-Y lo pones a trabajar. Cada factura se vuelve un caso con su enlace, y cada proveedor lo recibe por correo. ORBIT lee la factura, la revisa contra las reglas y decide en segundos: pagar, frenar o escalar. Las correctas se pagan solas, desde la wallet del agente, en USDC, y el proveedor lo recibe en su cuenta a través de Blinka.
+Y lo pones a trabajar. Cada factura se vuelve un caso con su enlace, y el proveedor lo recibe por correo. ORBIT lee la factura y la pasa por dos capas. Las reglas duras viven en código: límites, presupuesto, duplicados, moneda. Las preguntas difusas las responde JEV, de TypeSafe: ¿el concepto corresponde al contrato? ¿hay presión o ingeniería social en el mensaje? ¿qué riesgo tiene? Juicios tipados, en milisegundos. Y JEV solo puede hacer la decisión más estricta, nunca más laxa. Con eso decide: pagar, frenar o escalar. Las correctas se pagan solas, desde la wallet del agente, en USDC, y el proveedor lo recibe en su cuenta a través de Blinka.
 
 ## 6. Cuando algo no cuadra, lo resuelve [1:44–2:12] · pantalla: caso de Lucía, la conversación; la vista del proveedor con "Pago enviado" y la transacción
 

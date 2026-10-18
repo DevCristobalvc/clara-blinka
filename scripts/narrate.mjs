@@ -91,7 +91,10 @@ const b5 = timeline[5], b6 = timeline[6];
 let fast = null, FAST = 1, saved = 0;
 if (b5 !== undefined && b6 !== undefined && b6 - b5 > 26) {
   fast = { from: b5 + 12, to: b6 - 1.5 };
-  FAST = Math.min(12, Math.max(2, Math.round((fast.to - fast.from) / 12)));
+  // The stretch lasts what block 5's narration still needs after the parts kept at normal speed (min 8 s).
+  const clip5 = clips.find((c) => c.n === 5);
+  const want = Math.max(8, (clip5?.length ?? 24) + 1.5 - 12 - (b6 - fast.to));
+  FAST = Math.min(12, Math.max(2, Math.round((fast.to - fast.from) / want)));
   saved = (fast.to - fast.from) * (1 - 1 / FAST);
   console.log(`time-lapse ${fast.from.toFixed(1)}–${fast.to.toFixed(1)} s at ${FAST}x, saves ${saved.toFixed(1)} s`);
 }
