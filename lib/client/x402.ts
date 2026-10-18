@@ -30,7 +30,7 @@ export async function paidFetchFor(wallet: ConnectedWallet) {
     },
     publicClient,
   );
-  return wrapFetchWithPaymentFromConfig(fetch, { schemes: [{ network: BASE_SEPOLIA_CAIP2, client: new ExactEvmScheme(signer) }] });
+  return wrapFetchWithPaymentFromConfig(fetch, { schemes: [{ network: BASE_SEPOLIA_CAIP2, client: new ExactEvmScheme(signer) }], spendControls: { maxAmountPerPayment: "$25" } });
 }
 
 export function paymentDetails(res: Response): { transaction?: string; network?: string; payer?: string } {

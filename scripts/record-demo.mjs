@@ -121,10 +121,15 @@ if (live) {
   await go("/app", "text=Configura a ORBIT");
 }
 await pause(1500);
-await zoomOn('button:has-text("Depositar")', { z: 1.5, ms: 2500, dx: -260 });
-await click('button:has-text("Depositar")');
-await zoomOn("text=Depositar USDC", { z: 1.4, ms: 3500, dy: 140 });
-await click('button[aria-label="Cerrar"]');
+// The account bar shows Depositar only with a Privy wallet (the live take); the demo session has none.
+if (await page.locator('button:has-text("Depositar")').count()) {
+  await zoomOn('button:has-text("Depositar")', { z: 1.5, ms: 2500, dx: -260 });
+  await click('button:has-text("Depositar")');
+  await zoomOn("text=Depositar USDC", { z: 1.4, ms: 3500, dy: 140 });
+  await click('button[aria-label="Cerrar"]');
+} else {
+  await zoomOn("text=Configura a ORBIT", { z: 1.3, ms: 4000, dy: 120, dx: 200 });
+}
 await holdFor(2, 2000);
 
 // 3. Hire the pagador and fund it: real x402 payments while the wizard is on screen; zoom on each confirmation
